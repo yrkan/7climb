@@ -1,0 +1,60 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Kotlin
+.kotlin/
+
+# Local properties (SDK path, secrets)
+local.properties
+
+# APK & Bundle
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Compiled
+*.class
+
+# Android Studio
+.navigation/
+captures/
+*.iml
+.idea/
+!.idea/codeStyles/
+
+# Keystore (NEVER commit)
+*.jks
+*.keystore
+release-key.*
+upload-key.*
+
+# Google Services
+google-services.json
+
+# Secrets
+.env
+*.pem
+*.key
+*.p12
+secrets.json
+credentials.json
+tokens.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs & temp
+*.log
+*.tmp
+*.bak
+
+# Internal docs
+CLIMB_INTELLIGENCE_SPEC.md
+KAROO_EXTENSIONS_SDK.md
+
+# Claude
+.claude/

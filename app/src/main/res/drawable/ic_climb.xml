@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Green rounded rectangle background -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="
+            M2,0 H22
+            A2,2 0 0 1 24,2
+            V22
+            A2,2 0 0 1 22,24
+            H2
+            A2,2 0 0 1 0,22
+            V2
+            A2,2 0 0 1 2,0 Z"/>
+
+    <!-- Mountain silhouette -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="
+            M3,19
+            L8,8
+            L11,13
+            L14,6
+            L21,19
+            Z"/>
+
+    <!-- Mountain peak accent -->
+    <path
+        android:fillColor="#81C784"
+        android:pathData="
+            M14,6
+            L16.5,11
+            L14,10
+            Z"/>
+</vector>

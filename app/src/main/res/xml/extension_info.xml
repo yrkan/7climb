@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExtensionInfo
+    id="climbintelligence"
+    displayName="@string/extension_name"
+    icon="@drawable/ic_climb"
+    configurable="true"
+    fitFile="true">
+
+    <!-- W' Balance gauge -->
+    <DataType
+        typeId="wprime-balance"
+        description="@string/datatype_wprime_desc"
+        displayName="@string/datatype_wprime"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Pacing target power -->
+    <DataType
+        typeId="pacing-target"
+        description="@string/datatype_pacing_desc"
+        displayName="@string/datatype_pacing"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Current gradient -->
+    <DataType
+        typeId="grade"
+        description="@string/datatype_grade_desc"
+        displayName="@string/datatype_grade"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Compound climb overview -->
+    <DataType
+        typeId="climb-overview"
+        description="@string/datatype_overview_desc"
+        displayName="@string/datatype_overview"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Estimated time to summit -->
+    <DataType
+        typeId="eta"
+        description="@string/datatype_eta_desc"
+        displayName="@string/datatype_eta"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Climb progress -->
+    <DataType
+        typeId="climb-progress"
+        description="@string/datatype_progress_desc"
+        displayName="@string/datatype_progress"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Elevation profile -->
+    <DataType
+        typeId="climb-profile"
+        description="@string/datatype_profile_desc"
+        displayName="@string/datatype_profile"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Next segment preview -->
+    <DataType
+        typeId="next-segment"
+        description="@string/datatype_segment_desc"
+        displayName="@string/datatype_segment"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Compact climb info -->
+    <DataType
+        typeId="compact-climb"
+        description="@string/datatype_compact_desc"
+        displayName="@string/datatype_compact"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Bonus Actions (hardware button actions) -->
+    <BonusAction
+        actionId="toggle-view"
+        displayName="@string/action_toggle_view" />
+
+    <BonusAction
+        actionId="cycle-pacing"
+        displayName="@string/action_cycle_pacing" />
+
+    <BonusAction
+        actionId="reset-wprime"
+        displayName="@string/action_reset_wprime" />
+
+</ExtensionInfo>

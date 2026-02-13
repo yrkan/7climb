@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#FF000000</color>
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_dim">#FF666666</color>
+    <color name="text_muted">#FF333333</color>
+
+    <!-- Status colors -->
+    <color name="status_optimal">#FF4CAF50</color>
+    <color name="status_attention">#FFFFC107</color>
+    <color name="status_problem">#FFF44336</color>
+
+    <!-- Grade colors -->
+    <color name="grade_easy">#FF4CAF50</color>
+    <color name="grade_moderate">#FFFFEB3B</color>
+    <color name="grade_hard">#FFFF9800</color>
+    <color name="grade_steep">#FFF44336</color>
+    <color name="grade_extreme">#FF9C27B0</color>
+
+    <!-- W' colors -->
+    <color name="wprime_fresh">#FF4CAF50</color>
+    <color name="wprime_good">#FF8BC34A</color>
+    <color name="wprime_working">#FFFFEB3B</color>
+    <color name="wprime_depleting">#FFFF9800</color>
+    <color name="wprime_critical">#FFF44336</color>
+    <color name="wprime_empty">#FF9E9E9E</color>
+
+    <!-- UI elements -->
+    <color name="divider">#FF222222</color>
+    <color name="alert_bg">#FF1A1A1A</color>
+    <color name="alert_text">#FFFFFFFF</color>
+</resources>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">7Climb</string>
+    <string name="extension_name">7Climb</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Climb Intelligence</string>
+    <string name="notification_channel_description">Background climb monitoring and W\' tracking</string>
+    <string name="notification_title">7Climb Active</string>
+    <string name="notification_text">Monitoring climb data</string>
+
+    <!-- DataType names -->
+    <string name="datatype_wprime">W\' Balance</string>
+    <string name="datatype_wprime_desc">Real-time W\' balance with depletion gauge</string>
+    <string name="datatype_pacing">Pacing Target</string>
+    <string name="datatype_pacing_desc">Physics-based target power recommendation</string>
+    <string name="datatype_grade">Grade</string>
+    <string name="datatype_grade_desc">Current road gradient percentage</string>
+    <string name="datatype_overview">Climb Overview</string>
+    <string name="datatype_overview_desc">Compound view: W\' + pacing + progress + ETA</string>
+    <string name="datatype_eta">Summit ETA</string>
+    <string name="datatype_eta_desc">Estimated time to reach the summit</string>
+    <string name="datatype_progress">Climb Progress</string>
+    <string name="datatype_progress_desc">Distance and elevation remaining</string>
+    <string name="datatype_profile">Climb Profile</string>
+    <string name="datatype_profile_desc">Elevation profile visualization</string>
+    <string name="datatype_segment">Next Segment</string>
+    <string name="datatype_segment_desc">Upcoming gradient segment preview</string>
+    <string name="datatype_compact">Compact Climb</string>
+    <string name="datatype_compact_desc">Minimal climb info for small fields</string>
+    <string name="datatype_fit">Climb FIT Data</string>
+    <string name="datatype_fit_desc">Records W\' balance and pacing data to FIT file</string>
+
+    <!-- Labels -->
+    <string name="label_grade">GRADE</string>
+    <string name="label_wprime">W\'BAL</string>
+    <string name="label_target">TARGET</string>
+    <string name="label_actual">ACTUAL</string>
+    <string name="label_eta">ETA</string>
+    <string name="label_remaining">REMAINING</string>
+    <string name="label_progress">PROGRESS</string>
+    <string name="label_distance">DIST</string>
+    <string name="label_elevation">ELEV</string>
+    <string name="label_power">POWER</string>
+    <string name="label_next">NEXT</string>
+    <string name="label_avg_grade">AVG</string>
+    <string name="label_category">CAT</string>
+
+    <!-- Pacing advice -->
+    <string name="advice_push">PUSH</string>
+    <string name="advice_ease">EASE</string>
+    <string name="advice_steady">STEADY</string>
+    <string name="advice_perfect">PERFECT</string>
+
+    <!-- W\' Status -->
+    <string name="wprime_fresh">FRESH</string>
+    <string name="wprime_good">GOOD</string>
+    <string name="wprime_working">WORKING</string>
+    <string name="wprime_depleting">DEPLETING</string>
+    <string name="wprime_critical">CRITICAL</string>
+    <string name="wprime_empty">EMPTY</string>
+
+    <!-- Alerts -->
+    <string name="alert_wprime_critical_title">W\' CRITICAL</string>
+    <string name="alert_wprime_critical_detail">W\' balance below 20%% — reduce power</string>
+    <string name="alert_steep_ahead_title">STEEP AHEAD</string>
+    <string name="alert_steep_ahead_detail">Grade increasing to %1$.0f%%</string>
+    <string name="alert_summit_title">SUMMIT APPROACHING</string>
+    <string name="alert_summit_detail">%1$dm to summit</string>
+    <string name="alert_climb_started_title">CLIMB STARTED</string>
+    <string name="alert_climb_started_detail">%1$s — %2$.1fkm at %3$.1f%%</string>
+    <string name="alert_pr_title">NEW PR!</string>
+    <string name="alert_pr_detail">%1$s faster than previous best</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_athlete">Athlete Profile</string>
+    <string name="settings_ftp">FTP (Threshold Power)</string>
+    <string name="settings_ftp_hint">Max power you can sustain for ~1 hour.\nDo a 20-min all-out effort and multiply by 0.95.\nOr use your FTP from Zwift, TrainerRoad, etc.</string>
+    <string name="settings_weight">Weight</string>
+    <string name="settings_weight_hint">Your body weight</string>
+    <string name="settings_bike">Bike Setup</string>
+    <string name="settings_position">Riding Position</string>
+    <string name="settings_position_hint">Affects aerodynamic drag calculation</string>
+    <string name="settings_surface">Road Surface</string>
+    <string name="settings_surface_hint">Affects rolling resistance calculation</string>
+    <string name="settings_pacing">Pacing Strategy</string>
+    <string name="settings_pacing_mode">Pacing Mode</string>
+    <string name="settings_alerts">Alerts</string>
+    <string name="settings_alerts_enabled">Enable Alerts</string>
+    <string name="settings_alert_sound">Sound</string>
+    <string name="settings_alert_vibration">Vibration</string>
+    <string name="settings_alert_cooldown">Cooldown</string>
+    <string name="settings_advanced">Advanced</string>
+    <string name="settings_advanced_hint">Only change if you know your values from testing</string>
+    <string name="settings_wprime">W\' (Anaerobic Capacity)</string>
+    <string name="settings_wprime_hint">Work you can do above FTP before exhaustion.\nTypical range: 15000–25000 J.\nSprinters tend higher, climbers lower.</string>
+    <string name="settings_cda">CdA (Aero Drag)</string>
+    <string name="settings_cda_hint">Set automatically by Riding Position above</string>
+    <string name="settings_crr">Crr (Rolling Resistance)</string>
+    <string name="settings_crr_hint">Set automatically by Road Surface above</string>
+    <string name="settings_history">History</string>
+    <string name="settings_view_history">View Climb History</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_not_configured">Set your FTP and weight to get started</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Riding position presets -->
+    <string name="position_drops">Drops</string>
+    <string name="position_hoods">Hoods</string>
+    <string name="position_tops">Tops</string>
+    <string name="position_aero">Aero</string>
+
+    <!-- Road surface presets -->
+    <string name="surface_smooth">Smooth</string>
+    <string name="surface_road">Road</string>
+    <string name="surface_rough">Rough</string>
+
+    <!-- Pacing modes -->
+    <string name="pacing_steady">Steady</string>
+    <string name="pacing_steady_desc">Even effort throughout</string>
+    <string name="pacing_race">Race</string>
+    <string name="pacing_race_desc">Conservative start, strong finish</string>
+    <string name="pacing_survival">Survival</string>
+    <string name="pacing_survival_desc">Minimum energy, just get to the top</string>
+
+    <!-- Bonus Actions -->
+    <string name="action_toggle_view">Toggle View</string>
+    <string name="action_cycle_pacing">Cycle Pacing Mode</string>
+    <string name="action_reset_wprime">Reset W\' Balance</string>
+    <string name="action_pacing_mode_changed">Pacing Mode</string>
+    <string name="action_wprime_reset">W\' Balance Reset</string>
+    <string name="action_wprime_reset_detail">Reset to 100%%</string>
+
+    <!-- History -->
+    <string name="history_title">Climb History</string>
+    <string name="history_empty">No climbs recorded yet</string>
+    <string name="history_climbs">Climbs</string>
+    <string name="history_recent">Recent Attempts</string>
+    <string name="history_pr">PR</string>
+</resources>
