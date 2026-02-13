@@ -12,6 +12,20 @@ W' Balance tracking, physics-based pacing, automatic climb detection, and PR com
 
 **Know exactly when to push and when to save.**
 
+## Screenshots
+
+| W' Balance | Pacing Target | Grade | Climb Overview |
+|:---:|:---:|:---:|:---:|
+| ![W' Balance](screenshots/1.png) | ![Pacing Target](screenshots/2.png) | ![Grade](screenshots/3.png) | ![Climb Overview](screenshots/4.png) |
+
+| Summit ETA | Climb Progress | Climb Profile | Compact Climb |
+|:---:|:---:|:---:|:---:|
+| ![Summit ETA](screenshots/5.png) | ![Climb Progress](screenshots/6.png) | ![Climb Profile](screenshots/7.png) | ![Compact Climb](screenshots/8.png) |
+
+| Multi-field layout | Multi-field layout |
+|:---:|:---:|
+| ![Multi-field](screenshots/9.png) | ![Multi-field](screenshots/10.png) |
+
 ## Features
 
 | Feature | Description |
