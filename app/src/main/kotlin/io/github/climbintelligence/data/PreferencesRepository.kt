@@ -33,7 +33,6 @@ class PreferencesRepository(private val context: Context) {
         private val KEY_ALERT_STEEP = booleanPreferencesKey("alert_steep")
         private val KEY_ALERT_SUMMIT = booleanPreferencesKey("alert_summit")
         private val KEY_ALERT_SOUND = booleanPreferencesKey("alert_sound")
-        private val KEY_ALERT_VIBRATION = booleanPreferencesKey("alert_vibration")
         private val KEY_ALERT_COOLDOWN = intPreferencesKey("alert_cooldown")
     }
 
@@ -79,10 +78,6 @@ class PreferencesRepository(private val context: Context) {
         .map { prefs -> prefs[KEY_ALERT_SOUND] ?: false }
         .distinctUntilChanged()
 
-    val alertVibrationFlow: Flow<Boolean> = context.dataStore.data
-        .map { prefs -> prefs[KEY_ALERT_VIBRATION] ?: true }
-        .distinctUntilChanged()
-
     val alertCooldownFlow: Flow<Int> = context.dataStore.data
         .map { prefs -> prefs[KEY_ALERT_COOLDOWN] ?: 30 }
         .distinctUntilChanged()
@@ -117,10 +112,6 @@ class PreferencesRepository(private val context: Context) {
 
     suspend fun updateAlertSound(enabled: Boolean) {
         context.dataStore.edit { it[KEY_ALERT_SOUND] = enabled }
-    }
-
-    suspend fun updateAlertVibration(enabled: Boolean) {
-        context.dataStore.edit { it[KEY_ALERT_VIBRATION] = enabled }
     }
 
     suspend fun updateAlertCooldown(seconds: Int) {

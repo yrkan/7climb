@@ -89,7 +89,6 @@
     <string name="settings_alerts">Alerts</string>
     <string name="settings_alerts_enabled">Enable Alerts</string>
     <string name="settings_alert_sound">Sound</string>
-    <string name="settings_alert_vibration">Vibration</string>
     <string name="settings_alert_cooldown">Cooldown</string>
     <string name="settings_advanced">Advanced</string>
     <string name="settings_advanced_hint">Only change if you know your values from testing</string>

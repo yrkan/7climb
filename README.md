@@ -168,7 +168,7 @@ New PRs trigger a celebration alert with ascending tones.
 
 ### Alerts
 
-On-screen notifications with configurable sound and vibration:
+On-screen notifications with configurable sound:
 
 | Alert | Trigger | Duration |
 |-------|---------|----------|
@@ -180,7 +180,6 @@ On-screen notifications with configurable sound and vibration:
 - Cooldown between repeated alerts (default: 30s, configurable)
 - Screen wakes automatically on alert
 - Sound: beep patterns via Karoo speaker (urgent = 3 beeps at 800Hz, normal = 2 beeps at 600Hz, PR = ascending 800→1000→1200Hz)
-- Vibration: waveform patterns (urgent = 3 pulses, normal = 2 pulses)
 
 ### FIT Recording
 
@@ -211,7 +210,6 @@ Engine state (W' balance, climb progress) is checkpointed periodically and resto
 | Pacing mode | STEADY | STEADY / RACE / SURVIVAL |
 | Alerts enabled | Yes | Master toggle for all alerts |
 | Alert sound | No | Beep patterns on alert |
-| Alert vibration | Yes | Vibration on alert |
 | Alert cooldown | 30 s | Minimum time between repeated alerts |
 
 **Tip:** CP (Critical Power) is automatically calculated as 95% of your FTP. If you know your actual CP from testing, set your FTP slightly higher than CP to compensate.

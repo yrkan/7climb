@@ -77,8 +77,6 @@ fun SettingsScreen(
         .collectAsState(initial = true)
     val alertSound by (prefs?.alertSoundFlow ?: kotlinx.coroutines.flow.flowOf(false))
         .collectAsState(initial = false)
-    val alertVibration by (prefs?.alertVibrationFlow ?: kotlinx.coroutines.flow.flowOf(true))
-        .collectAsState(initial = true)
     val alertCooldown by (prefs?.alertCooldownFlow ?: kotlinx.coroutines.flow.flowOf(30))
         .collectAsState(initial = 30)
 
@@ -172,11 +170,6 @@ fun SettingsScreen(
                     label = stringResource(R.string.settings_alert_sound),
                     enabled = alertSound,
                     onToggle = { scope.launch { prefs?.updateAlertSound(it) } }
-                )
-                ToggleRow(
-                    label = stringResource(R.string.settings_alert_vibration),
-                    enabled = alertVibration,
-                    onToggle = { scope.launch { prefs?.updateAlertVibration(it) } }
                 )
                 CooldownSelector(
                     selectedSeconds = alertCooldown,

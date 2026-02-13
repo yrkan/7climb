@@ -1,10 +1,5 @@
 package io.github.climbintelligence.engine
 
-import android.content.Context
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
 import io.github.climbintelligence.ClimbIntelligenceExtension
 import io.github.climbintelligence.R
 import io.github.climbintelligence.data.PreferencesRepository
@@ -16,7 +11,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicLong
 
@@ -45,23 +39,7 @@ class AlertManager(
     @Volatile
     private var soundEnabled = false
     @Volatile
-    private var vibrationEnabled = true
-    @Volatile
     private var cooldownMs = 30_000L
-
-    private val vibrator: Vibrator? by lazy {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val mgr = extension.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
-                mgr?.defaultVibrator
-            } else {
-                @Suppress("DEPRECATION")
-                extension.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
-            }
-        } catch (e: Exception) {
-            null
-        }
-    }
 
     fun startMonitoring() {
         scope?.cancel()
@@ -72,9 +50,6 @@ class AlertManager(
         }
         scope?.launch {
             preferencesRepository.alertSoundFlow.collect { soundEnabled = it }
-        }
-        scope?.launch {
-            preferencesRepository.alertVibrationFlow.collect { vibrationEnabled = it }
         }
         scope?.launch {
             preferencesRepository.alertCooldownFlow.collect { cooldownMs = it * 1000L }
@@ -135,7 +110,6 @@ class AlertManager(
                 )
             )
             if (soundEnabled) playPRSound()
-            if (vibrationEnabled) playVibration(urgent = false)
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to dispatch PR alert: ${e.message}")
         }
@@ -167,7 +141,6 @@ class AlertManager(
                 )
             )
             if (soundEnabled) playAlertSound(urgent)
-            if (vibrationEnabled) playVibration(urgent)
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to dispatch alert: ${e.message}")
         }
@@ -207,26 +180,6 @@ class AlertManager(
             )))
         } catch (e: Exception) {
             android.util.Log.w(TAG, "Failed to play PR sound: ${e.message}")
-        }
-    }
-
-    private fun playVibration(urgent: Boolean) {
-        try {
-            val v = vibrator ?: return
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val effect = if (urgent) {
-                    VibrationEffect.createWaveform(longArrayOf(0, 100, 50, 100, 50, 100), -1)
-                } else {
-                    VibrationEffect.createWaveform(longArrayOf(0, 80, 50, 80), -1)
-                }
-                v.vibrate(effect)
-            } else {
-                @Suppress("DEPRECATION")
-                if (urgent) v.vibrate(longArrayOf(0, 100, 50, 100, 50, 100), -1)
-                else v.vibrate(longArrayOf(0, 80, 50, 80), -1)
-            }
-        } catch (e: Exception) {
-            android.util.Log.w(TAG, "Failed to vibrate: ${e.message}")
         }
     }
 
