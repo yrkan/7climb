@@ -2,9 +2,11 @@
 
 Real-time climb intelligence for Hammerhead Karoo.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Karoo%202%20%26%203-blue.svg)](https://www.hammerhead.io)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.20-purple.svg)](https://kotlinlang.org)
+[![License](https://img.shields.io/badge/License-MIT-0d1117?style=flat-square&logo=opensourceinitiative&logoColor=white)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Karoo%202%2F3-0d1117?style=flat-square&logo=android&logoColor=white)](https://www.hammerhead.io/)
+[![Downloads](https://img.shields.io/github/downloads/yrkan/7climb/total?style=flat-square&color=0d1117&logo=github&logoColor=white)](https://github.com/yrkan/7climb/releases)
+[![Release](https://img.shields.io/github/v/release/yrkan/7climb?style=flat-square&color=0d1117&logo=github&logoColor=white)](https://github.com/yrkan/7climb/releases/latest)
+[![Website](https://img.shields.io/badge/Web-7climb.com-0d1117?style=flat-square&logo=google-chrome&logoColor=00E676)](https://7climb.com)
 
 ## What it does
 
