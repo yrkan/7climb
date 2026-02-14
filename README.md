@@ -8,7 +8,7 @@ Real-time climb intelligence for Hammerhead Karoo.
 [![Release](https://img.shields.io/github/v/release/yrkan/7climb?style=flat-square&color=0d1117&logo=github&logoColor=white)](https://github.com/yrkan/7climb/releases/latest)
 [![Website](https://img.shields.io/badge/Web-7climb.com-0d1117?style=flat-square&logo=google-chrome&logoColor=00E676)](https://7climb.com)
 
-W' Balance tracking (Skiba differential model), physics-based pacing, automatic climb detection, PR comparison, tactical insights, and 9 specialized data fields — all updating at 1Hz on your Karoo screen.
+W' Balance tracking (Skiba differential model), physics-based pacing, automatic climb detection, PR comparison, tactical insights, climb stats (VAM, W/kg, energy), and 10 specialized data fields — all updating at 1Hz on your Karoo screen.
 
 **Know exactly when to push and when to save.**
 
@@ -44,19 +44,20 @@ W' Balance tracking (Skiba differential model), physics-based pacing, automatic 
 
 ## Data Fields
 
-9 data fields, each available in 6 layout sizes (Small, Small Wide, Medium, Medium Wide, Large, Narrow):
+10 data fields, each available in 6 layout sizes (Small, Small Wide, Medium, Medium Wide, Large, Narrow):
 
 | Field | What it shows |
 |-------|---------------|
 | **W' Balance** | Anaerobic capacity gauge: percentage, kJ remaining, status (FRESH/GOOD/WORKING/DEPLETING/CRITICAL/EMPTY), time to empty or full, depletion rate |
-| **Pacing Target** | Target watts for current gradient with advice (PUSH/EASE/STEADY/PERFECT), delta from target, acceptable power range, actual power |
-| **Grade** | Current gradient color-coded (green < 4%, amber 4-8%, orange 8-12%, red 12-18%, violet > 18%), altitude, current power, speed |
+| **Pacing Target** | Target watts for current gradient with advice (PUSH/EASE/STEADY/PERFECT), delta from target, acceptable power range, actual power, live W/kg |
+| **Grade** | Current gradient color-coded (green < 4%, amber 4-8%, orange 8-12%, red 12-18%, violet > 18%), altitude, HR (bpm), cadence (rpm) |
 | **Climb Overview** | Compound view: W' gauge + target power + climb progress + ETA + tactical insight — the main field for climbing |
-| **Summit ETA** | Estimated time to summit based on current speed, distance remaining, elevation remaining |
+| **Summit ETA** | Estimated time to summit based on current speed, distance remaining, elevation remaining, live VAM with color coding |
 | **Climb Progress** | Progress percentage through the climb, distance remaining, elevation remaining, average grade |
 | **Climb Profile** | Gradient-colored elevation profile with current position marker, climb name, total length, elevation, average and max grade |
-| **Next Segment** | Preview of the upcoming 100m gradient segment with tactical insight (steep ahead, recovery zone, etc.) |
+| **Next Segment** | Preview of the upcoming 100m gradient segment with tactical insight. Shows "LAST SEGMENT" with grade/length/elevation on final segment |
 | **Compact Climb** | Minimal: grade + W'% for small data field slots, progress bar, distance/elevation remaining |
+| **Climb Stats** | Real-time climb performance: VAM (rolling 60s), W/kg, HR, cadence, energy (kJ), elapsed time, avg/max power, avg W/kg — full dashboard |
 
 ### Layout sizes
 
@@ -83,7 +84,7 @@ if P ≤ CP:  dW'/dt = (W'max - W') / τ
 | Parameter | Value | Description |
 |-----------|-------|-------------|
 | τ (tau) | 546 s | Skiba recovery time constant |
-| CP | 0.95 × FTP | Critical Power estimate |
+| CP | Manual or 0.95 × FTP | Critical Power (manual override or auto-calculated) |
 | W'max | 20,000 J (default) | Anaerobic work capacity |
 | Update rate | 1 Hz | dt clamped to 0-5s for stability |
 
@@ -157,6 +158,42 @@ Scans upcoming climb segments and generates prioritized tactical insights:
 | Gradient change | > 4% jump | "Grade ramps up in 150m — prepare to shift" |
 | Easy section | < 4% in hard climb | "Easier section at 300m — recover here" |
 
+### Climb Stats Tracker
+
+Tracks real-time performance metrics during active climbs. Resets automatically when a new climb begins.
+
+| Metric | How it's calculated |
+|--------|---------------------|
+| VAM (rolling) | Vertical Ascent Meters/hour over a 60-second rolling window |
+| VAM (overall) | Total altitude gain / total climb time × 3600 |
+| W/kg | Instant power / rider weight |
+| Avg W/kg | Average power-to-weight ratio across the climb |
+| Energy (kJ) | Integrated power × time |
+| Avg/Max Power | Running averages and peak values |
+| Avg HR, Max HR | Heart rate statistics |
+| Avg Cadence | Pedaling cadence average |
+| Elapsed Time | Duration since climb started |
+
+**VAM color zones:**
+
+| VAM (m/h) | Color | Level |
+|-----------|-------|-------|
+| < 600 | Green | Easy |
+| 600–1000 | Amber | Moderate |
+| 1000–1500 | Orange | Hard |
+| 1500–1800 | Red | Steep |
+| > 1800 | Violet | Extreme |
+
+**W/kg color zones:**
+
+| W/kg | Color | Level |
+|------|-------|-------|
+| < 2.0 | Green | Easy |
+| 2.0–3.0 | Amber | Moderate |
+| 3.0–4.0 | Orange | Hard |
+| 4.0–5.0 | Red | Steep |
+| > 5.0 | Violet | Extreme |
+
 ### PR Tracking
 
 Climbs are stored in a local Room database, matched by GPS coordinates. On subsequent attempts, live time delta is shown against your personal record:
@@ -199,20 +236,48 @@ Engine state (W' balance, climb progress) is checkpointed periodically and resto
 
 ## Settings
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| FTP | — | Functional Threshold Power (watts). **Required.** |
-| Weight | — | Rider weight (kg). **Required.** |
-| W'max | 20,000 J | Anaerobic work capacity. Increase if you're a sprinter, decrease for endurance. |
-| CdA | 0.321 m² | Coefficient of drag × frontal area. Hoods position default. |
-| Crr | 0.005 | Rolling resistance coefficient. Road tire default. |
-| Bike weight | 8 kg | Added to rider weight for physics calculations. |
-| Pacing mode | STEADY | STEADY / RACE / SURVIVAL |
-| Alerts enabled | Yes | Master toggle for all alerts |
-| Alert sound | No | Beep patterns on alert |
-| Alert cooldown | 30 s | Minimum time between repeated alerts |
+| Setting | Default | Range | Description |
+|---------|---------|-------|-------------|
+| FTP | — | 50–600 W | Functional Threshold Power. **Required.** |
+| Weight | — | 30–200 kg | Rider weight. **Required.** |
+| Bike type | — | Race / Aero / TT / Endurance / Custom | Preset bike weights (7.5 / 8.0 / 9.0 / 9.5 kg) or custom input |
+| Bike weight | 8.0 kg | 5–25 kg | Custom bike weight (shown when type = Custom). Added to rider weight for physics. |
+| Position | Hoods | Tops / Hoods / Drops / A.Drops / Aero / TT | Riding position preset. Sets CdA for aerodynamic drag calculation. |
+| Surface | Road | Smooth / Road / Rough / Cobbles / Gravel | Road surface preset. Sets Crr for rolling resistance calculation. |
+| Pacing mode | STEADY | STEADY / RACE / SURVIVAL | Power cap strategy for target watts |
+| Alerts enabled | Yes | — | Master toggle for all alerts |
+| Alert sound | No | — | Beep patterns on alert |
+| Alert cooldown | 30 s | 15 / 30 / 60 / 90 s | Minimum time between repeated alerts |
 
-**Tip:** CP (Critical Power) is automatically calculated as 95% of your FTP. If you know your actual CP from testing, set your FTP slightly higher than CP to compensate.
+**Advanced settings** (collapsed by default — only change if you know your values from testing):
+
+| Setting | Default | Range | Description |
+|---------|---------|-------|-------------|
+| W'max | 20,000 J | 5,000–40,000 J | Anaerobic work capacity. Increase for sprinters, decrease for endurance. |
+| CP | Auto | 0–500 W | Critical Power. Set to 0 for auto-calculation (FTP × 0.95), or enter your tested CP from a 3+12 min protocol. |
+| CdA | 0.321 m² | 0.15–0.60 | Coefficient of drag × frontal area. Usually set via Position preset. |
+| Crr | 0.005 | 0.002–0.015 | Rolling resistance coefficient. Usually set via Surface preset. |
+
+**Position → CdA mapping:**
+
+| Position | CdA | Description |
+|----------|-----|-------------|
+| Tops | 0.370 | Upright, hands on bar tops |
+| Hoods | 0.320 | Standard riding position |
+| Drops | 0.300 | Hands in drops |
+| A.Drops | 0.270 | Aggressive drops, tucked |
+| Aero | 0.240 | Aero bars or deep tuck |
+| TT | 0.220 | Full time trial position |
+
+**Surface → Crr mapping:**
+
+| Surface | Crr | Description |
+|---------|-----|-------------|
+| Smooth | 0.004 | Velodrome or fresh tarmac |
+| Road | 0.005 | Standard asphalt |
+| Rough | 0.007 | Worn or patchy roads |
+| Cobbles | 0.010 | Cobblestones, pavé |
+| Gravel | 0.012 | Gravel or unsealed roads |
 
 ## Build from source
 
@@ -260,12 +325,13 @@ app/src/main/kotlin/io/github/climbintelligence/
 │   ├── WPrimeEngine.kt              # Skiba W' Balance model
 │   ├── PacingCalculator.kt          # Physics-based target power
 │   ├── ClimbDetector.kt             # Auto climb detection (no-route)
+│   ├── ClimbStatsTracker.kt         # VAM, W/kg, energy, HR/cadence/power stats
 │   ├── PRComparisonEngine.kt        # PR tracking + live delta
 │   ├── TacticalAnalyzer.kt          # Segment-aware tactical insights
-│   ├── AlertManager.kt              # InRideAlert + sound + vibration
+│   ├── AlertManager.kt              # InRideAlert + sound
 │   ├── RideStateMonitor.kt          # Ride lifecycle (recording/paused/idle)
 │   └── CheckpointManager.kt         # Crash recovery checkpoints
-├── datatypes/                       # 9 Karoo data fields
+├── datatypes/                       # 10 Karoo data fields
 │   ├── BaseDataType.kt              # Layout size detection (6 sizes)
 │   ├── GlanceDataType.kt            # Abstract Glance base class
 │   ├── glance/                      # Glance UI for each field
@@ -279,7 +345,8 @@ app/src/main/kotlin/io/github/climbintelligence/
 │   │   ├── ClimbProgressGlance.kt
 │   │   ├── ClimbProfileGlance.kt
 │   │   ├── NextSegmentGlance.kt
-│   │   └── CompactClimbGlance.kt
+│   │   ├── CompactClimbGlance.kt
+│   │   └── ClimbStatsGlance.kt
 │   └── fit/
 │       └── ClimbFitRecording.kt     # FIT developer fields
 ├── data/                            # Persistence
@@ -297,7 +364,8 @@ app/src/main/kotlin/io/github/climbintelligence/
 │       ├── PacingTarget.kt
 │       ├── ClimbInfo.kt
 │       ├── ClimbSegment.kt
-│       └── AthleteProfile.kt
+│       ├── AthleteProfile.kt
+│       └── ClimbStats.kt
 ├── util/
 │   └── PhysicsUtils.kt             # Air density, forces, speed solver
 └── ui/                              # Compose settings
