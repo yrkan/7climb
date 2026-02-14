@@ -45,7 +45,7 @@ class WPrimeEngine(private val preferencesRepository: PreferencesRepository) {
             preferencesRepository.athleteProfileFlow.collect { profile ->
                 if (profile.isConfigured) {
                     wMax = profile.wPrimeMax.toDouble()
-                    cp = profile.cp
+                    cp = profile.effectiveCp
                     if (!profileLoaded) {
                         wBalance = wMax
                         profileLoaded = true

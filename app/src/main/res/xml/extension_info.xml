@@ -78,6 +78,14 @@
         graphical="true"
         icon="@drawable/ic_climb" />
 
+    <!-- Climb stats: VAM, W/kg, HR, cadence, energy -->
+    <DataType
+        typeId="climb-stats"
+        description="@string/datatype_stats_desc"
+        displayName="@string/datatype_stats"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
     <!-- Bonus Actions (hardware button actions) -->
     <BonusAction
         actionId="toggle-view"

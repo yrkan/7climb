@@ -113,9 +113,15 @@ private fun ETALarge(state: ClimbDisplayState) {
             ValueText(eta, GlanceColors.White, 42)
             GlanceDivider()
             if (climb != null && climb.isActive) {
+                val vam = if (state.climbStats.isTracking && state.climbStats.vamRolling > 0) {
+                    "${state.climbStats.vamRolling}m/h"
+                } else BaseDataType.NO_DATA
+                val vamColor = if (state.climbStats.isTracking && state.climbStats.vamRolling > 0) {
+                    GlanceColors.vamColor(state.climbStats.vamRolling)
+                } else GlanceColors.Label
                 MetricValueRow("DIST", "%.1fkm".format(climb.distanceToTopKm), GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
                 MetricValueRow("ELEV", "${climb.elevationToTop.toInt()}m", GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-                MetricValueRow("SPEED", "%.1fkm/h".format(state.live.speedKmh), GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
+                MetricValueRow("VAM", vam, vamColor, valueFontSize = 16, labelFontSize = 11)
             } else {
                 ValueText("No climb", GlanceColors.Label, 16)
             }

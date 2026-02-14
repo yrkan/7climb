@@ -25,6 +25,8 @@ class PreferencesRepository(private val context: Context) {
         private val KEY_WPRIME_MAX = intPreferencesKey("wprime_max")
         private val KEY_CDA = doublePreferencesKey("cda")
         private val KEY_CRR = doublePreferencesKey("crr")
+        private val KEY_BIKE_WEIGHT = doublePreferencesKey("bike_weight")
+        private val KEY_CP = intPreferencesKey("cp")
         private val KEY_PACING_MODE = stringPreferencesKey("pacing_mode")
 
         // Alert settings
@@ -43,7 +45,9 @@ class PreferencesRepository(private val context: Context) {
                 weight = prefs[KEY_WEIGHT] ?: 0.0,
                 wPrimeMax = prefs[KEY_WPRIME_MAX] ?: 20000,
                 cda = prefs[KEY_CDA] ?: 0.321,
-                crr = prefs[KEY_CRR] ?: 0.005
+                crr = prefs[KEY_CRR] ?: 0.005,
+                bikeWeight = prefs[KEY_BIKE_WEIGHT] ?: 8.0,
+                cp = prefs[KEY_CP] ?: 0
             )
         }
         .distinctUntilChanged()
@@ -83,7 +87,7 @@ class PreferencesRepository(private val context: Context) {
         .distinctUntilChanged()
 
     suspend fun updateFtp(ftp: Int) {
-        context.dataStore.edit { it[KEY_FTP] = ftp.coerceIn(50, 500) }
+        context.dataStore.edit { it[KEY_FTP] = ftp.coerceIn(50, 600) }
     }
 
     suspend fun updateWeight(weight: Double) {
@@ -95,11 +99,19 @@ class PreferencesRepository(private val context: Context) {
     }
 
     suspend fun updateCda(cda: Double) {
-        context.dataStore.edit { it[KEY_CDA] = cda.coerceIn(0.1, 1.0) }
+        context.dataStore.edit { it[KEY_CDA] = cda.coerceIn(0.15, 0.60) }
     }
 
     suspend fun updateCrr(crr: Double) {
-        context.dataStore.edit { it[KEY_CRR] = crr.coerceIn(0.001, 0.02) }
+        context.dataStore.edit { it[KEY_CRR] = crr.coerceIn(0.002, 0.015) }
+    }
+
+    suspend fun updateBikeWeight(weight: Double) {
+        context.dataStore.edit { it[KEY_BIKE_WEIGHT] = weight.coerceIn(5.0, 25.0) }
+    }
+
+    suspend fun updateCp(cp: Int) {
+        context.dataStore.edit { it[KEY_CP] = cp.coerceIn(0, 500) }
     }
 
     suspend fun updatePacingMode(mode: PacingMode) {

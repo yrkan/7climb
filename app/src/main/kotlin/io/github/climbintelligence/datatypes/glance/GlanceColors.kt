@@ -42,6 +42,22 @@ object GlanceColors {
         else -> GradeExtreme
     }
 
+    fun vamColor(vam: Int): Color = when {
+        vam < 600 -> GradeEasy
+        vam < 1000 -> GradeModerate
+        vam < 1500 -> GradeHard
+        vam < 1800 -> GradeSteep
+        else -> GradeExtreme
+    }
+
+    fun wKgColor(wkg: Double): Color = when {
+        wkg < 2.0 -> GradeEasy
+        wkg < 3.0 -> GradeModerate
+        wkg < 4.0 -> GradeHard
+        wkg < 5.0 -> GradeSteep
+        else -> GradeExtreme
+    }
+
     fun wPrimeColor(percentage: Double): Color = when {
         percentage > 90 -> WPrimeFresh
         percentage > 70 -> WPrimeGood

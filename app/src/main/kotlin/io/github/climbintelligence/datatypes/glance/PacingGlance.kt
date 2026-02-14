@@ -151,6 +151,16 @@ private fun PacingLarge(state: ClimbDisplayState) {
                         "ACTUAL", actualPower, GlanceColors.White,
                         valueFontSize = 16, labelFontSize = 11
                     )
+                    val wkg = if (state.live.hasData && state.climbStats.wKg > 0) {
+                        "%.1f".format(state.climbStats.wKg)
+                    } else BaseDataType.NO_DATA
+                    val wkgColor = if (state.live.hasData && state.climbStats.wKg > 0) {
+                        GlanceColors.wKgColor(state.climbStats.wKg)
+                    } else GlanceColors.Label
+                    MetricValueRow(
+                        "W/KG", wkg, wkgColor,
+                        valueFontSize = 14, labelFontSize = 11
+                    )
                     MetricValueRow(
                         "RANGE",
                         "${state.pacing.rangeLow}-${state.pacing.rangeHigh}W",

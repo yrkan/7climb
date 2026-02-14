@@ -19,6 +19,7 @@ import io.github.climbintelligence.datatypes.glance.ClimbProgressGlanceDataType
 import io.github.climbintelligence.datatypes.glance.ClimbProfileGlanceDataType
 import io.github.climbintelligence.datatypes.glance.NextSegmentGlanceDataType
 import io.github.climbintelligence.datatypes.glance.CompactClimbGlanceDataType
+import io.github.climbintelligence.datatypes.glance.ClimbStatsGlanceDataType
 import io.github.climbintelligence.datatypes.fit.ClimbFitRecording
 import io.github.climbintelligence.engine.ClimbDataService
 import io.hammerhead.karooext.internal.Emitter
@@ -27,6 +28,7 @@ import io.hammerhead.karooext.models.FitEffect
 import io.hammerhead.karooext.models.OnStreamState
 import io.hammerhead.karooext.models.RideState
 import io.hammerhead.karooext.models.StreamState
+import io.github.climbintelligence.engine.ClimbStatsTracker
 import io.github.climbintelligence.engine.WPrimeEngine
 import io.github.climbintelligence.engine.PacingCalculator
 import io.github.climbintelligence.engine.ClimbDetector
@@ -108,6 +110,10 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
     val tacticalAnalyzer: TacticalAnalyzer
         get() = _tacticalAnalyzer ?: throw IllegalStateException("TacticalAnalyzer not initialized")
 
+    private var _climbStatsTracker: ClimbStatsTracker? = null
+    val climbStatsTracker: ClimbStatsTracker
+        get() = _climbStatsTracker ?: throw IllegalStateException("ClimbStatsTracker not initialized")
+
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun onCreate() {
@@ -129,6 +135,7 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
         _prComparisonEngine = PRComparisonEngine(climbRepository)
         _checkpointManager = CheckpointManager(preferencesRepository)
         _tacticalAnalyzer = TacticalAnalyzer()
+        _climbStatsTracker = ClimbStatsTracker(preferencesRepository)
         _alertManager = AlertManager(this, preferencesRepository)
         _rideStateMonitor = RideStateMonitor(
             extension = this,
@@ -158,6 +165,7 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                         _wPrimeEngine?.update(state)
                         _pacingCalculator?.update(state, _climbDataService?.activeClimb?.value)
                         _climbDetector?.update(state)
+                        _climbStatsTracker?.update(state, _climbDataService?.activeClimb?.value)
                     }
                 }
             } else {
@@ -231,6 +239,7 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
         _rideStateMonitor = null
 
         _checkpointManager = null
+        _climbStatsTracker = null
         _tacticalAnalyzer = null
         _prComparisonEngine = null
         _climbRepository = null
@@ -264,7 +273,8 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
             ClimbProgressGlanceDataType(this),
             ClimbProfileGlanceDataType(this),
             NextSegmentGlanceDataType(this),
-            CompactClimbGlanceDataType(this)
+            CompactClimbGlanceDataType(this),
+            ClimbStatsGlanceDataType(this)
         )
     }
 

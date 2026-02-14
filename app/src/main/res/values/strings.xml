@@ -28,6 +28,8 @@
     <string name="datatype_segment_desc">Upcoming gradient segment preview</string>
     <string name="datatype_compact">Compact Climb</string>
     <string name="datatype_compact_desc">Minimal climb info for small fields</string>
+    <string name="datatype_stats">Climb Stats</string>
+    <string name="datatype_stats_desc">VAM, W/kg, HR, cadence, energy metrics</string>
     <string name="datatype_fit">Climb FIT Data</string>
     <string name="datatype_fit_desc">Records W\' balance and pacing data to FIT file</string>
 
@@ -90,6 +92,11 @@
     <string name="settings_alerts_enabled">Enable Alerts</string>
     <string name="settings_alert_sound">Sound</string>
     <string name="settings_alert_cooldown">Cooldown</string>
+    <string name="settings_bike_type">Bike Type</string>
+    <string name="settings_bike_weight">Bike Weight</string>
+    <string name="settings_bike_weight_hint">Total weight of your bike with accessories</string>
+    <string name="settings_cp">CP (Critical Power)</string>
+    <string name="settings_cp_hint">Set to 0 for automatic calculation (FTP × 0.95).\nOr enter your tested CP from a 3+12 min protocol.</string>
     <string name="settings_advanced">Advanced</string>
     <string name="settings_advanced_hint">Only change if you know your values from testing</string>
     <string name="settings_wprime">W\' (Anaerobic Capacity)</string>
@@ -103,18 +110,34 @@
     <string name="settings_about">About</string>
     <string name="settings_version">Version</string>
     <string name="settings_not_configured">Set your FTP and weight to get started</string>
+    <string name="label_last_segment">LAST SEGMENT</string>
+    <string name="label_last">LAST</string>
     <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="settings_hide_advanced">Hide advanced settings</string>
+    <string name="settings_show_advanced">Show advanced settings</string>
 
     <!-- Riding position presets -->
     <string name="position_drops">Drops</string>
     <string name="position_hoods">Hoods</string>
     <string name="position_tops">Tops</string>
+    <string name="position_aero_drops">A.Drops</string>
     <string name="position_aero">Aero</string>
+    <string name="position_tt">TT</string>
 
     <!-- Road surface presets -->
     <string name="surface_smooth">Smooth</string>
     <string name="surface_road">Road</string>
     <string name="surface_rough">Rough</string>
+    <string name="surface_cobbles">Cobbles</string>
+    <string name="surface_gravel">Gravel</string>
+
+    <!-- Bike type presets -->
+    <string name="bike_race">Race</string>
+    <string name="bike_aero">Aero</string>
+    <string name="bike_tt">TT</string>
+    <string name="bike_endurance">Endur.</string>
+    <string name="bike_custom">Custom</string>
 
     <!-- Pacing modes -->
     <string name="pacing_steady">Steady</string>

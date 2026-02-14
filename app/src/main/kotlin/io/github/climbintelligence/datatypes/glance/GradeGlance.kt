@@ -113,8 +113,8 @@ private fun GradeLarge(state: ClimbDisplayState) {
     val color = if (hasData) GlanceColors.gradeColor(grade) else GlanceColors.Label
     val value = getDisplayValue(hasData) { "%.1f%%".format(grade) }
     val alt = getDisplayValue(hasData) { "${state.live.altitude.toInt()}m" }
-    val power = getDisplayValue(hasData) { "${state.live.power}W" }
-    val speed = getDisplayValue(hasData) { "%.1fkm/h".format(state.live.speedKmh) }
+    val hr = if (hasData && state.live.heartRate > 0) "${state.live.heartRate}bpm" else BaseDataType.NO_DATA
+    val cad = if (hasData && state.live.cadence > 0) "${state.live.cadence}rpm" else BaseDataType.NO_DATA
 
     Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -122,8 +122,8 @@ private fun GradeLarge(state: ClimbDisplayState) {
             ValueText(value, color, 42)
             GlanceDivider()
             MetricValueRow("ALT", alt, GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-            MetricValueRow("POWER", power, GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-            MetricValueRow("SPEED", speed, GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
+            MetricValueRow("HR", hr, GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
+            MetricValueRow("CAD", cad, GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
         }
     }
 }

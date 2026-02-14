@@ -71,15 +71,27 @@ private fun NextSegSmall(state: ClimbDisplayState) {
 
 /**
  * SMALL_WIDE: "NEXT" label + grade 28sp + segment length.
+ * On last segment: shows "LAST" header with current grade.
  */
 @Composable
 private fun NextSegSmallWide(state: ClimbDisplayState) {
-    val (_, next) = findCurrentAndNextSegment(state)
+    val (current, next) = findCurrentAndNextSegment(state)
     if (next == null) {
-        Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                LabelText("NEXT")
-                ValueText("--", GlanceColors.Label, 28)
+        if (current != null) {
+            val color = GlanceColors.gradeColor(current.grade)
+            Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LabelText("LAST")
+                    ValueText("%.1f%%".format(current.grade), color, 28)
+                    LabelText("${current.length.toInt()}m")
+                }
+            }
+        } else {
+            Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LabelText("NEXT")
+                    ValueText("--", GlanceColors.Label, 28)
+                }
             }
         }
         return
@@ -97,15 +109,31 @@ private fun NextSegSmallWide(state: ClimbDisplayState) {
 
 /**
  * MEDIUM_WIDE: "NEXT SEGMENT" + grade 28sp + length + elevation.
+ * On last segment: shows "LAST SEGMENT" header with current segment metrics.
  */
 @Composable
 private fun NextSegMediumWide(state: ClimbDisplayState) {
-    val (_, next) = findCurrentAndNextSegment(state)
+    val (current, next) = findCurrentAndNextSegment(state)
     if (next == null) {
-        Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                LabelText("NEXT SEGMENT")
-                ValueText("--", GlanceColors.Label, 24)
+        if (current != null) {
+            val color = GlanceColors.gradeColor(current.grade)
+            Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LabelText("LAST SEGMENT")
+                    ValueText("%.1f%%".format(current.grade), color, 28)
+                    DualMetric(
+                        "LENGTH", "${current.length.toInt()}m", GlanceColors.White,
+                        "ELEV", "${current.elevation.toInt()}m", GlanceColors.White,
+                        valueFontSize = 14
+                    )
+                }
+            }
+        } else {
+            Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LabelText("NEXT SEGMENT")
+                    ValueText("--", GlanceColors.Label, 24)
+                }
             }
         }
         return
@@ -150,15 +178,29 @@ private fun NextSegMedium(state: ClimbDisplayState) {
 
 /**
  * LARGE: "NEXT SEGMENT" + grade 42sp + divider + LENGTH/ELEV rows + CURRENT segment info.
+ * On last segment: shows "LAST SEGMENT" with current grade and metrics.
  */
 @Composable
 private fun NextSegLarge(state: ClimbDisplayState) {
     val (current, next) = findCurrentAndNextSegment(state)
     if (next == null) {
-        Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                LabelText("NEXT SEGMENT", fontSize = 12)
-                ValueText("No climb", GlanceColors.Label, 18)
+        if (current != null) {
+            val currentColor = GlanceColors.gradeColor(current.grade)
+            Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LabelText("LAST SEGMENT", fontSize = 12)
+                    ValueText("%.1f%%".format(current.grade), currentColor, 42)
+                    GlanceDivider()
+                    MetricValueRow("LENGTH", "${current.length.toInt()}m", GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
+                    MetricValueRow("ELEV", "${current.elevation.toInt()}m", GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
+                }
+            }
+        } else {
+            Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LabelText("NEXT SEGMENT", fontSize = 12)
+                    ValueText("No climb", GlanceColors.Label, 18)
+                }
             }
         }
         return

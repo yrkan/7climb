@@ -7,6 +7,7 @@ import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceRemoteViews
 import io.github.climbintelligence.ClimbIntelligenceExtension
 import io.github.climbintelligence.data.model.ClimbInfo
+import io.github.climbintelligence.data.model.ClimbStats
 import io.github.climbintelligence.data.model.LiveClimbState
 import io.github.climbintelligence.data.model.PacingTarget
 import io.github.climbintelligence.data.model.WPrimeState
@@ -36,7 +37,8 @@ data class ClimbDisplayState(
     val pacing: PacingTarget = PacingTarget(),
     val climb: ClimbInfo? = null,
     val prComparison: PRComparison = PRComparison(),
-    val tacticalInsight: TacticalAnalyzer.TacticalInsight? = null
+    val tacticalInsight: TacticalAnalyzer.TacticalInsight? = null,
+    val climbStats: ClimbStats = ClimbStats()
 ) {
     companion object {
         val PREVIEW = ClimbDisplayState(
@@ -58,6 +60,12 @@ data class ClimbDisplayState(
                 elevation = 585.0, avgGrade = 6.9, distanceToTop = 3200.0,
                 elevationToTop = 220.0, progress = 0.62, isActive = true,
                 isFromRoute = true
+            ),
+            climbStats = ClimbStats(
+                vamRolling = 1550, vamOverall = 1080, energyKj = 420.0,
+                elapsedSeconds = 1800, avgPower = 235, maxPower = 310,
+                avgHR = 162, maxHR = 175, avgCadence = 78,
+                wKg = 3.5, avgWKg = 3.4, isTracking = true
             )
         )
     }
@@ -170,7 +178,8 @@ abstract class GlanceDataType(
             pacing = climbExtension.pacingCalculator.target.value,
             climb = climb,
             prComparison = climbExtension.prComparisonEngine.comparison.value,
-            tacticalInsight = insight
+            tacticalInsight = insight,
+            climbStats = climbExtension.climbStatsTracker.state.value
         )
     }
 }
