@@ -302,7 +302,7 @@ private fun SectionHeader(text: String) {
         color = Theme.colors.dim,
         fontSize = 10.sp,
         fontWeight = FontWeight.Medium,
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp)
     )
 }
 
@@ -313,7 +313,7 @@ private fun HintText(text: String) {
         color = Theme.colors.dim,
         fontSize = 10.sp,
         lineHeight = 13.sp,
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp)
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
     )
 }
 
@@ -323,7 +323,7 @@ private fun PresetLabel(text: String) {
         text = text,
         color = Theme.colors.text,
         fontSize = 13.sp,
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
     )
 }
 
@@ -501,13 +501,13 @@ private fun PositionSelector(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         listOf(topRow, bottomRow).forEach { rowPositions ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 rowPositions.forEach { pos ->
                     val isSelected = pos == selected
@@ -525,7 +525,7 @@ private fun PositionSelector(
                             .clip(RoundedCornerShape(6.dp))
                             .background(if (isSelected) Theme.colors.optimal else Theme.colors.surface)
                             .clickable { onSelect(pos) }
-                            .padding(vertical = 10.dp),
+                            .padding(vertical = 12.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -546,36 +546,46 @@ private fun SurfaceSelector(
     selected: RoadSurface?,
     onSelect: (RoadSurface) -> Unit
 ) {
-    Row(
+    val topRow = listOf(RoadSurface.SMOOTH, RoadSurface.ROAD, RoadSurface.ROUGH)
+    val bottomRow = listOf(RoadSurface.COBBLES, RoadSurface.GRAVEL)
+
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        RoadSurface.entries.forEach { surface ->
-            val isSelected = surface == selected
-            val label = when (surface) {
-                RoadSurface.SMOOTH -> stringResource(R.string.surface_smooth)
-                RoadSurface.ROAD -> stringResource(R.string.surface_road)
-                RoadSurface.ROUGH -> stringResource(R.string.surface_rough)
-                RoadSurface.COBBLES -> stringResource(R.string.surface_cobbles)
-                RoadSurface.GRAVEL -> stringResource(R.string.surface_gravel)
-            }
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(if (isSelected) Theme.colors.optimal else Theme.colors.surface)
-                    .clickable { onSelect(surface) }
-                    .padding(vertical = 10.dp),
-                contentAlignment = Alignment.Center
+        listOf(topRow, bottomRow).forEach { rowSurfaces ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Text(
-                    text = label,
-                    color = if (isSelected) Theme.colors.background else Theme.colors.dim,
-                    fontSize = 11.sp,
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                )
+                rowSurfaces.forEach { surface ->
+                    val isSelected = surface == selected
+                    val label = when (surface) {
+                        RoadSurface.SMOOTH -> stringResource(R.string.surface_smooth)
+                        RoadSurface.ROAD -> stringResource(R.string.surface_road)
+                        RoadSurface.ROUGH -> stringResource(R.string.surface_rough)
+                        RoadSurface.COBBLES -> stringResource(R.string.surface_cobbles)
+                        RoadSurface.GRAVEL -> stringResource(R.string.surface_gravel)
+                    }
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(if (isSelected) Theme.colors.optimal else Theme.colors.surface)
+                            .clickable { onSelect(surface) }
+                            .padding(vertical = 12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = label,
+                            color = if (isSelected) Theme.colors.background else Theme.colors.dim,
+                            fontSize = 11.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
             }
         }
     }
@@ -586,36 +596,46 @@ private fun BikeTypeSelector(
     selected: BikeType,
     onSelect: (BikeType) -> Unit
 ) {
-    Row(
+    val topRow = listOf(BikeType.RACE, BikeType.AERO, BikeType.TT)
+    val bottomRow = listOf(BikeType.ENDURANCE, BikeType.CUSTOM)
+
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        BikeType.entries.forEach { type ->
-            val isSelected = type == selected
-            val label = when (type) {
-                BikeType.RACE -> stringResource(R.string.bike_race)
-                BikeType.AERO -> stringResource(R.string.bike_aero)
-                BikeType.TT -> stringResource(R.string.bike_tt)
-                BikeType.ENDURANCE -> stringResource(R.string.bike_endurance)
-                BikeType.CUSTOM -> stringResource(R.string.bike_custom)
-            }
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(if (isSelected) Theme.colors.optimal else Theme.colors.surface)
-                    .clickable { onSelect(type) }
-                    .padding(vertical = 10.dp),
-                contentAlignment = Alignment.Center
+        listOf(topRow, bottomRow).forEach { rowTypes ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Text(
-                    text = label,
-                    color = if (isSelected) Theme.colors.background else Theme.colors.dim,
-                    fontSize = 11.sp,
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                )
+                rowTypes.forEach { type ->
+                    val isSelected = type == selected
+                    val label = when (type) {
+                        BikeType.RACE -> stringResource(R.string.bike_race)
+                        BikeType.AERO -> stringResource(R.string.bike_aero)
+                        BikeType.TT -> stringResource(R.string.bike_tt)
+                        BikeType.ENDURANCE -> stringResource(R.string.bike_endurance)
+                        BikeType.CUSTOM -> stringResource(R.string.bike_custom)
+                    }
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(if (isSelected) Theme.colors.optimal else Theme.colors.surface)
+                            .clickable { onSelect(type) }
+                            .padding(vertical = 12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = label,
+                            color = if (isSelected) Theme.colors.background else Theme.colors.dim,
+                            fontSize = 11.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
             }
         }
     }
@@ -745,7 +765,7 @@ private fun CooldownSelector(
                         .clip(RoundedCornerShape(6.dp))
                         .background(if (isSelected) Theme.colors.optimal else Theme.colors.surface)
                         .clickable { onSelect(seconds) }
-                        .padding(vertical = 8.dp),
+                        .padding(vertical = 12.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -769,7 +789,7 @@ private fun ToggleRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 8.dp),
+            .padding(horizontal = 12.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -814,7 +834,7 @@ private fun ExpandableRow(
         Text(
             text = if (expanded) "\u25B2" else "\u25BC",
             color = Theme.colors.dim,
-            fontSize = 10.sp
+            fontSize = 14.sp
         )
     }
 }
