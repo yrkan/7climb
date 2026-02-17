@@ -12,7 +12,7 @@ W' Balance tracking (Skiba differential model), physics-based pacing, automatic 
 
 **Know exactly when to push and when to save.**
 
-## Screenshots
+## Screenshots (outdated)
 
 | W' Balance | Pacing Target | Grade | Climb Overview |
 |:---:|:---:|:---:|:---:|
