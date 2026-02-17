@@ -101,7 +101,7 @@ private fun StatsMedium(state: ClimbDisplayState) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             LabelText("VAM", fontSize = 11)
             ValueText(vam, vamDisplayColor(state), 24)
-            MetricValueRow("W/KG", wkg, wKgDisplayColor(state), valueFontSize = 16, labelFontSize = 10)
+            MetricValueRow("W/KG", wkg, wKgDisplayColor(state), valueFontSize = 18, labelFontSize = 12)
         }
     }
 }
@@ -174,7 +174,7 @@ private fun StatsLarge(state: ClimbDisplayState) {
                 valueFontSize = 16
             )
             if (avgWkg.isNotEmpty()) {
-                LabelText(avgWkg, fontSize = 10)
+                LabelText(avgWkg, fontSize = 12)
             }
         }
     }
@@ -195,8 +195,8 @@ private fun StatsNarrow(state: ClimbDisplayState) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             LabelText("VAM", fontSize = 11)
             ValueText(vam, vamDisplayColor(state), 28)
-            MetricValueRow("W/KG", wkg, wKgDisplayColor(state), valueFontSize = 16, labelFontSize = 10)
-            MetricValueRow("HR", hr, GlanceColors.White, valueFontSize = 14, labelFontSize = 10)
+            MetricValueRow("W/KG", wkg, wKgDisplayColor(state), valueFontSize = 18, labelFontSize = 12)
+            MetricValueRow("HR", hr, GlanceColors.White, valueFontSize = 16, labelFontSize = 12)
         }
     }
 }

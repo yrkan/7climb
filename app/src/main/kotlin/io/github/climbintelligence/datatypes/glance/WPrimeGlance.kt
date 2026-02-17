@@ -145,10 +145,10 @@ private fun WPrimeLarge(state: ClimbDisplayState) {
                 WPrimeBar(pct, color, 8)
             }
             GlanceDivider()
-            MetricValueRow("STATUS", status, color, valueFontSize = 16, labelFontSize = 11)
-            MetricValueRow("ENERGY", balanceKj, GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
+            MetricValueRow("STATUS", status, color, valueFontSize = 18, labelFontSize = 12)
+            MetricValueRow("ENERGY", balanceKj, GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
             if (time.isNotEmpty()) {
-                LabelText(time, fontSize = 11)
+                LabelText(time, fontSize = 12)
             }
         }
     }
@@ -169,7 +169,7 @@ private fun WPrimeNarrow(state: ClimbDisplayState) {
             if (hasData) {
                 WPrimeBar(pct, color)
             }
-            LabelText(status, fontSize = 10)
+            LabelText(status, fontSize = 12)
         }
     }
 }

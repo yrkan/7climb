@@ -10,7 +10,10 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import io.github.climbintelligence.data.model.AthleteProfile
+import io.github.climbintelligence.data.model.DetectionSensitivity
+import io.github.climbintelligence.data.model.DetectionSettings
 import io.github.climbintelligence.data.model.PacingMode
+import io.github.climbintelligence.data.model.PacingTolerance
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -34,8 +37,21 @@ class PreferencesRepository(private val context: Context) {
         private val KEY_ALERT_WPRIME = booleanPreferencesKey("alert_wprime")
         private val KEY_ALERT_STEEP = booleanPreferencesKey("alert_steep")
         private val KEY_ALERT_SUMMIT = booleanPreferencesKey("alert_summit")
+        private val KEY_ALERT_CLIMB_START = booleanPreferencesKey("alert_climb_start")
         private val KEY_ALERT_SOUND = booleanPreferencesKey("alert_sound")
         private val KEY_ALERT_COOLDOWN = intPreferencesKey("alert_cooldown")
+        private val KEY_WPRIME_ALERT_THRESHOLD = intPreferencesKey("wprime_alert_threshold")
+
+        // Detection settings
+        private val KEY_DETECTION_SENSITIVITY = stringPreferencesKey("detection_sensitivity")
+        private val KEY_DETECTION_MIN_GRADE = doublePreferencesKey("detection_min_grade")
+        private val KEY_DETECTION_MIN_ELEVATION = intPreferencesKey("detection_min_elevation")
+        private val KEY_DETECTION_CONFIRM_DISTANCE = intPreferencesKey("detection_confirm_distance")
+        private val KEY_DETECTION_END_DISTANCE = intPreferencesKey("detection_end_distance")
+
+        // Pacing tolerance
+        private val KEY_PACING_TOLERANCE = stringPreferencesKey("pacing_tolerance")
+        private val KEY_PACING_TOLERANCE_WATTS = intPreferencesKey("pacing_tolerance_watts")
     }
 
     val athleteProfileFlow: Flow<AthleteProfile> = context.dataStore.data
@@ -78,12 +94,87 @@ class PreferencesRepository(private val context: Context) {
         .map { prefs -> prefs[KEY_ALERT_SUMMIT] ?: true }
         .distinctUntilChanged()
 
+    val alertClimbStartFlow: Flow<Boolean> = context.dataStore.data
+        .map { prefs -> prefs[KEY_ALERT_CLIMB_START] ?: true }
+        .distinctUntilChanged()
+
     val alertSoundFlow: Flow<Boolean> = context.dataStore.data
         .map { prefs -> prefs[KEY_ALERT_SOUND] ?: false }
         .distinctUntilChanged()
 
     val alertCooldownFlow: Flow<Int> = context.dataStore.data
         .map { prefs -> prefs[KEY_ALERT_COOLDOWN] ?: 30 }
+        .distinctUntilChanged()
+
+    val wPrimeAlertThresholdFlow: Flow<Int> = context.dataStore.data
+        .map { prefs -> prefs[KEY_WPRIME_ALERT_THRESHOLD] ?: 20 }
+        .distinctUntilChanged()
+
+    // Detection settings
+    val detectionSettingsFlow: Flow<DetectionSettings> = context.dataStore.data
+        .map { prefs ->
+            val sensitivityName = prefs[KEY_DETECTION_SENSITIVITY] ?: "BALANCED"
+            val sensitivity = try {
+                DetectionSensitivity.valueOf(sensitivityName)
+            } catch (e: Exception) {
+                DetectionSensitivity.BALANCED
+            }
+
+            val minGrade = prefs[KEY_DETECTION_MIN_GRADE]
+            val minElevation = prefs[KEY_DETECTION_MIN_ELEVATION]
+            val confirmDistance = prefs[KEY_DETECTION_CONFIRM_DISTANCE]
+            val endDistance = prefs[KEY_DETECTION_END_DISTANCE]
+
+            // If any fine-tune value differs from the preset, mark as custom
+            val isCustom = minGrade != null && minElevation != null &&
+                confirmDistance != null && endDistance != null && (
+                minGrade != sensitivity.minGrade ||
+                minElevation != sensitivity.minElevation ||
+                confirmDistance != sensitivity.confirmDistance ||
+                endDistance != sensitivity.endDistance
+            )
+
+            DetectionSettings(
+                sensitivity = sensitivity,
+                minGrade = minGrade ?: sensitivity.minGrade,
+                minElevation = minElevation ?: sensitivity.minElevation,
+                confirmDistance = confirmDistance ?: sensitivity.confirmDistance,
+                endDistance = endDistance ?: sensitivity.endDistance,
+                isCustom = isCustom
+            )
+        }
+        .distinctUntilChanged()
+
+    // Pacing tolerance
+    val pacingToleranceWattsFlow: Flow<Int> = context.dataStore.data
+        .map { prefs ->
+            val toleranceName = prefs[KEY_PACING_TOLERANCE]
+            val customWatts = prefs[KEY_PACING_TOLERANCE_WATTS]
+
+            if (customWatts != null && toleranceName == null) {
+                customWatts.coerceIn(3, 30)
+            } else {
+                val tolerance = try {
+                    PacingTolerance.valueOf(toleranceName ?: "NORMAL")
+                } catch (e: Exception) {
+                    PacingTolerance.NORMAL
+                }
+                customWatts ?: tolerance.watts
+            }
+        }
+        .distinctUntilChanged()
+
+    val pacingToleranceFlow: Flow<PacingTolerance?> = context.dataStore.data
+        .map { prefs ->
+            val toleranceName = prefs[KEY_PACING_TOLERANCE] ?: "NORMAL"
+            try {
+                val tolerance = PacingTolerance.valueOf(toleranceName)
+                val customWatts = prefs[KEY_PACING_TOLERANCE_WATTS]
+                if (customWatts != null && customWatts != tolerance.watts) null else tolerance
+            } catch (e: Exception) {
+                null
+            }
+        }
         .distinctUntilChanged()
 
     suspend fun updateFtp(ftp: Int) {
@@ -122,11 +213,68 @@ class PreferencesRepository(private val context: Context) {
         context.dataStore.edit { it[KEY_ALERTS_ENABLED] = enabled }
     }
 
+    suspend fun updateAlertWPrime(enabled: Boolean) {
+        context.dataStore.edit { it[KEY_ALERT_WPRIME] = enabled }
+    }
+
+    suspend fun updateAlertSteep(enabled: Boolean) {
+        context.dataStore.edit { it[KEY_ALERT_STEEP] = enabled }
+    }
+
+    suspend fun updateAlertSummit(enabled: Boolean) {
+        context.dataStore.edit { it[KEY_ALERT_SUMMIT] = enabled }
+    }
+
+    suspend fun updateAlertClimbStart(enabled: Boolean) {
+        context.dataStore.edit { it[KEY_ALERT_CLIMB_START] = enabled }
+    }
+
     suspend fun updateAlertSound(enabled: Boolean) {
         context.dataStore.edit { it[KEY_ALERT_SOUND] = enabled }
     }
 
     suspend fun updateAlertCooldown(seconds: Int) {
         context.dataStore.edit { it[KEY_ALERT_COOLDOWN] = seconds.coerceIn(10, 120) }
+    }
+
+    suspend fun updateWPrimeAlertThreshold(percent: Int) {
+        context.dataStore.edit { it[KEY_WPRIME_ALERT_THRESHOLD] = percent.coerceIn(5, 50) }
+    }
+
+    suspend fun updateDetectionSensitivity(sensitivity: DetectionSensitivity) {
+        context.dataStore.edit { prefs ->
+            prefs[KEY_DETECTION_SENSITIVITY] = sensitivity.name
+            prefs[KEY_DETECTION_MIN_GRADE] = sensitivity.minGrade
+            prefs[KEY_DETECTION_MIN_ELEVATION] = sensitivity.minElevation
+            prefs[KEY_DETECTION_CONFIRM_DISTANCE] = sensitivity.confirmDistance
+            prefs[KEY_DETECTION_END_DISTANCE] = sensitivity.endDistance
+        }
+    }
+
+    suspend fun updateDetectionMinGrade(grade: Double) {
+        context.dataStore.edit { it[KEY_DETECTION_MIN_GRADE] = grade.coerceIn(2.0, 8.0) }
+    }
+
+    suspend fun updateDetectionMinElevation(meters: Int) {
+        context.dataStore.edit { it[KEY_DETECTION_MIN_ELEVATION] = meters.coerceIn(5, 50) }
+    }
+
+    suspend fun updateDetectionConfirmDistance(meters: Int) {
+        context.dataStore.edit { it[KEY_DETECTION_CONFIRM_DISTANCE] = meters.coerceIn(50, 500) }
+    }
+
+    suspend fun updateDetectionEndDistance(meters: Int) {
+        context.dataStore.edit { it[KEY_DETECTION_END_DISTANCE] = meters.coerceIn(50, 300) }
+    }
+
+    suspend fun updatePacingTolerance(tolerance: PacingTolerance) {
+        context.dataStore.edit { prefs ->
+            prefs[KEY_PACING_TOLERANCE] = tolerance.name
+            prefs[KEY_PACING_TOLERANCE_WATTS] = tolerance.watts
+        }
+    }
+
+    suspend fun updatePacingToleranceWatts(watts: Int) {
+        context.dataStore.edit { it[KEY_PACING_TOLERANCE_WATTS] = watts.coerceIn(3, 30) }
     }
 }

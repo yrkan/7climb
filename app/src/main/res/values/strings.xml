@@ -62,17 +62,35 @@
     <string name="wprime_critical">CRITICAL</string>
     <string name="wprime_empty">EMPTY</string>
 
-    <!-- Alerts -->
-    <string name="alert_wprime_critical_title">W\' CRITICAL</string>
-    <string name="alert_wprime_critical_detail">W\' balance below 20%% — reduce power</string>
-    <string name="alert_steep_ahead_title">STEEP AHEAD</string>
-    <string name="alert_steep_ahead_detail">Grade increasing to %1$.0f%%</string>
-    <string name="alert_summit_title">SUMMIT APPROACHING</string>
-    <string name="alert_summit_detail">%1$dm to summit</string>
-    <string name="alert_climb_started_title">CLIMB STARTED</string>
-    <string name="alert_climb_started_detail">%1$s — %2$.1fkm at %3$.1f%%</string>
-    <string name="alert_pr_title">NEW PR!</string>
-    <string name="alert_pr_detail">%1$s faster than previous best</string>
+    <!-- Alerts: W' Critical -->
+    <string name="alert_wprime_title">W\' %1$d%%</string>
+    <string name="alert_wprime_detail_full">Ease to %1$dW — empty in %2$ds</string>
+    <string name="alert_wprime_detail_power">Ease to %1$dW — save reserves</string>
+    <string name="alert_wprime_detail_time">Empty in %1$ds — reduce power now</string>
+    <string name="alert_wprime_detail_basic">Reduce power — save reserves</string>
+    <string name="alert_wprime_empty">W\' depleted — recovery only</string>
+
+    <!-- Alerts: Steep Ahead -->
+    <string name="alert_steep_title">%1$s in %2$dm</string>
+    <string name="alert_steep_detail_now">Shift down — stay seated</string>
+    <string name="alert_steep_detail_ahead">Ease off 10W — save for the wall</string>
+
+    <!-- Alerts: Summit Approaching -->
+    <string name="alert_summit_title">SUMMIT %1$dm</string>
+    <string name="alert_summit_detail_push">W\' good — push to the top</string>
+    <string name="alert_summit_detail_hold">Hold effort — almost there</string>
+    <string name="alert_summit_detail_save">W\' at %1$d%% — steady to the top</string>
+
+    <!-- Alerts: Climb Started -->
+    <string name="alert_climb_title">CLIMB %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_detail_power">+%1$dm — Target %2$dW</string>
+    <string name="alert_climb_detail_basic">+%1$dm elevation</string>
+
+    <!-- Alerts: PR -->
+    <string name="alert_pr_title">PR! -%1$s</string>
+    <string name="alert_pr_detail_stats">Avg %1$dW · %2$.1f W/kg</string>
+    <string name="alert_pr_detail_name">New best on %1$s</string>
+    <string name="alert_pr_detail_basic">New personal record</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
@@ -88,10 +106,17 @@
     <string name="settings_surface_hint">Affects rolling resistance calculation</string>
     <string name="settings_pacing">Pacing Strategy</string>
     <string name="settings_pacing_mode">Pacing Mode</string>
+    <string name="settings_pacing_tolerance">Pacing Tolerance</string>
     <string name="settings_alerts">Alerts</string>
     <string name="settings_alerts_enabled">Enable Alerts</string>
     <string name="settings_alert_sound">Sound</string>
     <string name="settings_alert_cooldown">Cooldown</string>
+    <string name="settings_alert_wprime_toggle">W\' Critical Warning</string>
+    <string name="settings_alert_steep_toggle">Steep Section Ahead</string>
+    <string name="settings_alert_summit_toggle">Summit Approaching</string>
+    <string name="settings_alert_climb_start_toggle">Climb Started</string>
+    <string name="settings_wprime_threshold">W\' Alert Threshold</string>
+    <string name="settings_wprime_threshold_hint">Alert fires when W\' balance drops below this percentage</string>
     <string name="settings_bike_type">Bike Type</string>
     <string name="settings_bike_weight">Bike Weight</string>
     <string name="settings_bike_weight_hint">Total weight of your bike with accessories</string>
@@ -116,6 +141,35 @@
     <string name="ok">OK</string>
     <string name="settings_hide_advanced">Hide advanced settings</string>
     <string name="settings_show_advanced">Show advanced settings</string>
+
+    <!-- Detection settings -->
+    <string name="settings_detection">Climb Detection</string>
+    <string name="detection_sensitive">Sensitive</string>
+    <string name="detection_balanced">Balanced</string>
+    <string name="detection_conservative">Conserv.</string>
+    <string name="detection_sensitive_desc">Catches small hills — hilly terrain, short climbs</string>
+    <string name="detection_balanced_desc">Default — good for most riding</string>
+    <string name="detection_conservative_desc">Only significant climbs — flat regions with hills</string>
+    <string name="detection_custom_desc">Custom detection parameters</string>
+    <string name="detection_show_finetune">Fine-tune detection</string>
+    <string name="detection_hide_finetune">Hide fine-tune</string>
+    <string name="detection_min_grade">Minimum Grade</string>
+    <string name="detection_min_grade_hint">Grade at which climb detection starts</string>
+    <string name="detection_min_elevation">Min Elevation Gain</string>
+    <string name="detection_min_elevation_hint">Vertical meters required to confirm a climb</string>
+    <string name="detection_confirm_distance">Confirmation Distance</string>
+    <string name="detection_confirm_distance_hint">Meters of climbing needed before confirming</string>
+    <string name="detection_end_distance">End Distance</string>
+    <string name="detection_end_distance_hint">Meters of flat/downhill to end a detected climb</string>
+
+    <!-- Pacing tolerance -->
+    <string name="pacing_tolerance_tight">\u00B15W</string>
+    <string name="pacing_tolerance_normal">\u00B110W</string>
+    <string name="pacing_tolerance_relaxed">\u00B120W</string>
+    <string name="pacing_tolerance_tight_desc">Strict band — best for steady indoor-like efforts</string>
+    <string name="pacing_tolerance_normal_desc">Default — good balance of guidance and flexibility</string>
+    <string name="pacing_tolerance_relaxed_desc">Wide band — fewer PUSH/EASE prompts</string>
+    <string name="pacing_tolerance_custom_desc">Custom watt tolerance</string>
 
     <!-- Riding position presets -->
     <string name="position_drops">Drops</string>
@@ -154,6 +208,13 @@
     <string name="action_pacing_mode_changed">Pacing Mode</string>
     <string name="action_wprime_reset">W\' Balance Reset</string>
     <string name="action_wprime_reset_detail">Reset to 100%%</string>
+
+    <!-- About -->
+    <string name="about_title">About</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_privacy">Privacy Policy</string>
+    <string name="about_contact">Contact</string>
+    <string name="about_contact_email">info@7climb.com</string>
 
     <!-- History -->
     <string name="history_title">Climb History</string>

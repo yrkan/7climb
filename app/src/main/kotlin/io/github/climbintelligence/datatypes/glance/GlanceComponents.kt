@@ -39,7 +39,7 @@ fun DataFieldContainer(
             modifier = GlanceModifier
                 .fillMaxSize()
                 .background(GlanceColors.Background)
-                .padding(6.dp)
+                .padding(4.dp)
         ) {
             content()
         }
@@ -83,7 +83,7 @@ fun GlanceVerticalDivider(
 fun LabelText(
     text: String,
     modifier: GlanceModifier = GlanceModifier,
-    fontSize: Int = 10
+    fontSize: Int = 12
 ) {
     Text(
         text = text,
@@ -123,7 +123,7 @@ fun MetricValueRow(
     valueColor: Color = GlanceColors.White,
     modifier: GlanceModifier = GlanceModifier,
     valueFontSize: Int = 18,
-    labelFontSize: Int = 10
+    labelFontSize: Int = 12
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),

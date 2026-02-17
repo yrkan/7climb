@@ -5,6 +5,14 @@ import io.github.climbintelligence.data.database.AttemptEntity
 import io.github.climbintelligence.data.database.ClimbDao
 import io.github.climbintelligence.data.database.ClimbEntity
 
+data class SaveResult(
+    val attemptId: Long,
+    /** True when this attempt beat a previous record (not first attempt) */
+    val isPR: Boolean,
+    /** Milliseconds faster than previous PR (only set when isPR=true) */
+    val improvedByMs: Long = 0L
+)
+
 class ClimbRepository(
     private val climbDao: ClimbDao,
     private val attemptDao: AttemptDao
@@ -21,7 +29,7 @@ class ClimbRepository(
         timeMs: Long,
         avgPower: Int,
         avgHR: Int
-    ): Long {
+    ): SaveResult {
         // Ensure climb exists in database
         val existingClimb = climbDao.getClimb(climbId)
         if (existingClimb == null) {
@@ -38,9 +46,11 @@ class ClimbRepository(
             )
         }
 
-        // Check if this is a PR
+        // Check if this beats a previous record
         val currentFastest = attemptDao.getFastest(climbId)
-        val isPR = currentFastest == null || timeMs < currentFastest.timeMs
+        val isFirstOrFastest = currentFastest == null || timeMs < currentFastest.timeMs
+        val beatsPrevious = currentFastest != null && timeMs < currentFastest.timeMs
+        val improvedByMs = if (beatsPrevious) currentFastest!!.timeMs - timeMs else 0L
 
         // Save attempt
         val attemptId = attemptDao.insertAttempt(
@@ -49,17 +59,17 @@ class ClimbRepository(
                 timeMs = timeMs,
                 avgPower = avgPower,
                 avgHR = avgHR,
-                isPR = isPR
+                isPR = isFirstOrFastest
             )
         )
 
         // Update PR flags
-        if (isPR) {
+        if (isFirstOrFastest) {
             attemptDao.clearPR(climbId)
             attemptDao.markAsPR(attemptId)
         }
 
-        return attemptId
+        return SaveResult(attemptId, beatsPrevious, improvedByMs)
     }
 
     suspend fun getPR(climbId: String): AttemptEntity? {

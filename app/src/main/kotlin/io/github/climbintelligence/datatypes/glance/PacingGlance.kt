@@ -94,10 +94,10 @@ private fun PacingMediumWide(state: ClimbDisplayState) {
                     ValueText("${state.pacing.targetPower}W", color, 32)
                     GlanceDivider()
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        ValueText(pacingAdviceText(state.pacing.advice), color, 14)
+                        ValueText(pacingAdviceText(state.pacing.advice), color, 16)
                         ValueText(
                             " ${pacingDeltaText(state.pacing.delta)}",
-                            color, 14,
+                            color, 16,
                             GlanceModifier.padding(start = 8.dp)
                         )
                     }
@@ -144,12 +144,12 @@ private fun PacingLarge(state: ClimbDisplayState) {
                     val actualPower = getDisplayValue(hasData) { "${state.live.power}W" }
                     ValueText("${state.pacing.targetPower}W", color, 42)
                     GlanceDivider()
-                    ValueText(pacingAdviceText(state.pacing.advice), color, 18)
-                    ValueText(pacingDeltaText(state.pacing.delta), color, 16)
+                    ValueText(pacingAdviceText(state.pacing.advice), color, 20)
+                    ValueText(pacingDeltaText(state.pacing.delta), color, 18)
                     GlanceDivider()
                     MetricValueRow(
                         "ACTUAL", actualPower, GlanceColors.White,
-                        valueFontSize = 16, labelFontSize = 11
+                        valueFontSize = 18, labelFontSize = 12
                     )
                     val wkg = if (state.live.hasData && state.climbStats.wKg > 0) {
                         "%.1f".format(state.climbStats.wKg)
@@ -159,13 +159,13 @@ private fun PacingLarge(state: ClimbDisplayState) {
                     } else GlanceColors.Label
                     MetricValueRow(
                         "W/KG", wkg, wkgColor,
-                        valueFontSize = 14, labelFontSize = 11
+                        valueFontSize = 16, labelFontSize = 12
                     )
                     MetricValueRow(
                         "RANGE",
                         "${state.pacing.rangeLow}-${state.pacing.rangeHigh}W",
                         GlanceColors.Label,
-                        valueFontSize = 14, labelFontSize = 11
+                        valueFontSize = 16, labelFontSize = 12
                     )
                 }
             }
@@ -187,8 +187,8 @@ private fun PacingNarrow(state: ClimbDisplayState) {
                 else -> {
                     val color = GlanceColors.pacingColor(state.pacing.advice)
                     ValueText("${state.pacing.targetPower}W", color, 28)
-                    ValueText(pacingAdviceText(state.pacing.advice), color, 14)
-                    ValueText(pacingDeltaText(state.pacing.delta), color, 12)
+                    ValueText(pacingAdviceText(state.pacing.advice), color, 16)
+                    ValueText(pacingDeltaText(state.pacing.delta), color, 14)
                 }
             }
         }

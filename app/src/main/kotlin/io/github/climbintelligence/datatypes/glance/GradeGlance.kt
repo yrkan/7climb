@@ -80,7 +80,7 @@ private fun GradeMediumWide(state: ClimbDisplayState) {
             LabelText("GRADE")
             ValueText(value, color, 32)
             GlanceDivider()
-            MetricValueRow("ALT", alt, GlanceColors.White, valueFontSize = 14)
+            MetricValueRow("ALT", alt, GlanceColors.White, valueFontSize = 16)
         }
     }
 }
@@ -121,9 +121,9 @@ private fun GradeLarge(state: ClimbDisplayState) {
             LabelText("GRADE", fontSize = 12)
             ValueText(value, color, 42)
             GlanceDivider()
-            MetricValueRow("ALT", alt, GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-            MetricValueRow("HR", hr, GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-            MetricValueRow("CAD", cad, GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
+            MetricValueRow("ALT", alt, GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
+            MetricValueRow("HR", hr, GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
+            MetricValueRow("CAD", cad, GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
         }
     }
 }
@@ -146,7 +146,7 @@ private fun GradeNarrow(state: ClimbDisplayState) {
                 }
                 ValueText(value, color, 32)
             }
-            LabelText(alt, fontSize = 10)
+            LabelText(alt, fontSize = 12)
         }
     }
 }

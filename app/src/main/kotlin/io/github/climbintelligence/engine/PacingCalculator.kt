@@ -20,7 +20,6 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
 
     companion object {
         private const val TAG = "PacingCalculator"
-        private const val TOLERANCE_WATTS = 10
     }
 
     private val _target = MutableStateFlow(PacingTarget())
@@ -30,6 +29,8 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
 
     private var profile = AthleteProfile()
     private var mode = PacingMode.STEADY
+    @Volatile
+    private var toleranceWatts = 10
 
     init {
         scope.launch {
@@ -40,6 +41,11 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
         scope.launch {
             preferencesRepository.pacingModeFlow.collect { m ->
                 mode = m
+            }
+        }
+        scope.launch {
+            preferencesRepository.pacingToleranceWattsFlow.collect { w ->
+                toleranceWatts = w
             }
         }
     }
@@ -58,22 +64,23 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
             return
         }
 
+        val tolerance = toleranceWatts
         val delta = state.power - targetPower
         val advice = when {
-            delta > TOLERANCE_WATTS -> PacingAdvice.EASE_OFF
-            delta < -TOLERANCE_WATTS -> PacingAdvice.PUSH
-            kotlin.math.abs(delta) <= 5 -> PacingAdvice.PERFECT
+            delta > tolerance -> PacingAdvice.EASE_OFF
+            delta < -tolerance -> PacingAdvice.PUSH
+            kotlin.math.abs(delta) <= tolerance / 2 -> PacingAdvice.PERFECT
             else -> PacingAdvice.STEADY
         }
 
-        val projectedTime = if (climb != null && climb.isActive && speed > 0.5) {
+        val projectedTime = if (climb != null && climb.hasRouteMetrics && speed > 0.5) {
             (climb.distanceToTop / speed).toLong()
         } else 0L
 
         _target.value = PacingTarget(
             targetPower = targetPower,
-            rangeLow = targetPower - TOLERANCE_WATTS,
-            rangeHigh = targetPower + TOLERANCE_WATTS,
+            rangeLow = targetPower - tolerance,
+            rangeHigh = targetPower + tolerance,
             delta = delta,
             advice = advice,
             projectedTimeSeconds = projectedTime,

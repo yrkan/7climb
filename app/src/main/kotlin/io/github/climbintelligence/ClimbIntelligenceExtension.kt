@@ -21,6 +21,7 @@ import io.github.climbintelligence.datatypes.glance.NextSegmentGlanceDataType
 import io.github.climbintelligence.datatypes.glance.CompactClimbGlanceDataType
 import io.github.climbintelligence.datatypes.glance.ClimbStatsGlanceDataType
 import io.github.climbintelligence.datatypes.fit.ClimbFitRecording
+import io.github.climbintelligence.data.model.ClimbInfo
 import io.github.climbintelligence.engine.ClimbDataService
 import io.hammerhead.karooext.internal.Emitter
 import io.hammerhead.karooext.models.DataType
@@ -116,6 +117,9 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
+    /** Climb IDs already saved this ride — prevents double-saves between climb-end and ride-end */
+    private val savedClimbIds = mutableSetOf<String>()
+
     override fun onCreate() {
         super.onCreate()
         instance = this
@@ -139,7 +143,6 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
         _alertManager = AlertManager(this, preferencesRepository)
         _rideStateMonitor = RideStateMonitor(
             extension = this,
-            climbRepository = climbRepository,
             checkpointManager = _checkpointManager
         )
 
@@ -159,6 +162,13 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                 _climbDataService?.startStreaming()
                 _rideStateMonitor?.startMonitoring()
 
+                // Wire detection settings to ClimbDetector
+                serviceScope.launch {
+                    preferencesRepository.detectionSettingsFlow.collect { settings ->
+                        _climbDetector?.updateSettings(settings)
+                    }
+                }
+
                 // Wire data flow: ClimbDataService -> WPrimeEngine, PacingCalculator, ClimbDetector
                 serviceScope.launch {
                     climbDataService.liveState.collect { state ->
@@ -166,6 +176,110 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                         _pacingCalculator?.update(state, _climbDataService?.activeClimb?.value)
                         _climbDetector?.update(state)
                         _climbStatsTracker?.update(state, _climbDataService?.activeClimb?.value)
+                    }
+                }
+
+                // Wire ClimbDetector → "Climb Started" alert
+                serviceScope.launch {
+                    var wasConfirmed = false
+                    climbDetector.detectionState.collect { state ->
+                        if (state == ClimbDetector.DetectionState.CONFIRMED_CLIMB && !wasConfirmed) {
+                            wasConfirmed = true
+                            val climb = _climbDetector?.detectedClimb?.value ?: return@collect
+                            _alertManager?.dispatchClimbStarted(
+                                name = climb.name,
+                                lengthKm = climb.distanceClimbedKm,
+                                avgGrade = climb.avgGrade,
+                                elevationM = climb.elevation
+                            )
+                        } else if (state == ClimbDetector.DetectionState.NOT_CLIMBING) {
+                            wasConfirmed = false
+                        }
+                    }
+                }
+
+                // Wire active climb → "Climb Started" + "Summit Approaching" alerts (route climbs)
+                serviceScope.launch {
+                    var climbStartFired = false
+                    var summitAlertFired = false
+                    var lastClimbId = ""
+                    climbDataService.activeClimb.collect { climb ->
+                        if (climb == null || !climb.isActive || !climb.hasRouteMetrics) {
+                            if (climb?.id != lastClimbId) {
+                                climbStartFired = false
+                                summitAlertFired = false
+                                lastClimbId = climb?.id ?: ""
+                            }
+                            return@collect
+                        }
+                        if (climb.id != lastClimbId) {
+                            climbStartFired = false
+                            summitAlertFired = false
+                            lastClimbId = climb.id
+                        }
+                        // Fire "Climb Started" when rider enters a route climb
+                        if (!climbStartFired) {
+                            climbStartFired = true
+                            _alertManager?.dispatchClimbStarted(
+                                name = climb.name,
+                                lengthKm = climb.length / 1000.0,
+                                avgGrade = climb.avgGrade,
+                                elevationM = climb.elevation
+                            )
+                        }
+                        if (!summitAlertFired && climb.distanceToTop in 50.0..500.0) {
+                            summitAlertFired = true
+                            _alertManager?.dispatchSummitApproaching(climb.distanceToTop.toInt())
+                        }
+                    }
+                }
+
+                // Wire detected climbs → ClimbDataService.activeClimb (when no route loaded)
+                serviceScope.launch {
+                    climbDetector.detectedClimb.collect { detected ->
+                        if (!climbDataService.hasRoute.value) {
+                            climbDataService.updateActiveClimb(detected)
+                        }
+                    }
+                }
+
+                // Wire climb end → save attempt + PR alert
+                serviceScope.launch(Dispatchers.IO) {
+                    var lastActiveClimbId: String? = null
+                    var lastActiveClimb: ClimbInfo? = null
+                    climbDataService.activeClimb.collect { climb ->
+                        val currentId = if (climb?.isActive == true) climb.id else null
+                        if (lastActiveClimbId != null && currentId != lastActiveClimbId) {
+                            lastActiveClimb?.let { saveClimbAndCheckPR(it) }
+                        }
+                        lastActiveClimbId = currentId
+                        if (climb?.isActive == true) lastActiveClimb = climb
+                    }
+                }
+
+                // Wire live PR comparison for route climbs (throttled, every 5s)
+                serviceScope.launch(Dispatchers.IO) {
+                    var lastPRClimbId = ""
+                    var lastPRUpdateTime = 0L
+                    climbDataService.activeClimb.collect { climb ->
+                        if (climb != null && climb.isActive && climb.isFromRoute) {
+                            if (climb.id != lastPRClimbId) {
+                                lastPRClimbId = climb.id
+                                _prComparisonEngine?.reset()
+                                lastPRUpdateTime = 0
+                            }
+                            val now = System.currentTimeMillis()
+                            if (now - lastPRUpdateTime >= 5000) {
+                                lastPRUpdateTime = now
+                                val elapsed = _climbStatsTracker?.state?.value?.elapsedSeconds ?: 0
+                                if (elapsed > 0) {
+                                    _prComparisonEngine?.updateComparison(climb.id, elapsed * 1000L)
+                                }
+                            }
+                        } else if (lastPRClimbId.isNotEmpty()) {
+                            lastPRClimbId = ""
+                            _prComparisonEngine?.reset()
+                        }
                     }
                 }
             } else {
@@ -388,5 +502,50 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
         } catch (e: Exception) {
             android.util.Log.w(TAG, "Failed to play beep: ${e.message}")
         }
+    }
+
+    internal suspend fun saveClimbAndCheckPR(climb: ClimbInfo) {
+        synchronized(savedClimbIds) {
+            if (climb.id in savedClimbIds) return
+            savedClimbIds.add(climb.id)
+        }
+
+        try {
+            val stats = _climbStatsTracker?.state?.value ?: return
+            if (stats.elapsedSeconds < 30) return
+
+            val result = _climbRepository?.saveAttempt(
+                climbId = climb.id,
+                climbName = climb.name,
+                latitude = climb.startLatitude,
+                longitude = climb.startLongitude,
+                length = climb.length,
+                elevation = climb.elevation,
+                avgGrade = climb.avgGrade,
+                timeMs = stats.elapsedSeconds * 1000L,
+                avgPower = stats.avgPower,
+                avgHR = stats.avgHR
+            ) ?: return
+
+            android.util.Log.i(TAG, "Saved climb: ${climb.name}, PR=${result.isPR}")
+
+            if (result.isPR && result.improvedByMs > 0) {
+                val delta = formatTimeDelta(result.improvedByMs)
+                _alertManager?.dispatchPR(climb.name, delta)
+            }
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "Failed to save climb: ${e.message}")
+        }
+    }
+
+    internal fun clearSavedClimbIds() {
+        synchronized(savedClimbIds) { savedClimbIds.clear() }
+    }
+
+    private fun formatTimeDelta(ms: Long): String {
+        val totalSec = ms / 1000
+        val min = totalSec / 60
+        val sec = totalSec % 60
+        return if (min > 0) "${min}m${sec}s" else "${sec}s"
     }
 }

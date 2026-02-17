@@ -1,7 +1,6 @@
 package io.github.climbintelligence.engine
 
 import io.github.climbintelligence.ClimbIntelligenceExtension
-import io.github.climbintelligence.data.ClimbRepository
 import io.hammerhead.karooext.models.RideState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +11,6 @@ import java.util.concurrent.atomic.AtomicReference
 
 class RideStateMonitor(
     private val extension: ClimbIntelligenceExtension,
-    private val climbRepository: ClimbRepository,
     private val checkpointManager: CheckpointManager?
 ) {
     companion object {
@@ -63,6 +61,9 @@ class RideStateMonitor(
 
                     // Start alert monitoring
                     extension.alertManager.startMonitoring()
+
+                    // Clear saved climb IDs from previous ride
+                    extension.clearSavedClimbIds()
 
                     // Start periodic checkpoints
                     checkpointManager?.startPeriodicCheckpoints(
@@ -117,26 +118,8 @@ class RideStateMonitor(
     }
 
     private suspend fun saveClimbAttempt(climb: io.github.climbintelligence.data.model.ClimbInfo) {
-        try {
-            val durationMs = System.currentTimeMillis() - rideStartTimeMs
-            val state = extension.climbDataService.liveState.value
-
-            climbRepository.saveAttempt(
-                climbId = climb.id,
-                climbName = climb.name,
-                latitude = climb.startLatitude,
-                longitude = climb.startLongitude,
-                length = climb.length,
-                elevation = climb.elevation,
-                avgGrade = climb.avgGrade,
-                timeMs = durationMs,
-                avgPower = state.power,
-                avgHR = state.heartRate
-            )
-            android.util.Log.i(TAG, "Saved climb attempt: ${climb.name}")
-        } catch (e: Exception) {
-            android.util.Log.e(TAG, "Failed to save attempt: ${e.message}")
-        }
+        // Delegate to Extension's save method (which deduplicates via savedClimbIds)
+        extension.saveClimbAndCheckPR(climb)
     }
 
     fun isRecording(): Boolean = wasRecording

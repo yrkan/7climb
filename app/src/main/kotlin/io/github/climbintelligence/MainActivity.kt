@@ -10,8 +10,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.github.climbintelligence.ui.screens.SettingsScreen
+import io.github.climbintelligence.ui.screens.AboutScreen
+import io.github.climbintelligence.ui.screens.AlertsScreen
+import io.github.climbintelligence.ui.screens.AthleteScreen
+import io.github.climbintelligence.ui.screens.BikeScreen
+import io.github.climbintelligence.ui.screens.DetectionScreen
 import io.github.climbintelligence.ui.screens.HistoryScreen
+import io.github.climbintelligence.ui.screens.MainMenuScreen
+import io.github.climbintelligence.ui.screens.PacingScreen
 import io.github.climbintelligence.ui.theme.ClimbIntelligenceTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,21 +33,33 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = "settings"
+                        startDestination = "main"
                     ) {
-                        composable("settings") {
-                            SettingsScreen(
-                                onNavigateToHistory = {
-                                    navController.navigate("history")
-                                }
+                        composable("main") {
+                            MainMenuScreen(
+                                onNavigate = { route -> navController.navigate(route) }
                             )
                         }
+                        composable("settings/athlete") {
+                            AthleteScreen(onNavigateBack = { navController.popBackStack() })
+                        }
+                        composable("settings/bike") {
+                            BikeScreen(onNavigateBack = { navController.popBackStack() })
+                        }
+                        composable("settings/detection") {
+                            DetectionScreen(onNavigateBack = { navController.popBackStack() })
+                        }
+                        composable("settings/pacing") {
+                            PacingScreen(onNavigateBack = { navController.popBackStack() })
+                        }
+                        composable("settings/alerts") {
+                            AlertsScreen(onNavigateBack = { navController.popBackStack() })
+                        }
+                        composable("settings/about") {
+                            AboutScreen(onNavigateBack = { navController.popBackStack() })
+                        }
                         composable("history") {
-                            HistoryScreen(
-                                onNavigateBack = {
-                                    navController.popBackStack()
-                                }
-                            )
+                            HistoryScreen(onNavigateBack = { navController.popBackStack() })
                         }
                     }
                 }

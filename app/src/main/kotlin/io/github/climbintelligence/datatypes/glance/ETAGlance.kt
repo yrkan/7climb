@@ -119,11 +119,11 @@ private fun ETALarge(state: ClimbDisplayState) {
                 val vamColor = if (state.climbStats.isTracking && state.climbStats.vamRolling > 0) {
                     GlanceColors.vamColor(state.climbStats.vamRolling)
                 } else GlanceColors.Label
-                MetricValueRow("DIST", "%.1fkm".format(climb.distanceToTopKm), GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-                MetricValueRow("ELEV", "${climb.elevationToTop.toInt()}m", GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-                MetricValueRow("VAM", vam, vamColor, valueFontSize = 16, labelFontSize = 11)
+                MetricValueRow("DIST", "%.1fkm".format(climb.distanceToTopKm), GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
+                MetricValueRow("ELEV", "${climb.elevationToTop.toInt()}m", GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
+                MetricValueRow("VAM", vam, vamColor, valueFontSize = 18, labelFontSize = 12)
             } else {
-                ValueText("No climb", GlanceColors.Label, 16)
+                ValueText("No climb", GlanceColors.Label, 18)
             }
         }
     }
@@ -142,7 +142,7 @@ private fun ETANarrow(state: ClimbDisplayState) {
             LabelText("ETA", fontSize = 11)
             ValueText(eta, GlanceColors.White, 28)
             if (climb != null && climb.isActive) {
-                LabelText("%.1fkm".format(climb.distanceToTopKm), fontSize = 10)
+                LabelText("%.1fkm".format(climb.distanceToTopKm), fontSize = 12)
             }
         }
     }

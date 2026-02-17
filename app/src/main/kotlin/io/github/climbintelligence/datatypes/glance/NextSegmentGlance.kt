@@ -191,8 +191,8 @@ private fun NextSegLarge(state: ClimbDisplayState) {
                     LabelText("LAST SEGMENT", fontSize = 12)
                     ValueText("%.1f%%".format(current.grade), currentColor, 42)
                     GlanceDivider()
-                    MetricValueRow("LENGTH", "${current.length.toInt()}m", GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-                    MetricValueRow("ELEV", "${current.elevation.toInt()}m", GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
+                    MetricValueRow("LENGTH", "${current.length.toInt()}m", GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
+                    MetricValueRow("ELEV", "${current.elevation.toInt()}m", GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
                 }
             }
         } else {
@@ -212,12 +212,12 @@ private fun NextSegLarge(state: ClimbDisplayState) {
             LabelText("NEXT SEGMENT", fontSize = 12)
             ValueText("%.1f%%".format(next.grade), nextColor, 42)
             GlanceDivider()
-            MetricValueRow("LENGTH", "${next.length.toInt()}m", GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-            MetricValueRow("ELEV", "${next.elevation.toInt()}m", GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
+            MetricValueRow("LENGTH", "${next.length.toInt()}m", GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
+            MetricValueRow("ELEV", "${next.elevation.toInt()}m", GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
             if (current != null) {
                 GlanceDivider()
                 val currentColor = GlanceColors.gradeColor(current.grade)
-                MetricValueRow("CURRENT", "%.1f%%".format(current.grade), currentColor, valueFontSize = 16, labelFontSize = 11)
+                MetricValueRow("CURRENT", "%.1f%%".format(current.grade), currentColor, valueFontSize = 18, labelFontSize = 12)
             }
         }
     }
@@ -241,7 +241,7 @@ private fun NextSegNarrow(state: ClimbDisplayState) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             LabelText("NEXT", fontSize = 11)
             ValueText("%.1f%%".format(next.grade), color, 24)
-            LabelText("${next.length.toInt()}m", fontSize = 10)
+            LabelText("${next.length.toInt()}m", fontSize = 12)
         }
     }
 }

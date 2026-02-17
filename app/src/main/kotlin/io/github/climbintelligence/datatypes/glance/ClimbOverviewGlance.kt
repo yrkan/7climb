@@ -54,10 +54,40 @@ fun ClimbOverviewContent(state: ClimbDisplayState, config: ViewConfig) {
     }
 }
 
+/**
+ * No-climb state: show live grade + power + W' instead of blank.
+ */
 @Composable
-private fun NoClimbContent(fontSize: Int = 20) {
+private fun NoClimbContent(state: ClimbDisplayState, fontSize: Int = 20) {
+    val gradeColor = GlanceColors.gradeColor(state.live.grade)
+    val wColor = GlanceColors.wPrimeColor(state.wPrime.percentage)
+    val hasData = state.live.hasData
+
+    if (!hasData) {
+        Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            ValueText("No data", GlanceColors.Label, fontSize)
+        }
+        return
+    }
+
     Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        ValueText("No climb", GlanceColors.Label, fontSize)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            // Large grade as primary value
+            ValueText("%.1f%%".format(state.live.grade), gradeColor, fontSize + 4)
+            if (fontSize >= 18) {
+                GlanceDivider()
+                // Power + W' row
+                DualMetric(
+                    label1 = "POWER",
+                    value1 = if (state.live.power > 0) "${state.live.power}W" else "-",
+                    color1 = GlanceColors.White,
+                    label2 = "W'BAL",
+                    value2 = "%.0f%%".format(state.wPrime.percentage),
+                    color2 = wColor,
+                    valueFontSize = fontSize - 4
+                )
+            }
+        }
     }
 }
 
@@ -69,7 +99,7 @@ private fun NoClimbContent(fontSize: Int = 20) {
 private fun OverviewSmall(state: ClimbDisplayState) {
     val climb = state.climb
     if (climb == null || !climb.isActive) {
-        NoClimbContent(16)
+        NoClimbContent(state, 16)
         return
     }
 
@@ -78,12 +108,12 @@ private fun OverviewSmall(state: ClimbDisplayState) {
 
     Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            ValueText("%.0f%%".format(state.live.grade), gradeColor, 18)
+            ValueText("%.0f%%".format(state.live.grade), gradeColor, 20)
             GlanceVerticalDivider(
                 height = 16,
                 modifier = GlanceModifier.padding(horizontal = 4.dp)
             )
-            ValueText("%.0f%%".format(state.wPrime.percentage), wColor, 18)
+            ValueText("%.0f%%".format(state.wPrime.percentage), wColor, 20)
         }
     }
 }
@@ -95,7 +125,7 @@ private fun OverviewSmall(state: ClimbDisplayState) {
 private fun OverviewSmallWide(state: ClimbDisplayState) {
     val climb = state.climb
     if (climb == null || !climb.isActive) {
-        NoClimbContent(18)
+        NoClimbContent(state, 18)
         return
     }
 
@@ -106,25 +136,29 @@ private fun OverviewSmallWide(state: ClimbDisplayState) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             LabelText(climb.name.take(20))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                ValueText("%.0f%%".format(state.live.grade), gradeColor, 22)
+                ValueText("%.0f%%".format(state.live.grade), gradeColor, 24)
                 GlanceVerticalDivider(
                     height = 18,
                     modifier = GlanceModifier.padding(horizontal = 6.dp)
                 )
-                ValueText("W'%.0f%%".format(state.wPrime.percentage), wColor, 22)
+                ValueText("W'%.0f%%".format(state.wPrime.percentage), wColor, 24)
+            }
+            // Detected climbs: show distance climbed instead of progress bar
+            if (climb.isDetectedClimb) {
+                LabelText("%.1fkm climbed".format(climb.distanceClimbedKm))
             }
         }
     }
 }
 
 /**
- * MEDIUM_WIDE: Name + DualMetric(GRADE, W'BAL) + progress bar.
+ * MEDIUM_WIDE: Name + DualMetric(GRADE, W'BAL) + progress bar or detected metrics.
  */
 @Composable
 private fun OverviewMediumWide(state: ClimbDisplayState) {
     val climb = state.climb
     if (climb == null || !climb.isActive) {
-        NoClimbContent()
+        NoClimbContent(state)
         return
     }
 
@@ -141,9 +175,22 @@ private fun OverviewMediumWide(state: ClimbDisplayState) {
                 label2 = "W'BAL",
                 value2 = "%.0f%%".format(state.wPrime.percentage),
                 color2 = wColor,
-                valueFontSize = 24
+                valueFontSize = 26
             )
-            ProgressBar(climb.progress, GlanceColors.Optimal)
+            if (climb.hasRouteMetrics) {
+                ProgressBar(climb.progress, GlanceColors.Optimal)
+            } else {
+                // Detected climb: show climbed + gained
+                DualMetric(
+                    label1 = "CLIMBED",
+                    value1 = "%.1fkm".format(climb.distanceClimbedKm),
+                    color1 = GlanceColors.White,
+                    label2 = "GAINED",
+                    value2 = "${climb.elevation.toInt()}m",
+                    color2 = GlanceColors.White,
+                    valueFontSize = 16
+                )
+            }
         }
     }
 }
@@ -155,7 +202,7 @@ private fun OverviewMediumWide(state: ClimbDisplayState) {
 private fun OverviewMedium(state: ClimbDisplayState) {
     val climb = state.climb
     if (climb == null || !climb.isActive) {
-        NoClimbContent()
+        NoClimbContent(state)
         return
     }
 
@@ -164,41 +211,33 @@ private fun OverviewMedium(state: ClimbDisplayState) {
 
     Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            LabelText(climb.name.take(20), fontSize = 11)
-            ValueText("%.1f%%".format(state.live.grade), gradeColor, 24)
+            LabelText(climb.name.take(20), fontSize = 12)
+            ValueText("%.1f%%".format(state.live.grade), gradeColor, 26)
             GlanceDivider()
-            ValueText("W' %.0f%%".format(state.wPrime.percentage), wColor, 18)
-            ProgressBar(climb.progress, GlanceColors.Optimal)
+            ValueText("W' %.0f%%".format(state.wPrime.percentage), wColor, 20)
+            if (climb.hasRouteMetrics) {
+                ProgressBar(climb.progress, GlanceColors.Optimal)
+            }
         }
     }
 }
 
 /**
  * LARGE: Full layout with all available information.
- * - Climb name + category
- * - DualMetric(GRADE large, W'BAL large)
- * - SegmentProfileBar with rider position
- * - Progress percentage
- * - divider
- * - TripleMetric(DIST, ELEV, ETA)
- * - If pacing target: divider + TARGET power + advice
- * - If tactical insight: insight message at bottom
+ * Route climbs: DIST, ELEV, ETA + progress bar.
+ * Detected climbs: CLIMBED, GAINED, ELAPSED, GRADE.
+ * Both: ACTUAL + TARGET power with pacing advice.
  */
 @Composable
 private fun OverviewLarge(state: ClimbDisplayState) {
     val climb = state.climb
     if (climb == null || !climb.isActive) {
-        NoClimbContent()
+        NoClimbContent(state)
         return
     }
 
     val gradeColor = GlanceColors.gradeColor(state.live.grade)
     val wColor = GlanceColors.wPrimeColor(state.wPrime.percentage)
-    val distToTop = "%.1fkm".format(climb.distanceToTopKm)
-    val elevToTop = "${climb.elevationToTop.toInt()}m"
-    val eta = if (state.pacing.projectedTimeSeconds > 0) {
-        PhysicsUtils.formatTime(state.pacing.projectedTimeSeconds)
-    } else "--:--"
 
     Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -207,7 +246,7 @@ private fun OverviewLarge(state: ClimbDisplayState) {
 
             // Category
             if (climb.categoryLabel.isNotEmpty()) {
-                LabelText("CAT ${climb.categoryLabel}", fontSize = 10)
+                LabelText("CAT ${climb.categoryLabel}", fontSize = 12)
             }
 
             // Grade + W' dual metric
@@ -221,47 +260,70 @@ private fun OverviewLarge(state: ClimbDisplayState) {
                 valueFontSize = 28
             )
 
-            // Segment profile bar with rider position
-            SegmentProfileBar(
-                segments = climb.segments,
-                progress = climb.progress,
-                height = 10
-            )
+            if (climb.hasRouteMetrics) {
+                // Route climb: profile bar + progress + DIST/ELEV/ETA
+                SegmentProfileBar(
+                    segments = climb.segments,
+                    progress = climb.progress,
+                    height = 10
+                )
+                LabelText("%.0f%%".format(climb.progressPercent))
 
-            // Progress percentage
-            LabelText("%.0f%%".format(climb.progressPercent))
+                GlanceDivider()
 
-            GlanceDivider()
+                val distToTop = "%.1fkm".format(climb.distanceToTopKm)
+                val elevToTop = "${climb.elevationToTop.toInt()}m"
+                val eta = if (state.pacing.projectedTimeSeconds > 0) {
+                    PhysicsUtils.formatTime(state.pacing.projectedTimeSeconds)
+                } else "--:--"
 
-            // Distance, elevation, ETA
-            TripleMetric(
-                label1 = "DIST", value1 = distToTop, color1 = GlanceColors.White,
-                label2 = "ELEV", value2 = elevToTop, color2 = GlanceColors.White,
-                label3 = "ETA", value3 = eta, color3 = GlanceColors.White,
-                valueFontSize = 16
-            )
+                TripleMetric(
+                    label1 = "DIST", value1 = distToTop, color1 = GlanceColors.White,
+                    label2 = "ELEV", value2 = elevToTop, color2 = GlanceColors.White,
+                    label3 = "ETA", value3 = eta, color3 = GlanceColors.White,
+                    valueFontSize = 16
+                )
+            } else {
+                // Detected climb: show what we know
+                GlanceDivider()
 
-            // Pacing target section
+                DualMetric(
+                    label1 = "CLIMBED",
+                    value1 = "%.1fkm".format(climb.distanceClimbedKm),
+                    color1 = GlanceColors.White,
+                    label2 = "GAINED",
+                    value2 = "${climb.elevation.toInt()}m",
+                    color2 = GlanceColors.White,
+                    valueFontSize = 16
+                )
+                DualMetric(
+                    label1 = "ELAPSED",
+                    value1 = PhysicsUtils.formatTime(climb.elapsedSeconds),
+                    color1 = GlanceColors.White,
+                    label2 = "GRADE",
+                    value2 = "%.1f%%".format(climb.avgGrade),
+                    color2 = GlanceColors.gradeColor(climb.avgGrade),
+                    valueFontSize = 16
+                )
+            }
+
+            // Pacing target section: show ACTUAL + TARGET
             if (state.pacing.hasTarget) {
                 GlanceDivider()
                 val pColor = GlanceColors.pacingColor(state.pacing.advice)
-                Row(
-                    modifier = GlanceModifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    MetricValueRow(
-                        label = "TARGET",
-                        value = "${state.pacing.targetPower}W",
-                        valueColor = pColor,
-                        valueFontSize = 16,
-                        labelFontSize = 11
-                    )
-                }
+                DualMetric(
+                    label1 = "ACTUAL",
+                    value1 = "${state.live.power}W",
+                    color1 = GlanceColors.White,
+                    label2 = "TARGET",
+                    value2 = "${state.pacing.targetPower}W",
+                    color2 = pColor,
+                    valueFontSize = 16
+                )
                 ValueText(
                     pacingAdviceText(state.pacing.advice),
                     GlanceColors.pacingColor(state.pacing.advice),
-                    12
+                    14
                 )
             }
 
@@ -269,7 +331,7 @@ private fun OverviewLarge(state: ClimbDisplayState) {
             val insight = state.tacticalInsight
             if (insight != null) {
                 val iColor = GlanceColors.insightColor(insight.type)
-                ValueText(insight.description, iColor, 11)
+                ValueText(insight.description, iColor, 12)
             }
         }
     }
@@ -282,7 +344,7 @@ private fun OverviewLarge(state: ClimbDisplayState) {
 private fun OverviewNarrow(state: ClimbDisplayState) {
     val climb = state.climb
     if (climb == null || !climb.isActive) {
-        NoClimbContent(18)
+        NoClimbContent(state, 18)
         return
     }
 
@@ -291,12 +353,16 @@ private fun OverviewNarrow(state: ClimbDisplayState) {
 
     Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            LabelText(climb.name.take(15), fontSize = 11)
-            ValueText("%.1f%%".format(state.live.grade), gradeColor, 24)
+            LabelText(climb.name.take(15), fontSize = 12)
+            ValueText("%.1f%%".format(state.live.grade), gradeColor, 26)
             GlanceDivider()
-            ValueText("W' %.0f%%".format(state.wPrime.percentage), wColor, 18)
-            ProgressBar(climb.progress, GlanceColors.Optimal)
-            LabelText("%.1fkm".format(climb.distanceToTopKm), fontSize = 10)
+            ValueText("W' %.0f%%".format(state.wPrime.percentage), wColor, 20)
+            if (climb.hasRouteMetrics) {
+                ProgressBar(climb.progress, GlanceColors.Optimal)
+                LabelText("%.1fkm".format(climb.distanceToTopKm), fontSize = 12)
+            } else {
+                LabelText("%.1fkm climbed".format(climb.distanceClimbedKm), fontSize = 12)
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 package io.github.climbintelligence.engine
 
 import io.github.climbintelligence.data.model.ClimbInfo
-import io.github.climbintelligence.data.model.ClimbSegment
+import io.github.climbintelligence.data.model.DetectionSettings
 import io.github.climbintelligence.data.model.LiveClimbState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,11 +17,7 @@ class ClimbDetector {
 
     companion object {
         private const val TAG = "ClimbDetector"
-        private const val MIN_GRADE_START = 3.0    // % grade to start detection
-        private const val MIN_GRADE_CONTINUE = 2.0  // % grade to continue
-        private const val CONFIRM_DISTANCE = 100.0  // meters to confirm climb
-        private const val END_DISTANCE = 50.0       // meters of flat to end climb
-        private const val SMOOTHING_WINDOW = 5       // points for grade smoothing
+        private const val SMOOTHING_WINDOW = 7
     }
 
     enum class DetectionState {
@@ -36,6 +32,13 @@ class ClimbDetector {
     private val _detectionState = MutableStateFlow(DetectionState.NOT_CLIMBING)
     val detectionState: StateFlow<DetectionState> = _detectionState.asStateFlow()
 
+    // Configurable detection parameters
+    @Volatile private var minGradeStart = 4.0
+    @Volatile private var minGradeContinue = 2.5
+    @Volatile private var confirmDistance = 200.0
+    @Volatile private var endDistance = 150.0
+    @Volatile private var minElevationGain = 15.0
+
     // Altitude/distance buffer for smoothing
     private val altitudeBuffer = mutableListOf<Double>()
     private val distanceBuffer = mutableListOf<Double>()
@@ -49,6 +52,17 @@ class ClimbDetector {
     private var potentialStartDistance = 0.0
     private var flatDistance = 0.0
     private var climbCount = 0
+    private var totalElevationGain = 0.0
+    private var lastAltitude = Double.NaN
+    private var startTimestamp = 0L
+
+    fun updateSettings(settings: DetectionSettings) {
+        minGradeStart = settings.minGrade
+        minGradeContinue = settings.minGradeContinue
+        confirmDistance = settings.confirmDistance.toDouble()
+        endDistance = settings.endDistance.toDouble()
+        minElevationGain = settings.minElevation.toDouble()
+    }
 
     fun update(state: LiveClimbState) {
         if (!state.hasData) return
@@ -72,9 +86,18 @@ class ClimbDetector {
             state.grade
         }
 
+        // Track elevation gain during potential/confirmed climb
+        if (_detectionState.value != DetectionState.NOT_CLIMBING && !lastAltitude.isNaN()) {
+            val altDelta = state.altitude - lastAltitude
+            if (altDelta > 0) {
+                totalElevationGain += altDelta
+            }
+        }
+        lastAltitude = state.altitude
+
         when (_detectionState.value) {
             DetectionState.NOT_CLIMBING -> {
-                if (smoothedGrade >= MIN_GRADE_START) {
+                if (smoothedGrade >= minGradeStart) {
                     _detectionState.value = DetectionState.POTENTIAL_CLIMB
                     potentialStartDistance = state.distance
                     climbStartDistance = state.distance
@@ -82,39 +105,48 @@ class ClimbDetector {
                     climbStartLat = state.latitude
                     climbStartLon = state.longitude
                     flatDistance = 0.0
+                    totalElevationGain = 0.0
+                    lastAltitude = state.altitude
+                    startTimestamp = System.currentTimeMillis()
+                    // Emit early at POTENTIAL so UI wakes up immediately
+                    updateDetectedClimb(state)
                 }
             }
 
             DetectionState.POTENTIAL_CLIMB -> {
                 val climbDistance = state.distance - potentialStartDistance
 
-                if (smoothedGrade < MIN_GRADE_CONTINUE) {
+                if (smoothedGrade < minGradeContinue) {
                     flatDistance += if (distanceBuffer.size >= 2) {
                         state.distance - distanceBuffer[distanceBuffer.size - 2]
                     } else 1.0
 
-                    if (flatDistance > END_DISTANCE) {
+                    if (flatDistance > endDistance) {
                         // False alarm
                         _detectionState.value = DetectionState.NOT_CLIMBING
                         _detectedClimb.value = null
                     }
                 } else {
                     flatDistance = 0.0
-                    if (climbDistance >= CONFIRM_DISTANCE) {
+                    // Require both distance AND elevation gain to confirm
+                    if (climbDistance >= confirmDistance && totalElevationGain >= minElevationGain) {
                         _detectionState.value = DetectionState.CONFIRMED_CLIMB
                         climbCount++
+                        updateDetectedClimb(state)
+                    } else {
+                        // Keep emitting at POTENTIAL for responsive UI
                         updateDetectedClimb(state)
                     }
                 }
             }
 
             DetectionState.CONFIRMED_CLIMB -> {
-                if (smoothedGrade < MIN_GRADE_CONTINUE) {
+                if (smoothedGrade < minGradeContinue) {
                     flatDistance += if (distanceBuffer.size >= 2) {
                         state.distance - distanceBuffer[distanceBuffer.size - 2]
                     } else 1.0
 
-                    if (flatDistance > END_DISTANCE) {
+                    if (flatDistance > endDistance) {
                         // Climb ended
                         _detectionState.value = DetectionState.NOT_CLIMBING
                         _detectedClimb.value = _detectedClimb.value?.copy(isActive = false)
@@ -142,7 +174,8 @@ class ClimbDetector {
             isActive = true,
             isFromRoute = false,
             startLatitude = climbStartLat,
-            startLongitude = climbStartLon
+            startLongitude = climbStartLon,
+            startTimestamp = startTimestamp
         )
     }
 
@@ -153,5 +186,8 @@ class ClimbDetector {
         distanceBuffer.clear()
         gradeBuffer.clear()
         flatDistance = 0.0
+        totalElevationGain = 0.0
+        lastAltitude = Double.NaN
+        startTimestamp = 0L
     }
 }

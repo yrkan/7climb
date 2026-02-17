@@ -34,12 +34,14 @@ class AlertManager(
     private val summitLastAlert = AtomicLong(0)
     private val climbStartLastAlert = AtomicLong(0)
 
-    @Volatile
-    private var alertsEnabled = true
-    @Volatile
-    private var soundEnabled = false
-    @Volatile
-    private var cooldownMs = 30_000L
+    @Volatile private var alertsEnabled = true
+    @Volatile private var soundEnabled = false
+    @Volatile private var cooldownMs = 30_000L
+    @Volatile private var wPrimeAlertThreshold = 20.0
+    @Volatile private var alertWPrimeEnabled = true
+    @Volatile private var alertSteepEnabled = true
+    @Volatile private var alertSummitEnabled = true
+    @Volatile private var alertClimbStartEnabled = true
 
     fun startMonitoring() {
         scope?.cancel()
@@ -54,56 +56,153 @@ class AlertManager(
         scope?.launch {
             preferencesRepository.alertCooldownFlow.collect { cooldownMs = it * 1000L }
         }
+        scope?.launch {
+            preferencesRepository.wPrimeAlertThresholdFlow.collect { wPrimeAlertThreshold = it.toDouble() }
+        }
+        scope?.launch {
+            preferencesRepository.alertWPrimeFlow.collect { alertWPrimeEnabled = it }
+        }
+        scope?.launch {
+            preferencesRepository.alertSteepFlow.collect { alertSteepEnabled = it }
+        }
+        scope?.launch {
+            preferencesRepository.alertSummitFlow.collect { alertSummitEnabled = it }
+        }
+        scope?.launch {
+            preferencesRepository.alertClimbStartFlow.collect { alertClimbStartEnabled = it }
+        }
 
         // Monitor W' state for critical alerts
         scope?.launch {
             extension.wPrimeEngine.state.collect { wPrimeState ->
-                if (!alertsEnabled) return@collect
-                if (wPrimeState.status == WPrimeStatus.CRITICAL || wPrimeState.status == WPrimeStatus.EMPTY) {
+                if (!alertsEnabled || !alertWPrimeEnabled) return@collect
+                if (wPrimeState.percentage <= wPrimeAlertThreshold) {
+                    val pct = wPrimeState.percentage.toInt()
+                    val targetPower = extension.pacingCalculator.target.value.targetPower
+
+                    val title = extension.getString(R.string.alert_wprime_title, pct)
+                    val detail = when {
+                        wPrimeState.status == WPrimeStatus.EMPTY ->
+                            extension.getString(R.string.alert_wprime_empty)
+                        targetPower > 0 && wPrimeState.timeToEmpty > 0 ->
+                            extension.getString(
+                                R.string.alert_wprime_detail_full,
+                                targetPower,
+                                wPrimeState.timeToEmpty
+                            )
+                        targetPower > 0 ->
+                            extension.getString(R.string.alert_wprime_detail_power, targetPower)
+                        wPrimeState.timeToEmpty > 0 ->
+                            extension.getString(R.string.alert_wprime_detail_time, wPrimeState.timeToEmpty)
+                        else ->
+                            extension.getString(R.string.alert_wprime_detail_basic)
+                    }
+
                     dispatchWithCooldown(
                         lastAlert = wPrimeLastAlert,
                         alertId = ALERT_WPRIME,
-                        title = extension.getString(R.string.alert_wprime_critical_title),
-                        detail = extension.getString(R.string.alert_wprime_critical_detail),
+                        title = title,
+                        detail = detail,
                         urgent = true
+                    )
+                }
+            }
+        }
+
+        // Monitor for steep sections ahead (from TacticalAnalyzer)
+        scope?.launch {
+            extension.climbDataService.activeClimb.collect { climb ->
+                if (!alertsEnabled || !alertSteepEnabled) return@collect
+                if (climb == null || !climb.isActive || climb.segments.isEmpty()) return@collect
+
+                val insight = extension.tacticalAnalyzer.getPrimaryInsight(climb, climb.progress)
+                if (insight != null && insight.type == TacticalAnalyzer.InsightType.STEEP_SECTION
+                    && insight.distanceAhead < 300
+                ) {
+                    val distM = insight.distanceAhead.toInt()
+                    val title = extension.getString(R.string.alert_steep_title, insight.description, distM)
+                    val detail = if (distM < 100) {
+                        extension.getString(R.string.alert_steep_detail_now)
+                    } else {
+                        extension.getString(R.string.alert_steep_detail_ahead)
+                    }
+
+                    dispatchWithCooldown(
+                        lastAlert = steepLastAlert,
+                        alertId = ALERT_STEEP,
+                        title = title,
+                        detail = detail,
+                        urgent = false
                     )
                 }
             }
         }
     }
 
-    fun dispatchClimbStarted(name: String, lengthKm: Double, avgGrade: Double) {
-        if (!alertsEnabled) return
+    fun dispatchClimbStarted(name: String, lengthKm: Double, avgGrade: Double, elevationM: Double) {
+        if (!alertsEnabled || !alertClimbStartEnabled) return
+
+        val targetPower = extension.pacingCalculator.target.value.targetPower
+        val title = extension.getString(R.string.alert_climb_title, avgGrade, lengthKm)
+        val detail = if (targetPower > 0) {
+            extension.getString(R.string.alert_climb_detail_power, elevationM.toInt(), targetPower)
+        } else {
+            extension.getString(R.string.alert_climb_detail_basic, elevationM.toInt())
+        }
+
         dispatchWithCooldown(
             lastAlert = climbStartLastAlert,
             alertId = ALERT_CLIMB_START,
-            title = extension.getString(R.string.alert_climb_started_title),
-            detail = extension.getString(R.string.alert_climb_started_detail, name, lengthKm, avgGrade),
+            title = title,
+            detail = detail,
             urgent = false
         )
     }
 
     fun dispatchSummitApproaching(distanceM: Int) {
-        if (!alertsEnabled) return
+        if (!alertsEnabled || !alertSummitEnabled) return
+
+        val wPrime = extension.wPrimeEngine.state.value
+        val title = extension.getString(R.string.alert_summit_title, distanceM)
+
+        val detail = when {
+            wPrime.status == WPrimeStatus.CRITICAL || wPrime.status == WPrimeStatus.EMPTY ->
+                extension.getString(R.string.alert_summit_detail_save, wPrime.percentage.toInt())
+            wPrime.percentage > 50 ->
+                extension.getString(R.string.alert_summit_detail_push)
+            else ->
+                extension.getString(R.string.alert_summit_detail_hold)
+        }
+
         dispatchWithCooldown(
             lastAlert = summitLastAlert,
             alertId = ALERT_SUMMIT,
-            title = extension.getString(R.string.alert_summit_title),
-            detail = extension.getString(R.string.alert_summit_detail, distanceM),
+            title = title,
+            detail = detail,
             urgent = false
         )
     }
 
-    fun dispatchPR(timeDelta: String) {
+    fun dispatchPR(climbName: String, timeDelta: String) {
         if (!alertsEnabled) return
+        val title = extension.getString(R.string.alert_pr_title, timeDelta)
+        val stats = extension.climbStatsTracker.state.value
+        val detail = if (stats.avgPower > 0) {
+            extension.getString(R.string.alert_pr_detail_stats, stats.avgPower, stats.avgWKg)
+        } else if (climbName.isNotEmpty()) {
+            extension.getString(R.string.alert_pr_detail_name, climbName)
+        } else {
+            extension.getString(R.string.alert_pr_detail_basic)
+        }
+
         try {
             extension.karooSystem.dispatch(TurnScreenOn)
             extension.karooSystem.dispatch(
                 InRideAlert(
                     id = ALERT_PR,
                     icon = R.drawable.ic_climb,
-                    title = extension.getString(R.string.alert_pr_title),
-                    detail = extension.getString(R.string.alert_pr_detail, timeDelta),
+                    title = title,
+                    detail = detail,
                     autoDismissMs = 8000L,
                     backgroundColor = R.color.alert_bg,
                     textColor = R.color.alert_text

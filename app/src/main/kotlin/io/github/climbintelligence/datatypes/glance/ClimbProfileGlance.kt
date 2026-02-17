@@ -155,10 +155,10 @@ private fun ProfileLarge(state: ClimbDisplayState) {
             LabelText(climb.name, fontSize = 12)
             SegmentProfileBar(climb.segments, climb.progress, 16)
             GlanceDivider()
-            MetricValueRow("LENGTH", "%.1fkm".format(climb.length / 1000.0), GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-            MetricValueRow("ELEV", "${climb.elevation.toInt()}m", GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-            MetricValueRow("AVG", "%.1f%%".format(climb.avgGrade), GlanceColors.gradeColor(climb.avgGrade), valueFontSize = 16, labelFontSize = 11)
-            MetricValueRow("MAX", "%.1f%%".format(climb.maxGrade), GlanceColors.gradeColor(climb.maxGrade), valueFontSize = 16, labelFontSize = 11)
+            MetricValueRow("LENGTH", "%.1fkm".format(climb.length / 1000.0), GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
+            MetricValueRow("ELEV", "${climb.elevation.toInt()}m", GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
+            MetricValueRow("AVG", "%.1f%%".format(climb.avgGrade), GlanceColors.gradeColor(climb.avgGrade), valueFontSize = 18, labelFontSize = 12)
+            MetricValueRow("MAX", "%.1f%%".format(climb.maxGrade), GlanceColors.gradeColor(climb.maxGrade), valueFontSize = 18, labelFontSize = 12)
         }
     }
 }
@@ -180,7 +180,7 @@ private fun ProfileNarrow(state: ClimbDisplayState) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             LabelText("PROFILE", fontSize = 11)
             SegmentProfileBar(climb.segments, climb.progress)
-            LabelText("%.1f%%".format(climb.avgGrade), fontSize = 10)
+            LabelText("%.1f%%".format(climb.avgGrade), fontSize = 12)
         }
     }
 }

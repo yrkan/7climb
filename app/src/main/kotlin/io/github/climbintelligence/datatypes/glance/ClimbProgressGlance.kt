@@ -150,9 +150,9 @@ private fun ProgressLarge(state: ClimbDisplayState) {
             ValueText("%.0f%%".format(climb.progressPercent), GlanceColors.Optimal, 42)
             ProgressBar(climb.progress, GlanceColors.Optimal, 8, GlanceModifier.padding(vertical = 2.dp))
             GlanceDivider()
-            MetricValueRow("REMAINING", "%.1fkm".format(climb.distanceToTopKm), GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-            MetricValueRow("ELEVATION", "${climb.elevationToTop.toInt()}m", GlanceColors.White, valueFontSize = 16, labelFontSize = 11)
-            MetricValueRow("AVG GRADE", "%.1f%%".format(climb.avgGrade), GlanceColors.gradeColor(climb.avgGrade), valueFontSize = 16, labelFontSize = 11)
+            MetricValueRow("REMAINING", "%.1fkm".format(climb.distanceToTopKm), GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
+            MetricValueRow("ELEVATION", "${climb.elevationToTop.toInt()}m", GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
+            MetricValueRow("AVG GRADE", "%.1f%%".format(climb.avgGrade), GlanceColors.gradeColor(climb.avgGrade), valueFontSize = 18, labelFontSize = 12)
         }
     }
 }
@@ -175,7 +175,7 @@ private fun ProgressNarrow(state: ClimbDisplayState) {
             LabelText("PROGRESS", fontSize = 11)
             ValueText("%.0f%%".format(climb.progressPercent), GlanceColors.Optimal, 28)
             ProgressBar(climb.progress, GlanceColors.Optimal, modifier = GlanceModifier.padding(vertical = 2.dp))
-            LabelText("%.1fkm left".format(climb.distanceToTopKm), fontSize = 10)
+            LabelText("%.1fkm left".format(climb.distanceToTopKm), fontSize = 12)
         }
     }
 }

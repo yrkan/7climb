@@ -56,5 +56,8 @@ Thumbs.db
 CLIMB_INTELLIGENCE_SPEC.md
 KAROO_EXTENSIONS_SDK.md
 
+# Landing page (separate repo)
+7climb-landing/
+
 # Claude
 .claude/
