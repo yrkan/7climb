@@ -45,6 +45,7 @@ import io.hammerhead.karooext.models.PlayBeepPattern
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -117,6 +118,9 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
+    /** Jobs launched on Karoo connection — cancelled on disconnect to prevent duplicates */
+    private val connectionJobs = mutableListOf<Job>()
+
     /** Climb IDs already saved this ride — prevents double-saves between climb-end and ride-end */
     private val savedClimbIds = mutableSetOf<String>()
 
@@ -137,7 +141,7 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
         _climbDetector = ClimbDetector()
         _climbRepository = ClimbRepository(database.climbDao(), database.attemptDao())
         _prComparisonEngine = PRComparisonEngine(climbRepository)
-        _checkpointManager = CheckpointManager(preferencesRepository)
+        _checkpointManager = CheckpointManager(preferencesRepository, this)
         _tacticalAnalyzer = TacticalAnalyzer()
         _climbStatsTracker = ClimbStatsTracker(preferencesRepository)
         _alertManager = AlertManager(this, preferencesRepository)
@@ -159,18 +163,23 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
             _isConnected.value = connected
             if (connected) {
                 android.util.Log.i(TAG, "KarooSystemService connected")
+
+                // Cancel any leftover jobs from a previous connection cycle
+                connectionJobs.forEach { it.cancel() }
+                connectionJobs.clear()
+
                 _climbDataService?.startStreaming()
                 _rideStateMonitor?.startMonitoring()
 
                 // Wire detection settings to ClimbDetector
-                serviceScope.launch {
+                connectionJobs += serviceScope.launch {
                     preferencesRepository.detectionSettingsFlow.collect { settings ->
                         _climbDetector?.updateSettings(settings)
                     }
                 }
 
                 // Wire data flow: ClimbDataService -> WPrimeEngine, PacingCalculator, ClimbDetector
-                serviceScope.launch {
+                connectionJobs += serviceScope.launch {
                     climbDataService.liveState.collect { state ->
                         _wPrimeEngine?.update(state)
                         _pacingCalculator?.update(state, _climbDataService?.activeClimb?.value)
@@ -180,7 +189,7 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                 }
 
                 // Wire ClimbDetector → "Climb Started" alert
-                serviceScope.launch {
+                connectionJobs += serviceScope.launch {
                     var wasConfirmed = false
                     climbDetector.detectionState.collect { state ->
                         if (state == ClimbDetector.DetectionState.CONFIRMED_CLIMB && !wasConfirmed) {
@@ -199,7 +208,7 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                 }
 
                 // Wire active climb → "Climb Started" + "Summit Approaching" alerts (route climbs)
-                serviceScope.launch {
+                connectionJobs += serviceScope.launch {
                     var climbStartFired = false
                     var summitAlertFired = false
                     var lastClimbId = ""
@@ -235,7 +244,7 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                 }
 
                 // Wire detected climbs → ClimbDataService.activeClimb (when no route loaded)
-                serviceScope.launch {
+                connectionJobs += serviceScope.launch {
                     climbDetector.detectedClimb.collect { detected ->
                         if (!climbDataService.hasRoute.value) {
                             climbDataService.updateActiveClimb(detected)
@@ -244,7 +253,7 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                 }
 
                 // Wire climb end → save attempt + PR alert
-                serviceScope.launch(Dispatchers.IO) {
+                connectionJobs += serviceScope.launch(Dispatchers.IO) {
                     var lastActiveClimbId: String? = null
                     var lastActiveClimb: ClimbInfo? = null
                     climbDataService.activeClimb.collect { climb ->
@@ -258,7 +267,7 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                 }
 
                 // Wire live PR comparison for route climbs (throttled, every 5s)
-                serviceScope.launch(Dispatchers.IO) {
+                connectionJobs += serviceScope.launch(Dispatchers.IO) {
                     var lastPRClimbId = ""
                     var lastPRUpdateTime = 0L
                     climbDataService.activeClimb.collect { climb ->
@@ -284,6 +293,11 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                 }
             } else {
                 android.util.Log.w(TAG, "KarooSystemService disconnected")
+
+                // Cancel all connection-scoped Flow collectors to prevent duplicates on reconnect
+                connectionJobs.forEach { it.cancel() }
+                connectionJobs.clear()
+
                 _climbDataService?.stopStreaming()
                 _rideStateMonitor?.stopMonitoring()
                 _alertManager?.stopMonitoring()

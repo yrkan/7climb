@@ -44,11 +44,16 @@ class WPrimeEngine(private val preferencesRepository: PreferencesRepository) {
         scope.launch {
             preferencesRepository.athleteProfileFlow.collect { profile ->
                 if (profile.isConfigured) {
-                    wMax = profile.wPrimeMax.toDouble()
+                    val newMax = profile.wPrimeMax.toDouble()
                     cp = profile.effectiveCp
                     if (!profileLoaded) {
-                        wBalance = wMax
+                        wMax = newMax
+                        wBalance = newMax
                         profileLoaded = true
+                    } else {
+                        wMax = newMax
+                        // Clamp balance if W'max decreased mid-ride (prevents >100%)
+                        wBalance = wBalance.coerceAtMost(wMax)
                     }
                 }
             }
@@ -65,9 +70,11 @@ class WPrimeEngine(private val preferencesRepository: PreferencesRepository) {
             return
         }
 
-        val dt = ((now - lastUpdateTime) / 1000.0).coerceIn(0.0, 5.0)
+        val rawDt = (now - lastUpdateTime) / 1000.0
         lastUpdateTime = now
-        if (dt <= 0) return
+        // Clamp dt: minimum 0.1s prevents freeze on same-timestamp events,
+        // maximum 5s caps large gaps (e.g. after pause)
+        val dt = rawDt.coerceIn(0.1, 5.0)
 
         val power = state.power.toDouble()
         val recovery = (wMax - wBalance) / TAU
@@ -85,11 +92,11 @@ class WPrimeEngine(private val preferencesRepository: PreferencesRepository) {
         val recoveryRateVal = if (power <= cp) recovery else 0.0
 
         val timeToEmpty = if (depletionRate > recoveryRateVal && depletionRate > 0) {
-            (wBalance / (depletionRate - recoveryRateVal)).toLong()
+            (wBalance / (depletionRate - recoveryRateVal)).toLong().coerceAtMost(3600L)
         } else -1L
 
         val timeToFull = if (recoveryRateVal > 0 && wBalance < wMax) {
-            ((wMax - wBalance) / recoveryRateVal).toLong()
+            ((wMax - wBalance) / recoveryRateVal).toLong().coerceAtMost(3600L)
         } else -1L
 
         _state.value = WPrimeState(

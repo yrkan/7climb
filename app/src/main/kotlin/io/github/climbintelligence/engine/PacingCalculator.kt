@@ -57,8 +57,8 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
         val altitude = state.altitude
         val speed = state.speed
 
-        // Calculate target power based on physics
-        val targetPower = calculateTargetPower(grade, altitude, speed)
+        // Calculate target power based on FTP and gradient physics
+        val targetPower = calculateTargetPower(grade, altitude)
         if (targetPower <= 0) {
             _target.value = PacingTarget()
             return
@@ -88,33 +88,47 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
         )
     }
 
-    private fun calculateTargetPower(grade: Double, altitude: Double, speed: Double): Int {
+    /**
+     * FTP-based pacing with gradient adjustment.
+     *
+     * On steep grades aerodynamic drag is negligible (slow speed), so pushing
+     * slightly above base is optimal. On shallow grades aero matters more,
+     * so ease slightly to maintain efficiency.
+     */
+    private fun calculateTargetPower(grade: Double, altitude: Double): Int {
         if (grade < 1.0) return 0 // Only pace on climbs
 
-        val mass = profile.totalMass
         val ftp = profile.ftp.toDouble()
 
-        // Physics-based forces
-        val gravity = PhysicsUtils.gravityForce(mass, grade)
-        val rolling = PhysicsUtils.rollingResistance(mass, grade, profile.crr)
-        val aero = PhysicsUtils.aeroDrag(profile.cda, altitude, speed)
-
-        val totalForce = gravity + rolling + aero
-        val targetSpeed = when (mode) {
-            PacingMode.STEADY -> speed.coerceIn(2.0, 8.0)
-            PacingMode.RACE -> speed.coerceIn(2.5, 10.0)
-            PacingMode.SURVIVAL -> speed.coerceIn(1.5, 6.0)
+        // Base FTP fraction per pacing mode
+        val baseFraction = when (mode) {
+            PacingMode.STEADY -> 0.90
+            PacingMode.RACE -> 1.00
+            PacingMode.SURVIVAL -> 0.75
         }
 
-        var targetPower = (totalForce * targetSpeed).toInt()
+        // Gradient adjustment: push harder on steep (all gravity, negligible aero),
+        // ease slightly on shallow (aero still matters)
+        val gradientFactor = when {
+            grade >= 10.0 -> 1.05
+            grade >= 6.0 -> 1.02
+            grade >= 3.0 -> 1.00
+            else -> 0.97
+        }
 
-        // Apply mode factors
-        targetPower = when (mode) {
+        // Altitude correction: VO2max drops ~6.5% per 1000m above 1500m
+        // Reduces effective FTP proportionally (capped at 25% reduction)
+        val altitudeFactor = if (altitude > 1500) {
+            1.0 - ((altitude - 1500) / 1000.0 * 0.065).coerceAtMost(0.25)
+        } else 1.0
+
+        val targetPower = (ftp * baseFraction * gradientFactor * altitudeFactor).toInt()
+
+        // Clamp to mode-specific range
+        return when (mode) {
             PacingMode.STEADY -> targetPower.coerceIn((ftp * 0.6).toInt(), (ftp * 1.05).toInt())
             PacingMode.RACE -> targetPower.coerceIn((ftp * 0.7).toInt(), (ftp * 1.15).toInt())
             PacingMode.SURVIVAL -> targetPower.coerceIn((ftp * 0.5).toInt(), (ftp * 0.9).toInt())
         }
-
-        return targetPower
     }
 }

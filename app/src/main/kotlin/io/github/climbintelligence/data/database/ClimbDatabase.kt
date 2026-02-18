@@ -26,7 +26,6 @@ abstract class ClimbDatabase : RoomDatabase() {
                     ClimbDatabase::class.java,
                     "climb_intelligence.db"
                 )
-                    .fallbackToDestructiveMigration(true)
                     .build()
                     .also { INSTANCE = it }
             }

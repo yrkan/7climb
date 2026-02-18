@@ -42,7 +42,11 @@ data class ClimbInfo(
     val isDetectedClimb: Boolean get() = !isFromRoute
 
     /** Distance climbed so far in km */
-    val distanceClimbedKm: Double get() = length / 1000.0
+    val distanceClimbedKm: Double get() = if (isFromRoute) {
+        (progress * length) / 1000.0
+    } else {
+        length / 1000.0
+    }
 
     /** Elapsed seconds since climb started */
     val elapsedSeconds: Long get() {

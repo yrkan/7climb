@@ -302,9 +302,16 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
             karooClimb.grade
         )
 
+        // Generate descriptive name since Karoo doesn't provide climb names
+        val catLabel = when (category) {
+            1 -> "HC"; 2 -> "Cat 1"; 3 -> "Cat 2"; 4 -> "Cat 3"; else -> "Cat 4"
+        }
+        val lengthKm = "%.1fkm".format(karooClimb.length / 1000.0)
+        val climbName = "$catLabel $lengthKm"
+
         return ClimbInfo(
             id = climbId,
-            name = "",  // Karoo doesn't provide climb name
+            name = climbName,
             category = category,
             length = karooClimb.length,
             elevation = karooClimb.totalElevation,

@@ -43,6 +43,9 @@ class AlertManager(
     @Volatile private var alertSummitEnabled = true
     @Volatile private var alertClimbStartEnabled = true
 
+    /** Track whether W' was previously below threshold — alert only fires on crossing */
+    @Volatile private var wasWPrimeBelowThreshold = false
+
     fun startMonitoring() {
         scope?.cancel()
         scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -72,11 +75,14 @@ class AlertManager(
             preferencesRepository.alertClimbStartFlow.collect { alertClimbStartEnabled = it }
         }
 
-        // Monitor W' state for critical alerts
+        // Monitor W' state for critical alerts — only fire on threshold crossing
         scope?.launch {
             extension.wPrimeEngine.state.collect { wPrimeState ->
                 if (!alertsEnabled || !alertWPrimeEnabled) return@collect
-                if (wPrimeState.percentage <= wPrimeAlertThreshold) {
+
+                val isBelow = wPrimeState.percentage <= wPrimeAlertThreshold
+                if (isBelow && !wasWPrimeBelowThreshold) {
+                    // Just crossed below threshold — dispatch alert
                     val pct = wPrimeState.percentage.toInt()
                     val targetPower = extension.pacingCalculator.target.value.targetPower
 
@@ -106,6 +112,7 @@ class AlertManager(
                         urgent = true
                     )
                 }
+                wasWPrimeBelowThreshold = isBelow
             }
         }
 
@@ -292,6 +299,7 @@ class AlertManager(
         steepLastAlert.set(0)
         summitLastAlert.set(0)
         climbStartLastAlert.set(0)
+        wasWPrimeBelowThreshold = false
     }
 
     fun destroy() {

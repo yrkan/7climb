@@ -55,6 +55,7 @@ class ClimbDetector {
     private var totalElevationGain = 0.0
     private var lastAltitude = Double.NaN
     private var startTimestamp = 0L
+    private var climbMaxGrade = 0.0
 
     fun updateSettings(settings: DetectionSettings) {
         minGradeStart = settings.minGrade
@@ -86,11 +87,16 @@ class ClimbDetector {
             state.grade
         }
 
-        // Track elevation gain during potential/confirmed climb
-        if (_detectionState.value != DetectionState.NOT_CLIMBING && !lastAltitude.isNaN()) {
-            val altDelta = state.altitude - lastAltitude
-            if (altDelta > 0) {
-                totalElevationGain += altDelta
+        // Track elevation gain and max grade during potential/confirmed climb
+        if (_detectionState.value != DetectionState.NOT_CLIMBING) {
+            if (!lastAltitude.isNaN()) {
+                val altDelta = state.altitude - lastAltitude
+                if (altDelta > 0) {
+                    totalElevationGain += altDelta
+                }
+            }
+            if (state.grade > climbMaxGrade) {
+                climbMaxGrade = state.grade
             }
         }
         lastAltitude = state.altitude
@@ -106,6 +112,7 @@ class ClimbDetector {
                     climbStartLon = state.longitude
                     flatDistance = 0.0
                     totalElevationGain = 0.0
+                    climbMaxGrade = state.grade
                     lastAltitude = state.altitude
                     startTimestamp = System.currentTimeMillis()
                     // Emit early at POTENTIAL so UI wakes up immediately
@@ -164,13 +171,14 @@ class ClimbDetector {
         val elevationGain = state.altitude - climbStartAltitude
         val avgGrade = if (climbLength > 0) elevationGain / climbLength * 100.0 else 0.0
 
+        val geoId = "geo_${(climbStartLat * 1000).toInt()}_${(climbStartLon * 1000).toInt()}"
         _detectedClimb.value = ClimbInfo(
-            id = "detected_$climbCount",
+            id = geoId,
             name = "Climb $climbCount",
             length = climbLength,
             elevation = elevationGain,
             avgGrade = avgGrade,
-            maxGrade = gradeBuffer.maxOrNull() ?: 0.0,
+            maxGrade = climbMaxGrade,
             isActive = true,
             isFromRoute = false,
             startLatitude = climbStartLat,
@@ -186,7 +194,9 @@ class ClimbDetector {
         distanceBuffer.clear()
         gradeBuffer.clear()
         flatDistance = 0.0
+        climbCount = 0
         totalElevationGain = 0.0
+        climbMaxGrade = 0.0
         lastAltitude = Double.NaN
         startTimestamp = 0L
     }

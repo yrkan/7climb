@@ -85,15 +85,10 @@ class TacticalAnalyzer {
         }
 
         // 3. Attack points (moderate section before a steep one)
-        upcomingSegments
-            .filter { it.grade < 6.0 }
-            .filter { seg ->
-                val segIndex = climb.segments.indexOf(seg)
-                segIndex >= 0 && segIndex + 1 < climb.segments.size &&
-                        climb.segments[segIndex + 1].grade > 10.0
-            }
-            .take(1)
-            .forEach { seg ->
+        for (i in 0 until upcomingSegments.lastIndex) {
+            val seg = upcomingSegments[i]
+            val nextSeg = upcomingSegments[i + 1]
+            if (seg.grade < 6.0 && nextSeg.grade > 10.0) {
                 val distAhead = seg.startDistance - currentDistance
                 insights.add(
                     TacticalInsight(
@@ -104,7 +99,9 @@ class TacticalAnalyzer {
                         priority = Priority.LOW
                     )
                 )
+                break // take first only
             }
+        }
 
         // 4. Final kick (last 500m)
         val remaining = climb.length - currentDistance

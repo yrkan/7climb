@@ -1,5 +1,6 @@
 package io.github.climbintelligence.engine
 
+import android.content.Context
 import io.github.climbintelligence.data.PreferencesRepository
 import io.github.climbintelligence.data.model.WPrimeState
 import kotlinx.coroutines.CoroutineScope
@@ -9,7 +10,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -21,21 +21,24 @@ data class CheckpointData(
     val timestamp: Long = 0L
 )
 
-class CheckpointManager(private val preferencesRepository: PreferencesRepository) {
+class CheckpointManager(
+    private val preferencesRepository: PreferencesRepository,
+    private val context: Context
+) {
 
     companion object {
         private const val TAG = "CheckpointManager"
         private const val CHECKPOINT_INTERVAL_MS = 60_000L // 1 minute
         private const val CHECKPOINT_KEY = "checkpoint_data"
+        private const val PREFS_NAME = "climb_checkpoints"
+        private const val MAX_CHECKPOINT_AGE_MS = 2 * 60 * 60 * 1000L // 2 hours
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var periodicJob: Job? = null
     private val json = Json { ignoreUnknownKeys = true }
 
-    // In-memory checkpoint store (use DataStore for persistence in production)
-    @Volatile
-    private var savedCheckpoint: String? = null
+    private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     fun startPeriodicCheckpoints(wPrimeEngine: WPrimeEngine?, climbDataService: ClimbDataService?) {
         stopPeriodicCheckpoints()
@@ -59,8 +62,8 @@ class CheckpointManager(private val preferencesRepository: PreferencesRepository
                 wasRecording = true,
                 timestamp = System.currentTimeMillis()
             )
-            savedCheckpoint = json.encodeToString(checkpoint)
-            android.util.Log.d(TAG, "Checkpoint saved")
+            prefs.edit().putString(CHECKPOINT_KEY, json.encodeToString(checkpoint)).apply()
+            android.util.Log.d(TAG, "Checkpoint saved to disk")
         } catch (e: Exception) {
             android.util.Log.w(TAG, "Failed to save checkpoint: ${e.message}")
         }
@@ -68,23 +71,27 @@ class CheckpointManager(private val preferencesRepository: PreferencesRepository
 
     fun emergencySave(wPrimeEngine: WPrimeEngine?, climbDataService: ClimbDataService?) {
         try {
-            runBlocking {
-                saveCheckpoint(wPrimeEngine, climbDataService)
-            }
-            android.util.Log.i(TAG, "Emergency checkpoint saved")
+            val checkpoint = CheckpointData(
+                wPrimeBalance = wPrimeEngine?.state?.value?.balance ?: 0.0,
+                wasRecording = true,
+                timestamp = System.currentTimeMillis()
+            )
+            // commit() is synchronous — ensures data is written before process dies
+            prefs.edit().putString(CHECKPOINT_KEY, json.encodeToString(checkpoint)).commit()
+            android.util.Log.i(TAG, "Emergency checkpoint saved to disk")
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Emergency save failed: ${e.message}")
         }
     }
 
     fun tryRestore(wPrimeEngine: WPrimeEngine?, climbDataService: ClimbDataService?): Boolean {
-        val data = savedCheckpoint ?: return false
+        val data = prefs.getString(CHECKPOINT_KEY, null) ?: return false
         return try {
             val checkpoint = json.decodeFromString<CheckpointData>(data)
 
-            // Only restore if checkpoint is recent (within 30 minutes)
+            // Only restore if checkpoint is recent (within 2 hours)
             val age = System.currentTimeMillis() - checkpoint.timestamp
-            if (age > 30 * 60 * 1000L) {
+            if (age > MAX_CHECKPOINT_AGE_MS) {
                 clearCheckpointSync()
                 return false
             }
@@ -99,10 +106,10 @@ class CheckpointManager(private val preferencesRepository: PreferencesRepository
     }
 
     suspend fun clearCheckpoint() {
-        savedCheckpoint = null
+        prefs.edit().remove(CHECKPOINT_KEY).apply()
     }
 
     private fun clearCheckpointSync() {
-        savedCheckpoint = null
+        prefs.edit().remove(CHECKPOINT_KEY).commit()
     }
 }
