@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">7Climb</string>
+    <string name="extension_name">7Climb</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Анализ подъёмов</string>
+    <string name="notification_channel_description">Фоновый мониторинг подъёмов и отслеживание W\'</string>
+    <string name="notification_title">7Climb активен</string>
+    <string name="notification_text">Мониторинг данных подъёма</string>
+
+    <!-- DataType names -->
+    <string name="datatype_wprime">Баланс W\'</string>
+    <string name="datatype_wprime_desc">Баланс W\' в реальном времени с индикатором истощения</string>
+    <string name="datatype_pacing">Целевой темп</string>
+    <string name="datatype_pacing_desc">Рекомендация мощности на основе физики</string>
+    <string name="datatype_grade">Уклон</string>
+    <string name="datatype_grade_desc">Текущий уклон дороги в процентах</string>
+    <string name="datatype_overview">Обзор подъёма</string>
+    <string name="datatype_overview_desc">Сводный вид: W\' + темп + прогресс + ETA</string>
+    <string name="datatype_eta">ETA до вершины</string>
+    <string name="datatype_eta_desc">Расчётное время до вершины</string>
+    <string name="datatype_progress">Прогресс подъёма</string>
+    <string name="datatype_progress_desc">Оставшееся расстояние и набор высоты</string>
+    <string name="datatype_profile">Профиль подъёма</string>
+    <string name="datatype_profile_desc">Визуализация профиля высот</string>
+    <string name="datatype_segment">Следующий сегмент</string>
+    <string name="datatype_segment_desc">Предпросмотр уклона следующего сегмента</string>
+    <string name="datatype_compact">Компактный вид</string>
+    <string name="datatype_compact_desc">Минимальная информация о подъёме для малых полей</string>
+    <string name="datatype_stats">Статистика подъёма</string>
+    <string name="datatype_stats_desc">VAM, W/kg, HR, каденс, метрики энергии</string>
+    <string name="datatype_fit">FIT-данные подъёма</string>
+    <string name="datatype_fit_desc">Запись баланса W\' и данных темпа в FIT-файл</string>
+    <string name="datatype_ride_metrics">Метрики поездки</string>
+    <string name="datatype_ride_metrics_desc">Normalized Power, Intensity Factor, TSS</string>
+    <string name="datatype_power_zones">Зоны мощности</string>
+    <string name="datatype_power_zones_desc">Распределение зон мощности по Coggan и текущая зона</string>
+    <string name="datatype_match_burn">Сжигание матчей</string>
+    <string name="datatype_match_burn_desc">Отслеживание усилий выше CP с таймером восстановления</string>
+    <string name="datatype_next_climb">Следующий подъём</string>
+    <string name="datatype_next_climb_desc">Расстояние и ETA до следующего подъёма на маршруте</string>
+
+    <!-- Labels -->
+    <string name="label_grade">УКЛОН</string>
+    <string name="label_wprime">W\'БАЛ</string>
+    <string name="label_target">ЦЕЛЬ</string>
+    <string name="label_actual">ФАКТ</string>
+    <string name="label_eta">ETA</string>
+    <string name="label_remaining">ОСТАТ</string>
+    <string name="label_progress">ПРОГР</string>
+    <string name="label_distance">ДИСТ</string>
+    <string name="label_elevation">НАБОР</string>
+    <string name="label_power">МОЩН</string>
+    <string name="label_next">СЛЕД</string>
+    <string name="label_avg_grade">СРЕД</string>
+    <string name="label_category">КАТ</string>
+
+    <!-- Pacing advice -->
+    <string name="advice_push">ЖАТЬ</string>
+    <string name="advice_ease">ЛЕГЧЕ</string>
+    <string name="advice_steady">РОВНО</string>
+    <string name="advice_perfect">ИДЕАЛ</string>
+
+    <!-- W\' Status -->
+    <string name="wprime_fresh">СВЕЖИЙ</string>
+    <string name="wprime_good">НОРМА</string>
+    <string name="wprime_working">РАБОТА</string>
+    <string name="wprime_depleting">РАСХОД</string>
+    <string name="wprime_critical">КРИТ</string>
+    <string name="wprime_empty">ПУСТО</string>
+
+    <!-- Alerts: W' Critical -->
+    <string name="alert_wprime_title">W\' %1$d%%</string>
+    <string name="alert_wprime_detail_full">Снизьте до %1$dW — запас кончится через %2$dс</string>
+    <string name="alert_wprime_detail_power">Снизьте до %1$dW — берегите резервы</string>
+    <string name="alert_wprime_detail_time">Запас кончится через %1$dс — снижайте мощность</string>
+    <string name="alert_wprime_detail_basic">Снижайте мощность — берегите резервы</string>
+    <string name="alert_wprime_empty">W\' исчерпан — только восстановление</string>
+
+    <!-- Alerts: Steep Ahead -->
+    <string name="alert_steep_title">%1$s через %2$dм</string>
+    <string name="alert_steep_detail_now">Переключитесь вниз — сидите в седле</string>
+    <string name="alert_steep_detail_ahead">Сбросьте 10W — приберегите силы</string>
+
+    <!-- Alerts: Summit Approaching -->
+    <string name="alert_summit_title">ВЕРШИНА %1$dм</string>
+    <string name="alert_summit_detail_push">W\' в норме — дожимайте до верха</string>
+    <string name="alert_summit_detail_hold">Держите темп — почти на месте</string>
+    <string name="alert_summit_detail_save">W\' на %1$d%% — ровно до верха</string>
+
+    <!-- Alerts: Climb Started -->
+    <string name="alert_climb_title">ПОДЪЁМ %1$.1f%% · %2$.1fкм</string>
+    <string name="alert_climb_detail_power">+%1$dм — Цель %2$dW</string>
+    <string name="alert_climb_detail_basic">+%1$dм набор высоты</string>
+
+    <!-- Alerts: PR -->
+    <string name="alert_pr_title">PR! -%1$s</string>
+    <string name="alert_pr_detail_stats">Сред %1$dW · %2$.1f W/kg</string>
+    <string name="alert_pr_detail_name">Новый рекорд на %1$s</string>
+    <string name="alert_pr_detail_basic">Новый личный рекорд</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Настройки</string>
+    <string name="settings_athlete">Профиль спортсмена</string>
+    <string name="settings_ftp">FTP (пороговая мощность)</string>
+    <string name="settings_ftp_hint">Максимальная мощность, которую вы можете держать ~1 час.\nСделайте 20-минутный тест и умножьте на 0.95.\nИли используйте FTP из Zwift, TrainerRoad и т.д.</string>
+    <string name="settings_weight">Вес</string>
+    <string name="settings_weight_hint">Ваш вес тела</string>
+    <string name="settings_bike">Настройка велосипеда</string>
+    <string name="settings_position">Посадка</string>
+    <string name="settings_position_hint">Влияет на расчёт аэродинамического сопротивления</string>
+    <string name="settings_surface">Покрытие дороги</string>
+    <string name="settings_surface_hint">Влияет на расчёт сопротивления качению</string>
+    <string name="settings_pacing">Стратегия темпа</string>
+    <string name="settings_pacing_mode">Режим темпа</string>
+    <string name="settings_pacing_tolerance">Допуск темпа</string>
+    <string name="settings_alerts">Оповещения</string>
+    <string name="settings_alerts_enabled">Включить оповещения</string>
+    <string name="settings_alert_sound">Звук</string>
+    <string name="settings_alert_cooldown">Перерыв</string>
+    <string name="settings_alert_wprime_toggle">Предупреждение о критическом W\'</string>
+    <string name="settings_alert_steep_toggle">Крутой участок впереди</string>
+    <string name="settings_alert_summit_toggle">Приближение к вершине</string>
+    <string name="settings_alert_climb_start_toggle">Начало подъёма</string>
+    <string name="settings_wprime_threshold">Порог оповещения W\'</string>
+    <string name="settings_wprime_threshold_hint">Оповещение срабатывает, когда баланс W\' падает ниже этого процента</string>
+    <string name="settings_bike_type">Тип велосипеда</string>
+    <string name="settings_bike_weight">Вес велосипеда</string>
+    <string name="settings_bike_weight_hint">Общий вес велосипеда с аксессуарами</string>
+    <string name="settings_cp">CP (критическая мощность)</string>
+    <string name="settings_cp_hint">Установите 0 для автоматического расчёта (FTP × 0.95).\nИли введите ваш CP из теста по протоколу 3+12 мин.</string>
+    <string name="settings_advanced">Расширенные</string>
+    <string name="settings_advanced_hint">Меняйте только если знаете свои значения из тестов</string>
+    <string name="settings_wprime">W\' (анаэробная ёмкость)</string>
+    <string name="settings_wprime_hint">Работа, которую вы можете выполнить выше FTP до истощения.\nТипичный диапазон: 15000–25000 Дж.\nСпринтеры обычно выше, горняки ниже.</string>
+    <string name="settings_cda">CdA (аэродинамика)</string>
+    <string name="settings_cda_hint">Устанавливается автоматически по выбранной посадке</string>
+    <string name="settings_crr">Crr (сопротивление качению)</string>
+    <string name="settings_crr_hint">Устанавливается автоматически по типу покрытия</string>
+    <string name="settings_history">История</string>
+    <string name="settings_view_history">История подъёмов</string>
+    <string name="settings_about">О приложении</string>
+    <string name="settings_version">Версия</string>
+    <string name="settings_not_configured">Укажите FTP и вес для начала работы</string>
+    <string name="label_last_segment">ПОСЛ СЕГМ</string>
+    <string name="label_last">ПОСЛ</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">ОК</string>
+    <string name="settings_hide_advanced">Скрыть расширенные настройки</string>
+    <string name="settings_show_advanced">Показать расширенные настройки</string>
+
+    <!-- Detection settings -->
+    <string name="settings_detection">Обнаружение подъёмов</string>
+    <string name="detection_sensitive">Чувствит.</string>
+    <string name="detection_balanced">Баланс</string>
+    <string name="detection_conservative">Консерв.</string>
+    <string name="detection_sensitive_desc">Ловит малые холмы — холмистый рельеф, короткие подъёмы</string>
+    <string name="detection_balanced_desc">По умолчанию — подходит для большинства поездок</string>
+    <string name="detection_conservative_desc">Только значимые подъёмы — равнина с холмами</string>
+    <string name="detection_custom_desc">Пользовательские параметры обнаружения</string>
+    <string name="detection_show_finetune">Точная настройка</string>
+    <string name="detection_hide_finetune">Скрыть точную настройку</string>
+    <string name="detection_min_grade">Минимальный уклон</string>
+    <string name="detection_min_grade_hint">Уклон, при котором начинается обнаружение подъёма</string>
+    <string name="detection_min_elevation">Мин. набор высоты</string>
+    <string name="detection_min_elevation_hint">Набор высоты в метрах для подтверждения подъёма</string>
+    <string name="detection_confirm_distance">Дистанция подтверждения</string>
+    <string name="detection_confirm_distance_hint">Метры подъёма, необходимые для подтверждения</string>
+    <string name="detection_end_distance">Дистанция окончания</string>
+    <string name="detection_end_distance_hint">Метры ровного/спуска для завершения обнаруженного подъёма</string>
+
+    <!-- Fatigue/Durability -->
+    <string name="settings_durability">Выносливость</string>
+    <string name="settings_fatigue_enabled">Включить модель усталости</string>
+    <string name="settings_fatigue_enabled_hint">Снижает эффективный FTP на длинных поездках с учётом усталости</string>
+    <string name="settings_fatigue_decay_rate">Скорость снижения</string>
+    <string name="settings_fatigue_decay_rate_hint">Снижение FTP в час после порога (0.01–0.10)</string>
+    <string name="settings_fatigue_threshold">Пороговые часы</string>
+    <string name="settings_fatigue_threshold_hint">Часы до начала снижения FTP из-за усталости</string>
+
+    <!-- Pacing tolerance -->
+    <string name="pacing_tolerance_tight">\u00B15W</string>
+    <string name="pacing_tolerance_normal">\u00B110W</string>
+    <string name="pacing_tolerance_relaxed">\u00B120W</string>
+    <string name="pacing_tolerance_tight_desc">Строгий коридор — для ровных усилий как на станке</string>
+    <string name="pacing_tolerance_normal_desc">По умолчанию — баланс точности и гибкости</string>
+    <string name="pacing_tolerance_relaxed_desc">Широкий коридор — меньше подсказок ЖАТЬ/ЛЕГЧЕ</string>
+    <string name="pacing_tolerance_custom_desc">Пользовательский допуск в ваттах</string>
+
+    <!-- Riding position presets -->
+    <string name="position_drops">Drops</string>
+    <string name="position_hoods">Hoods</string>
+    <string name="position_tops">Tops</string>
+    <string name="position_aero_drops">A.Drops</string>
+    <string name="position_aero">Aero</string>
+    <string name="position_tt">TT</string>
+
+    <!-- Road surface presets -->
+    <string name="surface_smooth">Гладкий</string>
+    <string name="surface_road">Дорога</string>
+    <string name="surface_rough">Шершавый</string>
+    <string name="surface_cobbles">Брусчатка</string>
+    <string name="surface_gravel">Гравий</string>
+
+    <!-- Bike type presets -->
+    <string name="bike_race">Шоссе</string>
+    <string name="bike_aero">Аэро</string>
+    <string name="bike_tt">TT</string>
+    <string name="bike_endurance">Эндуранс</string>
+    <string name="bike_custom">Другой</string>
+
+    <!-- Pacing modes -->
+    <string name="pacing_steady">Ровный</string>
+    <string name="pacing_steady_desc">Равномерное усилие на всём подъёме</string>
+    <string name="pacing_race">Гонка</string>
+    <string name="pacing_race_desc">Сдержанный старт, мощный финиш</string>
+    <string name="pacing_survival">Выживание</string>
+    <string name="pacing_survival_desc">Минимум энергии — просто доехать до верха</string>
+
+    <!-- Bonus Actions -->
+    <string name="action_toggle_view">Сменить вид</string>
+    <string name="action_cycle_pacing">Сменить режим темпа</string>
+    <string name="action_reset_wprime">Сбросить баланс W\'</string>
+    <string name="action_pacing_mode_changed">Режим темпа</string>
+    <string name="action_wprime_reset">Баланс W\' сброшен</string>
+    <string name="action_wprime_reset_detail">Сброс до 100%%</string>
+
+    <!-- About -->
+    <string name="about_title">О приложении</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_privacy">Политика конфиденциальности</string>
+    <string name="about_contact">Контакты</string>
+    <string name="about_contact_email">info@7climb.com</string>
+
+    <!-- History -->
+    <string name="history_title">История подъёмов</string>
+    <string name="history_empty">Подъёмы ещё не записаны</string>
+    <string name="history_climbs">Подъёмы</string>
+    <string name="history_recent">Последние попытки</string>
+    <string name="history_pr">PR</string>
+</resources>

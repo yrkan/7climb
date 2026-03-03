@@ -32,6 +32,14 @@
     <string name="datatype_stats_desc">VAM, W/kg, HR, cadence, energy metrics</string>
     <string name="datatype_fit">Climb FIT Data</string>
     <string name="datatype_fit_desc">Records W\' balance and pacing data to FIT file</string>
+    <string name="datatype_ride_metrics">Ride Metrics</string>
+    <string name="datatype_ride_metrics_desc">Normalized Power, Intensity Factor, TSS</string>
+    <string name="datatype_power_zones">Power Zones</string>
+    <string name="datatype_power_zones_desc">Coggan power zone distribution and current zone</string>
+    <string name="datatype_match_burn">Match Burn</string>
+    <string name="datatype_match_burn_desc">Above-CP match tracking with recovery timer</string>
+    <string name="datatype_next_climb">Next Climb</string>
+    <string name="datatype_next_climb_desc">Distance and ETA to next climb on route</string>
 
     <!-- Labels -->
     <string name="label_grade">GRADE</string>
@@ -161,6 +169,15 @@
     <string name="detection_confirm_distance_hint">Meters of climbing needed before confirming</string>
     <string name="detection_end_distance">End Distance</string>
     <string name="detection_end_distance_hint">Meters of flat/downhill to end a detected climb</string>
+
+    <!-- Fatigue/Durability -->
+    <string name="settings_durability">Durability</string>
+    <string name="settings_fatigue_enabled">Enable Fatigue Model</string>
+    <string name="settings_fatigue_enabled_hint">Reduces effective FTP over long rides to account for fatigue</string>
+    <string name="settings_fatigue_decay_rate">Decay Rate</string>
+    <string name="settings_fatigue_decay_rate_hint">FTP reduction per hour after threshold (0.01–0.10)</string>
+    <string name="settings_fatigue_threshold">Threshold Hours</string>
+    <string name="settings_fatigue_threshold_hint">Hours before fatigue starts reducing FTP</string>
 
     <!-- Pacing tolerance -->
     <string name="pacing_tolerance_tight">\u00B15W</string>

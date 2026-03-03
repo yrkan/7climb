@@ -52,13 +52,37 @@ object ClimbFitRecording {
         units = "seconds"
     )
 
+    val normalizedPowerField = DeveloperField(
+        fieldDefinitionNumber = 5,
+        fitBaseTypeId = UINT16,
+        fieldName = "Normalized_Power",
+        units = "watts"
+    )
+
+    val tssField = DeveloperField(
+        fieldDefinitionNumber = 6,
+        fitBaseTypeId = FLOAT32,
+        fieldName = "TSS",
+        units = "score"
+    )
+
+    val matchCountField = DeveloperField(
+        fieldDefinitionNumber = 7,
+        fitBaseTypeId = UINT8,
+        fieldName = "Match_Count",
+        units = "count"
+    )
+
     fun buildRecordValues(
         wPrimeBalance: Double,
         wPrimePercent: Double,
         pacingAdviceOrdinal: Int,
         targetPower: Int,
         prDeltaMs: Long?,
-        hasPR: Boolean
+        hasPR: Boolean,
+        normalizedPower: Int = 0,
+        tss: Double = 0.0,
+        matchCount: Int = 0
     ): WriteToRecordMesg {
         val values = mutableListOf(
             FieldValue(wPrimeBalanceField, wPrimeBalance),
@@ -69,6 +93,16 @@ object ClimbFitRecording {
 
         if (hasPR && prDeltaMs != null) {
             values.add(FieldValue(prDeltaField, (prDeltaMs / 1000).toDouble()))
+        }
+
+        if (normalizedPower > 0) {
+            values.add(FieldValue(normalizedPowerField, normalizedPower.toDouble()))
+        }
+        if (tss > 0) {
+            values.add(FieldValue(tssField, tss))
+        }
+        if (matchCount > 0) {
+            values.add(FieldValue(matchCountField, matchCount.toDouble()))
         }
 
         return WriteToRecordMesg(values)

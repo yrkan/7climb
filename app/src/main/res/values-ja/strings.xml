@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">7Climb</string>
+    <string name="extension_name">7Climb</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">クライムインテリジェンス</string>
+    <string name="notification_channel_description">バックグラウンドでのクライム監視とW\' トラッキング</string>
+    <string name="notification_title">7Climb 動作中</string>
+    <string name="notification_text">クライムデータを監視中</string>
+
+    <!-- DataType names -->
+    <string name="datatype_wprime">W\' バランス</string>
+    <string name="datatype_wprime_desc">リアルタイムW\' バランスと消耗ゲージ</string>
+    <string name="datatype_pacing">ペーシング目標</string>
+    <string name="datatype_pacing_desc">物理ベースの推奨目標パワー</string>
+    <string name="datatype_grade">勾配</string>
+    <string name="datatype_grade_desc">現在の道路勾配パーセント</string>
+    <string name="datatype_overview">クライム概要</string>
+    <string name="datatype_overview_desc">複合表示: W\' + ペーシング + 進捗 + ETA</string>
+    <string name="datatype_eta">山頂 ETA</string>
+    <string name="datatype_eta_desc">山頂到達の推定時間</string>
+    <string name="datatype_progress">クライム進捗</string>
+    <string name="datatype_progress_desc">残りの距離と獲得標高</string>
+    <string name="datatype_profile">クライムプロフィール</string>
+    <string name="datatype_profile_desc">標高プロフィール表示</string>
+    <string name="datatype_segment">次のセグメント</string>
+    <string name="datatype_segment_desc">次の勾配セグメントのプレビュー</string>
+    <string name="datatype_compact">コンパクトクライム</string>
+    <string name="datatype_compact_desc">小さなフィールド用の最小クライム情報</string>
+    <string name="datatype_stats">クライム統計</string>
+    <string name="datatype_stats_desc">VAM、W/kg、HR、ケイデンス、エネルギー指標</string>
+    <string name="datatype_fit">クライム FIT データ</string>
+    <string name="datatype_fit_desc">W\' バランスとペーシングデータをFITファイルに記録</string>
+    <string name="datatype_ride_metrics">ライド指標</string>
+    <string name="datatype_ride_metrics_desc">Normalized Power、Intensity Factor、TSS</string>
+    <string name="datatype_power_zones">パワーゾーン</string>
+    <string name="datatype_power_zones_desc">Cogganパワーゾーン分布と現在のゾーン</string>
+    <string name="datatype_match_burn">マッチバーン</string>
+    <string name="datatype_match_burn_desc">CP超えマッチトラッキングとリカバリータイマー</string>
+    <string name="datatype_next_climb">次のクライム</string>
+    <string name="datatype_next_climb_desc">ルート上の次のクライムまでの距離とETA</string>
+
+    <!-- Labels -->
+    <string name="label_grade">勾配</string>
+    <string name="label_wprime">W\'BAL</string>
+    <string name="label_target">目標</string>
+    <string name="label_actual">実績</string>
+    <string name="label_eta">ETA</string>
+    <string name="label_remaining">残り</string>
+    <string name="label_progress">進捗</string>
+    <string name="label_distance">距離</string>
+    <string name="label_elevation">標高</string>
+    <string name="label_power">出力</string>
+    <string name="label_next">次</string>
+    <string name="label_avg_grade">平均</string>
+    <string name="label_category">CAT</string>
+
+    <!-- Pacing advice -->
+    <string name="advice_push">PUSH</string>
+    <string name="advice_ease">抑制</string>
+    <string name="advice_steady">維持</string>
+    <string name="advice_perfect">完璧</string>
+
+    <!-- W\' Status -->
+    <string name="wprime_fresh">充分</string>
+    <string name="wprime_good">良好</string>
+    <string name="wprime_working">消費中</string>
+    <string name="wprime_depleting">低下中</string>
+    <string name="wprime_critical">危険</string>
+    <string name="wprime_empty">枯渇</string>
+
+    <!-- Alerts: W' Critical -->
+    <string name="alert_wprime_title">W\' %1$d%%</string>
+    <string name="alert_wprime_detail_full">%1$dWに抑えて — %2$d秒で枯渇</string>
+    <string name="alert_wprime_detail_power">%1$dWに抑えて — 余力を温存</string>
+    <string name="alert_wprime_detail_time">%1$d秒で枯渇 — 今すぐパワーを下げて</string>
+    <string name="alert_wprime_detail_basic">パワーを下げて — 余力を温存</string>
+    <string name="alert_wprime_empty">W\' 枯渇 — リカバリーのみ</string>
+
+    <!-- Alerts: Steep Ahead -->
+    <string name="alert_steep_title">%1$s まで %2$dm</string>
+    <string name="alert_steep_detail_now">シフトダウン — シッティング維持</string>
+    <string name="alert_steep_detail_ahead">10W抑えて — 急坂に備えて</string>
+
+    <!-- Alerts: Summit Approaching -->
+    <string name="alert_summit_title">山頂 %1$dm</string>
+    <string name="alert_summit_detail_push">W\' 良好 — 頂上まで踏んで</string>
+    <string name="alert_summit_detail_hold">維持して — あと少し</string>
+    <string name="alert_summit_detail_save">W\' %1$d%% — 頂上まで安定して</string>
+
+    <!-- Alerts: Climb Started -->
+    <string name="alert_climb_title">クライム %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_detail_power">+%1$dm — 目標 %2$dW</string>
+    <string name="alert_climb_detail_basic">+%1$dm 獲得標高</string>
+
+    <!-- Alerts: PR -->
+    <string name="alert_pr_title">PR! -%1$s</string>
+    <string name="alert_pr_detail_stats">平均 %1$dW · %2$.1f W/kg</string>
+    <string name="alert_pr_detail_name">%1$s で新記録</string>
+    <string name="alert_pr_detail_basic">新しい自己ベスト</string>
+
+    <!-- Settings -->
+    <string name="settings_title">設定</string>
+    <string name="settings_athlete">アスリートプロフィール</string>
+    <string name="settings_ftp">FTP (閾値パワー)</string>
+    <string name="settings_ftp_hint">約1時間維持できる最大パワー。\n20分全力走の値に0.95を掛けて算出。\nまたはZwift、TrainerRoad等のFTPを使用。</string>
+    <string name="settings_weight">体重</string>
+    <string name="settings_weight_hint">あなたの体重</string>
+    <string name="settings_bike">バイク設定</string>
+    <string name="settings_position">ライディングポジション</string>
+    <string name="settings_position_hint">空気抵抗の計算に影響します</string>
+    <string name="settings_surface">路面状態</string>
+    <string name="settings_surface_hint">転がり抵抗の計算に影響します</string>
+    <string name="settings_pacing">ペーシング戦略</string>
+    <string name="settings_pacing_mode">ペーシングモード</string>
+    <string name="settings_pacing_tolerance">ペーシング許容範囲</string>
+    <string name="settings_alerts">アラート</string>
+    <string name="settings_alerts_enabled">アラートを有効にする</string>
+    <string name="settings_alert_sound">サウンド</string>
+    <string name="settings_alert_cooldown">クールダウン</string>
+    <string name="settings_alert_wprime_toggle">W\' 危険警告</string>
+    <string name="settings_alert_steep_toggle">急坂接近</string>
+    <string name="settings_alert_summit_toggle">山頂接近</string>
+    <string name="settings_alert_climb_start_toggle">クライム開始</string>
+    <string name="settings_wprime_threshold">W\' アラート閾値</string>
+    <string name="settings_wprime_threshold_hint">W\' バランスがこの割合を下回るとアラートが発動します</string>
+    <string name="settings_bike_type">バイクタイプ</string>
+    <string name="settings_bike_weight">バイク重量</string>
+    <string name="settings_bike_weight_hint">アクセサリーを含むバイクの総重量</string>
+    <string name="settings_cp">CP (Critical Power)</string>
+    <string name="settings_cp_hint">自動計算(FTP × 0.95)の場合は0に設定。\nまたは3+12分プロトコルで測定したCPを入力。</string>
+    <string name="settings_advanced">詳細設定</string>
+    <string name="settings_advanced_hint">テストで自分の値を把握している場合のみ変更</string>
+    <string name="settings_wprime">W\' (無酸素容量)</string>
+    <string name="settings_wprime_hint">FTP以上で疲労困憊まで出せる仕事量。\n一般的な範囲: 15000〜25000 J。\nスプリンターは高め、クライマーは低め。</string>
+    <string name="settings_cda">CdA (空気抵抗)</string>
+    <string name="settings_cda_hint">上のライディングポジションで自動設定されます</string>
+    <string name="settings_crr">Crr (転がり抵抗)</string>
+    <string name="settings_crr_hint">上の路面状態で自動設定されます</string>
+    <string name="settings_history">履歴</string>
+    <string name="settings_view_history">クライム履歴を見る</string>
+    <string name="settings_about">このアプリについて</string>
+    <string name="settings_version">バージョン</string>
+    <string name="settings_not_configured">FTPと体重を設定してください</string>
+    <string name="label_last_segment">前セグ</string>
+    <string name="label_last">前回</string>
+    <string name="cancel">キャンセル</string>
+    <string name="ok">OK</string>
+    <string name="settings_hide_advanced">詳細設定を隠す</string>
+    <string name="settings_show_advanced">詳細設定を表示</string>
+
+    <!-- Detection settings -->
+    <string name="settings_detection">クライム検出</string>
+    <string name="detection_sensitive">高感度</string>
+    <string name="detection_balanced">バランス</string>
+    <string name="detection_conservative">控えめ</string>
+    <string name="detection_sensitive_desc">小さな丘も検出 — 丘陵地帯、短いクライム向け</string>
+    <string name="detection_balanced_desc">標準 — ほとんどの走行に最適</string>
+    <string name="detection_conservative_desc">大きなクライムのみ — 平坦地域の丘向け</string>
+    <string name="detection_custom_desc">カスタム検出パラメータ</string>
+    <string name="detection_show_finetune">検出を微調整</string>
+    <string name="detection_hide_finetune">微調整を隠す</string>
+    <string name="detection_min_grade">最小勾配</string>
+    <string name="detection_min_grade_hint">クライム検出が開始される勾配</string>
+    <string name="detection_min_elevation">最小獲得標高</string>
+    <string name="detection_min_elevation_hint">クライムを確定するために必要な標高差</string>
+    <string name="detection_confirm_distance">確定距離</string>
+    <string name="detection_confirm_distance_hint">クライムを確定するために必要な登坂距離</string>
+    <string name="detection_end_distance">終了距離</string>
+    <string name="detection_end_distance_hint">検出したクライムを終了する平坦/下り距離</string>
+
+    <!-- Fatigue/Durability -->
+    <string name="settings_durability">耐久性</string>
+    <string name="settings_fatigue_enabled">疲労モデルを有効にする</string>
+    <string name="settings_fatigue_enabled_hint">長距離ライドで疲労を考慮し実効FTPを低減</string>
+    <string name="settings_fatigue_decay_rate">減衰率</string>
+    <string name="settings_fatigue_decay_rate_hint">閾値後の1時間あたりFTP低減量 (0.01〜0.10)</string>
+    <string name="settings_fatigue_threshold">閾値時間</string>
+    <string name="settings_fatigue_threshold_hint">疲労によるFTP低減が始まるまでの時間</string>
+
+    <!-- Pacing tolerance -->
+    <string name="pacing_tolerance_tight">\u00B15W</string>
+    <string name="pacing_tolerance_normal">\u00B110W</string>
+    <string name="pacing_tolerance_relaxed">\u00B120W</string>
+    <string name="pacing_tolerance_tight_desc">厳密な範囲 — 安定したインドア風の走行に最適</string>
+    <string name="pacing_tolerance_normal_desc">標準 — ガイダンスと柔軟性の良いバランス</string>
+    <string name="pacing_tolerance_relaxed_desc">広い範囲 — PUSH/EASEの通知が少なめ</string>
+    <string name="pacing_tolerance_custom_desc">カスタムワット許容範囲</string>
+
+    <!-- Riding position presets -->
+    <string name="position_drops">Drops</string>
+    <string name="position_hoods">Hoods</string>
+    <string name="position_tops">Tops</string>
+    <string name="position_aero_drops">A.Drops</string>
+    <string name="position_aero">Aero</string>
+    <string name="position_tt">TT</string>
+
+    <!-- Road surface presets -->
+    <string name="surface_smooth">滑らか</string>
+    <string name="surface_road">舗装路</string>
+    <string name="surface_rough">荒れた路面</string>
+    <string name="surface_cobbles">石畳</string>
+    <string name="surface_gravel">グラベル</string>
+
+    <!-- Bike type presets -->
+    <string name="bike_race">レース</string>
+    <string name="bike_aero">エアロ</string>
+    <string name="bike_tt">TT</string>
+    <string name="bike_endurance">エンデュランス</string>
+    <string name="bike_custom">カスタム</string>
+
+    <!-- Pacing modes -->
+    <string name="pacing_steady">イーブン</string>
+    <string name="pacing_steady_desc">全体を通して均等な努力</string>
+    <string name="pacing_race">レース</string>
+    <string name="pacing_race_desc">控えめなスタート、力強いフィニッシュ</string>
+    <string name="pacing_survival">サバイバル</string>
+    <string name="pacing_survival_desc">最小限のエネルギーで頂上へ</string>
+
+    <!-- Bonus Actions -->
+    <string name="action_toggle_view">表示切替</string>
+    <string name="action_cycle_pacing">ペーシングモード切替</string>
+    <string name="action_reset_wprime">W\' バランスリセット</string>
+    <string name="action_pacing_mode_changed">ペーシングモード</string>
+    <string name="action_wprime_reset">W\' バランスリセット</string>
+    <string name="action_wprime_reset_detail">100%%にリセット</string>
+
+    <!-- About -->
+    <string name="about_title">このアプリについて</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_privacy">プライバシーポリシー</string>
+    <string name="about_contact">お問い合わせ</string>
+    <string name="about_contact_email">info@7climb.com</string>
+
+    <!-- History -->
+    <string name="history_title">クライム履歴</string>
+    <string name="history_empty">まだクライムが記録されていません</string>
+    <string name="history_climbs">クライム</string>
+    <string name="history_recent">最近のアテンプト</string>
+    <string name="history_pr">PR</string>
+</resources>

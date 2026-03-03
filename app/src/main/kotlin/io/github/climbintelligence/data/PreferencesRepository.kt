@@ -52,6 +52,11 @@ class PreferencesRepository(private val context: Context) {
         // Pacing tolerance
         private val KEY_PACING_TOLERANCE = stringPreferencesKey("pacing_tolerance")
         private val KEY_PACING_TOLERANCE_WATTS = intPreferencesKey("pacing_tolerance_watts")
+
+        // Fatigue/durability settings
+        private val KEY_FATIGUE_ENABLED = booleanPreferencesKey("fatigue_enabled")
+        private val KEY_FATIGUE_DECAY_RATE = doublePreferencesKey("fatigue_decay_rate")
+        private val KEY_FATIGUE_THRESHOLD_HOURS = doublePreferencesKey("fatigue_threshold_hours")
     }
 
     val athleteProfileFlow: Flow<AthleteProfile> = context.dataStore.data
@@ -162,6 +167,19 @@ class PreferencesRepository(private val context: Context) {
                 customWatts ?: tolerance.watts
             }
         }
+        .distinctUntilChanged()
+
+    // Fatigue/durability flows
+    val fatigueEnabledFlow: Flow<Boolean> = context.dataStore.data
+        .map { prefs -> prefs[KEY_FATIGUE_ENABLED] ?: true }
+        .distinctUntilChanged()
+
+    val fatigueDecayRateFlow: Flow<Double> = context.dataStore.data
+        .map { prefs -> prefs[KEY_FATIGUE_DECAY_RATE] ?: 0.03 }
+        .distinctUntilChanged()
+
+    val fatigueThresholdHoursFlow: Flow<Double> = context.dataStore.data
+        .map { prefs -> prefs[KEY_FATIGUE_THRESHOLD_HOURS] ?: 2.0 }
         .distinctUntilChanged()
 
     val pacingToleranceFlow: Flow<PacingTolerance?> = context.dataStore.data
@@ -276,5 +294,17 @@ class PreferencesRepository(private val context: Context) {
 
     suspend fun updatePacingToleranceWatts(watts: Int) {
         context.dataStore.edit { it[KEY_PACING_TOLERANCE_WATTS] = watts.coerceIn(3, 30) }
+    }
+
+    suspend fun updateFatigueEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[KEY_FATIGUE_ENABLED] = enabled }
+    }
+
+    suspend fun updateFatigueDecayRate(rate: Double) {
+        context.dataStore.edit { it[KEY_FATIGUE_DECAY_RATE] = rate.coerceIn(0.01, 0.10) }
+    }
+
+    suspend fun updateFatigueThresholdHours(hours: Double) {
+        context.dataStore.edit { it[KEY_FATIGUE_THRESHOLD_HOURS] = hours.coerceIn(0.5, 5.0) }
     }
 }

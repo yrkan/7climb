@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">7Climb</string>
+    <string name="extension_name">7Climb</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">מודיעין טיפוס</string>
+    <string name="notification_channel_description">ניטור טיפוסים ברקע ומעקב W\'</string>
+    <string name="notification_title">7Climb פעיל</string>
+    <string name="notification_text">מנטר נתוני טיפוס</string>
+
+    <!-- DataType names -->
+    <string name="datatype_wprime">יתרת W\'</string>
+    <string name="datatype_wprime_desc">יתרת W\' בזמן אמת עם מד דלדול</string>
+    <string name="datatype_pacing">יעד קצב</string>
+    <string name="datatype_pacing_desc">המלצת הספק מבוססת פיזיקה</string>
+    <string name="datatype_grade">שיפוע</string>
+    <string name="datatype_grade_desc">אחוז שיפוע הכביש הנוכחי</string>
+    <string name="datatype_overview">סקירת טיפוס</string>
+    <string name="datatype_overview_desc">תצוגה משולבת: W\' + קצב + התקדמות + זמן הגעה</string>
+    <string name="datatype_eta">זמן לפסגה</string>
+    <string name="datatype_eta_desc">זמן משוער להגעה לפסגה</string>
+    <string name="datatype_progress">התקדמות</string>
+    <string name="datatype_progress_desc">מרחק וגובה שנותרו</string>
+    <string name="datatype_profile">פרופיל טיפוס</string>
+    <string name="datatype_profile_desc">הדמיה של פרופיל הגובה</string>
+    <string name="datatype_segment">קטע הבא</string>
+    <string name="datatype_segment_desc">תצוגה מקדימה של קטע השיפוע הבא</string>
+    <string name="datatype_compact">טיפוס מצומצם</string>
+    <string name="datatype_compact_desc">מידע טיפוס מינימלי לשדות קטנים</string>
+    <string name="datatype_stats">סטטיסטיקות</string>
+    <string name="datatype_stats_desc">VAM, W/kg, HR, קדנס, מדדי אנרגיה</string>
+    <string name="datatype_fit">נתוני FIT</string>
+    <string name="datatype_fit_desc">רישום יתרת W\' ונתוני קצב לקובץ FIT</string>
+    <string name="datatype_ride_metrics">מדדי רכיבה</string>
+    <string name="datatype_ride_metrics_desc">NP, IF, TSS</string>
+    <string name="datatype_power_zones">אזורי הספק</string>
+    <string name="datatype_power_zones_desc">התפלגות אזורי הספק Coggan והאזור הנוכחי</string>
+    <string name="datatype_match_burn">שריפת גפרורים</string>
+    <string name="datatype_match_burn_desc">מעקב חריגה מעל CP עם טיימר התאוששות</string>
+    <string name="datatype_next_climb">טיפוס הבא</string>
+    <string name="datatype_next_climb_desc">מרחק וזמן הגעה לטיפוס הבא במסלול</string>
+
+    <!-- Labels -->
+    <string name="label_grade">שיפוע</string>
+    <string name="label_wprime">W\'BAL</string>
+    <string name="label_target">יעד</string>
+    <string name="label_actual">בפועל</string>
+    <string name="label_eta">ETA</string>
+    <string name="label_remaining">נותר</string>
+    <string name="label_progress">התקד</string>
+    <string name="label_distance">מרחק</string>
+    <string name="label_elevation">גובה</string>
+    <string name="label_power">הספק</string>
+    <string name="label_next">הבא</string>
+    <string name="label_avg_grade">ממוצע</string>
+    <string name="label_category">CAT</string>
+
+    <!-- Pacing advice -->
+    <string name="advice_push">דחוף</string>
+    <string name="advice_ease">הקל</string>
+    <string name="advice_steady">יציב</string>
+    <string name="advice_perfect">מושלם</string>
+
+    <!-- W\' Status -->
+    <string name="wprime_fresh">מלא</string>
+    <string name="wprime_good">טוב</string>
+    <string name="wprime_working">בצריכה</string>
+    <string name="wprime_depleting">יורד</string>
+    <string name="wprime_critical">קריטי</string>
+    <string name="wprime_empty">ריק</string>
+
+    <!-- Alerts: W' Critical -->
+    <string name="alert_wprime_title">W\' %1$d%%</string>
+    <string name="alert_wprime_detail_full">הורד ל-%1$dW — נגמר בעוד %2$d שניות</string>
+    <string name="alert_wprime_detail_power">הורד ל-%1$dW — שמור רזרבות</string>
+    <string name="alert_wprime_detail_time">נגמר בעוד %1$d שניות — הפחת הספק עכשיו</string>
+    <string name="alert_wprime_detail_basic">הפחת הספק — שמור רזרבות</string>
+    <string name="alert_wprime_empty">W\' מרוקן — התאוששות בלבד</string>
+
+    <!-- Alerts: Steep Ahead -->
+    <string name="alert_steep_title">%1$s בעוד %2$dm</string>
+    <string name="alert_steep_detail_now">החלף הילוך — הישאר יושב</string>
+    <string name="alert_steep_detail_ahead">הפחת 10W — חסוך לקיר</string>
+
+    <!-- Alerts: Summit Approaching -->
+    <string name="alert_summit_title">פסגה %1$dm</string>
+    <string name="alert_summit_detail_push">W\' טוב — דחוף לפסגה</string>
+    <string name="alert_summit_detail_hold">שמור על המאמץ — כמעט שם</string>
+    <string name="alert_summit_detail_save">W\' ב-%1$d%% — יציב עד הפסגה</string>
+
+    <!-- Alerts: Climb Started -->
+    <string name="alert_climb_title">טיפוס %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_detail_power">+%1$dm — יעד %2$dW</string>
+    <string name="alert_climb_detail_basic">+%1$dm עלייה בגובה</string>
+
+    <!-- Alerts: PR -->
+    <string name="alert_pr_title">PR! -%1$s</string>
+    <string name="alert_pr_detail_stats">ממוצע %1$dW · %2$.1f W/kg</string>
+    <string name="alert_pr_detail_name">שיא חדש ב-%1$s</string>
+    <string name="alert_pr_detail_basic">שיא אישי חדש</string>
+
+    <!-- Settings -->
+    <string name="settings_title">הגדרות</string>
+    <string name="settings_athlete">פרופיל ספורטאי</string>
+    <string name="settings_ftp">FTP (הספק סף)</string>
+    <string name="settings_ftp_hint">ההספק המרבי שאתה יכול לשמור כשעה.\nבצע מאמץ מרבי של 20 דקות והכפל ב-0.95.\nאו השתמש ב-FTP מ-Zwift, TrainerRoad וכו\'.</string>
+    <string name="settings_weight">משקל</string>
+    <string name="settings_weight_hint">משקל הגוף שלך</string>
+    <string name="settings_bike">הגדרת אופניים</string>
+    <string name="settings_position">תנוחת רכיבה</string>
+    <string name="settings_position_hint">משפיעה על חישוב התנגדות אווירודינמית</string>
+    <string name="settings_surface">משטח כביש</string>
+    <string name="settings_surface_hint">משפיע על חישוב התנגדות גלגול</string>
+    <string name="settings_pacing">אסטרטגיית קצב</string>
+    <string name="settings_pacing_mode">מצב קצב</string>
+    <string name="settings_pacing_tolerance">סובלנות קצב</string>
+    <string name="settings_alerts">התרעות</string>
+    <string name="settings_alerts_enabled">הפעל התרעות</string>
+    <string name="settings_alert_sound">צליל</string>
+    <string name="settings_alert_cooldown">השהיה</string>
+    <string name="settings_alert_wprime_toggle">אזהרת W\' קריטי</string>
+    <string name="settings_alert_steep_toggle">קטע תלול לפניך</string>
+    <string name="settings_alert_summit_toggle">מתקרב לפסגה</string>
+    <string name="settings_alert_climb_start_toggle">תחילת טיפוס</string>
+    <string name="settings_wprime_threshold">סף התרעת W\'</string>
+    <string name="settings_wprime_threshold_hint">ההתרעה מופעלת כשיתרת W\' יורדת מתחת לאחוז זה</string>
+    <string name="settings_bike_type">סוג אופניים</string>
+    <string name="settings_bike_weight">משקל אופניים</string>
+    <string name="settings_bike_weight_hint">משקל כולל של האופניים עם אביזרים</string>
+    <string name="settings_cp">CP (הספק קריטי)</string>
+    <string name="settings_cp_hint">הגדר 0 לחישוב אוטומטי (FTP × 0.95).\nאו הזן CP שנבדק מפרוטוקול 3+12 דקות.</string>
+    <string name="settings_advanced">מתקדם</string>
+    <string name="settings_advanced_hint">שנה רק אם אתה יודע את הערכים שלך מבדיקות</string>
+    <string name="settings_wprime">W\' (קיבולת אנאירובית)</string>
+    <string name="settings_wprime_hint">העבודה שאתה יכול לבצע מעל FTP עד תשישות.\nטווח נפוץ: 15000–25000 J.\nספרינטרים נוטים לגבוה, מטפסים לנמוך.</string>
+    <string name="settings_cda">CdA (התנגדות אווירודינמית)</string>
+    <string name="settings_cda_hint">מוגדר אוטומטית לפי תנוחת הרכיבה למעלה</string>
+    <string name="settings_crr">Crr (התנגדות גלגול)</string>
+    <string name="settings_crr_hint">מוגדר אוטומטית לפי משטח הכביש למעלה</string>
+    <string name="settings_history">היסטוריה</string>
+    <string name="settings_view_history">צפה בהיסטוריית טיפוסים</string>
+    <string name="settings_about">אודות</string>
+    <string name="settings_version">גרסה</string>
+    <string name="settings_not_configured">הגדר FTP ומשקל כדי להתחיל</string>
+    <string name="label_last_segment">קטע אחרון</string>
+    <string name="label_last">אחרון</string>
+    <string name="cancel">ביטול</string>
+    <string name="ok">אישור</string>
+    <string name="settings_hide_advanced">הסתר הגדרות מתקדמות</string>
+    <string name="settings_show_advanced">הצג הגדרות מתקדמות</string>
+
+    <!-- Detection settings -->
+    <string name="settings_detection">זיהוי טיפוסים</string>
+    <string name="detection_sensitive">רגיש</string>
+    <string name="detection_balanced">מאוזן</string>
+    <string name="detection_conservative">שמרני</string>
+    <string name="detection_sensitive_desc">תופס גבעות קטנות — שטח גבעי, טיפוסים קצרים</string>
+    <string name="detection_balanced_desc">ברירת מחדל — מתאים לרוב הרכיבות</string>
+    <string name="detection_conservative_desc">טיפוסים משמעותיים בלבד — אזורים שטוחים עם גבעות</string>
+    <string name="detection_custom_desc">פרמטרי זיהוי מותאמים אישית</string>
+    <string name="detection_show_finetune">כוונון עדין</string>
+    <string name="detection_hide_finetune">הסתר כוונון עדין</string>
+    <string name="detection_min_grade">שיפוע מינימלי</string>
+    <string name="detection_min_grade_hint">השיפוע שבו מתחיל זיהוי טיפוס</string>
+    <string name="detection_min_elevation">עלייה מינימלית</string>
+    <string name="detection_min_elevation_hint">מטרים אנכיים הנדרשים לאישור טיפוס</string>
+    <string name="detection_confirm_distance">מרחק אישור</string>
+    <string name="detection_confirm_distance_hint">מטרי טיפוס הנדרשים לפני אישור</string>
+    <string name="detection_end_distance">מרחק סיום</string>
+    <string name="detection_end_distance_hint">מטרי מישור/ירידה לסיום טיפוס שזוהה</string>
+
+    <!-- Fatigue/Durability -->
+    <string name="settings_durability">עמידות</string>
+    <string name="settings_fatigue_enabled">הפעל מודל עייפות</string>
+    <string name="settings_fatigue_enabled_hint">מפחית FTP אפקטיבי ברכיבות ארוכות לחישוב עייפות</string>
+    <string name="settings_fatigue_decay_rate">קצב דעיכה</string>
+    <string name="settings_fatigue_decay_rate_hint">הפחתת FTP לשעה אחרי הסף (0.01–0.10)</string>
+    <string name="settings_fatigue_threshold">שעות סף</string>
+    <string name="settings_fatigue_threshold_hint">שעות לפני שהעייפות מתחילה להפחית FTP</string>
+
+    <!-- Pacing tolerance -->
+    <string name="pacing_tolerance_tight">\u00B15W</string>
+    <string name="pacing_tolerance_normal">\u00B110W</string>
+    <string name="pacing_tolerance_relaxed">\u00B120W</string>
+    <string name="pacing_tolerance_tight_desc">טווח מחמיר — הכי טוב למאמץ יציב כמו אימון מקורה</string>
+    <string name="pacing_tolerance_normal_desc">ברירת מחדל — איזון טוב בין הנחיה לגמישות</string>
+    <string name="pacing_tolerance_relaxed_desc">טווח רחב — פחות הנחיות דחוף/הקל</string>
+    <string name="pacing_tolerance_custom_desc">סובלנות ואט מותאמת אישית</string>
+
+    <!-- Riding position presets -->
+    <string name="position_drops">Drops</string>
+    <string name="position_hoods">Hoods</string>
+    <string name="position_tops">Tops</string>
+    <string name="position_aero_drops">A.Drops</string>
+    <string name="position_aero">Aero</string>
+    <string name="position_tt">TT</string>
+
+    <!-- Road surface presets -->
+    <string name="surface_smooth">חלק</string>
+    <string name="surface_road">כביש רגיל</string>
+    <string name="surface_rough">מחוספס</string>
+    <string name="surface_cobbles">אבני כביש</string>
+    <string name="surface_gravel">חצץ</string>
+
+    <!-- Bike type presets -->
+    <string name="bike_race">מרוץ</string>
+    <string name="bike_aero">אירו</string>
+    <string name="bike_tt">TT</string>
+    <string name="bike_endurance">סבולת</string>
+    <string name="bike_custom">מותאם</string>
+
+    <!-- Pacing modes -->
+    <string name="pacing_steady">יציב</string>
+    <string name="pacing_steady_desc">מאמץ אחיד לאורך כל הדרך</string>
+    <string name="pacing_race">מרוץ</string>
+    <string name="pacing_race_desc">התחלה שמרנית, סיום חזק</string>
+    <string name="pacing_survival">הישרדות</string>
+    <string name="pacing_survival_desc">מינימום אנרגיה, רק להגיע לפסגה</string>
+
+    <!-- Bonus Actions -->
+    <string name="action_toggle_view">החלף תצוגה</string>
+    <string name="action_cycle_pacing">החלף מצב קצב</string>
+    <string name="action_reset_wprime">אפס יתרת W\'</string>
+    <string name="action_pacing_mode_changed">מצב קצב</string>
+    <string name="action_wprime_reset">יתרת W\' אופסה</string>
+    <string name="action_wprime_reset_detail">אופס ל-100%%</string>
+
+    <!-- About -->
+    <string name="about_title">אודות</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_privacy">מדיניות פרטיות</string>
+    <string name="about_contact">יצירת קשר</string>
+    <string name="about_contact_email">info@7climb.com</string>
+
+    <!-- History -->
+    <string name="history_title">היסטוריית טיפוסים</string>
+    <string name="history_empty">עדיין לא נרשמו טיפוסים</string>
+    <string name="history_climbs">טיפוסים</string>
+    <string name="history_recent">ניסיונות אחרונים</string>
+    <string name="history_pr">PR</string>
+</resources>

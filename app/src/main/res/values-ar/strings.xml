@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">7Climb</string>
+    <string name="extension_name">7Climb</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">ذكاء التسلق</string>
+    <string name="notification_channel_description">مراقبة التسلق في الخلفية وتتبع W\'</string>
+    <string name="notification_title">7Climb نشط</string>
+    <string name="notification_text">مراقبة بيانات التسلق</string>
+
+    <!-- DataType names -->
+    <string name="datatype_wprime">رصيد W\'</string>
+    <string name="datatype_wprime_desc">رصيد W\' اللحظي مع مقياس الاستنزاف</string>
+    <string name="datatype_pacing">هدف الإيقاع</string>
+    <string name="datatype_pacing_desc">توصية قدرة مستهدفة مبنية على الفيزياء</string>
+    <string name="datatype_grade">الانحدار</string>
+    <string name="datatype_grade_desc">نسبة انحدار الطريق الحالي</string>
+    <string name="datatype_overview">نظرة عامة</string>
+    <string name="datatype_overview_desc">عرض مركّب: W\' + إيقاع + تقدم + وقت الوصول</string>
+    <string name="datatype_eta">وقت الوصول</string>
+    <string name="datatype_eta_desc">الوقت المقدر للوصول إلى القمة</string>
+    <string name="datatype_progress">تقدم التسلق</string>
+    <string name="datatype_progress_desc">المسافة والارتفاع المتبقيان</string>
+    <string name="datatype_profile">مقطع التسلق</string>
+    <string name="datatype_profile_desc">تصور بياني لمقطع الارتفاع</string>
+    <string name="datatype_segment">القسم التالي</string>
+    <string name="datatype_segment_desc">معاينة قسم الانحدار القادم</string>
+    <string name="datatype_compact">تسلق مختصر</string>
+    <string name="datatype_compact_desc">معلومات تسلق مختصرة للحقول الصغيرة</string>
+    <string name="datatype_stats">إحصائيات</string>
+    <string name="datatype_stats_desc">VAM، W/kg، HR، إيقاع الدواسة، مقاييس الطاقة</string>
+    <string name="datatype_fit">بيانات FIT</string>
+    <string name="datatype_fit_desc">تسجيل رصيد W\' وبيانات الإيقاع في ملف FIT</string>
+    <string name="datatype_ride_metrics">مقاييس الركوب</string>
+    <string name="datatype_ride_metrics_desc">NP، IF، TSS</string>
+    <string name="datatype_power_zones">مناطق القدرة</string>
+    <string name="datatype_power_zones_desc">توزيع مناطق القدرة Coggan والمنطقة الحالية</string>
+    <string name="datatype_match_burn">حرق الاحتياطي</string>
+    <string name="datatype_match_burn_desc">تتبع تجاوز CP مع مؤقت الاسترداد</string>
+    <string name="datatype_next_climb">التسلق التالي</string>
+    <string name="datatype_next_climb_desc">المسافة ووقت الوصول إلى التسلق التالي على المسار</string>
+
+    <!-- Labels -->
+    <string name="label_grade">ميل</string>
+    <string name="label_wprime">W\'BAL</string>
+    <string name="label_target">هدف</string>
+    <string name="label_actual">فعلي</string>
+    <string name="label_eta">ETA</string>
+    <string name="label_remaining">متبقي</string>
+    <string name="label_progress">تقدم</string>
+    <string name="label_distance">مسافة</string>
+    <string name="label_elevation">ارتفاع</string>
+    <string name="label_power">قدرة</string>
+    <string name="label_next">تالي</string>
+    <string name="label_avg_grade">متوسط</string>
+    <string name="label_category">CAT</string>
+
+    <!-- Pacing advice -->
+    <string name="advice_push">ادفع</string>
+    <string name="advice_ease">خفف</string>
+    <string name="advice_steady">ثابت</string>
+    <string name="advice_perfect">مثالي</string>
+
+    <!-- W\' Status -->
+    <string name="wprime_fresh">ممتلئ</string>
+    <string name="wprime_good">جيد</string>
+    <string name="wprime_working">مستهلك</string>
+    <string name="wprime_depleting">يتناقص</string>
+    <string name="wprime_critical">حرج</string>
+    <string name="wprime_empty">فارغ</string>
+
+    <!-- Alerts: W' Critical -->
+    <string name="alert_wprime_title">W\' %1$d%%</string>
+    <string name="alert_wprime_detail_full">خفف إلى %1$dW — ينفد خلال %2$d ثانية</string>
+    <string name="alert_wprime_detail_power">خفف إلى %1$dW — حافظ على الاحتياطي</string>
+    <string name="alert_wprime_detail_time">ينفد خلال %1$d ثانية — قلل القدرة الآن</string>
+    <string name="alert_wprime_detail_basic">قلل القدرة — حافظ على الاحتياطي</string>
+    <string name="alert_wprime_empty">W\' مستنزف — استرداد فقط</string>
+
+    <!-- Alerts: Steep Ahead -->
+    <string name="alert_steep_title">%1$s خلال %2$dm</string>
+    <string name="alert_steep_detail_now">غيّر السرعة — ابقَ جالسًا</string>
+    <string name="alert_steep_detail_ahead">خفف 10W — وفّر للمنحدر الشديد</string>
+
+    <!-- Alerts: Summit Approaching -->
+    <string name="alert_summit_title">القمة %1$dm</string>
+    <string name="alert_summit_detail_push">W\' جيد — ادفع نحو القمة</string>
+    <string name="alert_summit_detail_hold">حافظ على الجهد — أوشكت على الوصول</string>
+    <string name="alert_summit_detail_save">W\' عند %1$d%% — ثابت حتى القمة</string>
+
+    <!-- Alerts: Climb Started -->
+    <string name="alert_climb_title">تسلق %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_detail_power">+%1$dm — هدف %2$dW</string>
+    <string name="alert_climb_detail_basic">+%1$dm ارتفاع</string>
+
+    <!-- Alerts: PR -->
+    <string name="alert_pr_title">PR! -%1$s</string>
+    <string name="alert_pr_detail_stats">متوسط %1$dW · %2$.1f W/kg</string>
+    <string name="alert_pr_detail_name">أفضل رقم جديد على %1$s</string>
+    <string name="alert_pr_detail_basic">رقم شخصي جديد</string>
+
+    <!-- Settings -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_athlete">ملف الرياضي</string>
+    <string name="settings_ftp">FTP (قدرة العتبة)</string>
+    <string name="settings_ftp_hint">أقصى قدرة يمكنك الحفاظ عليها لمدة ساعة تقريبًا.\nقم بجهد 20 دقيقة بأقصى طاقة واضرب في 0.95.\nأو استخدم FTP من Zwift أو TrainerRoad وغيرها.</string>
+    <string name="settings_weight">الوزن</string>
+    <string name="settings_weight_hint">وزن جسمك</string>
+    <string name="settings_bike">إعداد الدراجة</string>
+    <string name="settings_position">وضعية الركوب</string>
+    <string name="settings_position_hint">تؤثر على حساب المقاومة الهوائية</string>
+    <string name="settings_surface">سطح الطريق</string>
+    <string name="settings_surface_hint">يؤثر على حساب مقاومة التدحرج</string>
+    <string name="settings_pacing">استراتيجية الإيقاع</string>
+    <string name="settings_pacing_mode">وضع الإيقاع</string>
+    <string name="settings_pacing_tolerance">تسامح الإيقاع</string>
+    <string name="settings_alerts">التنبيهات</string>
+    <string name="settings_alerts_enabled">تفعيل التنبيهات</string>
+    <string name="settings_alert_sound">الصوت</string>
+    <string name="settings_alert_cooldown">فترة الانتظار</string>
+    <string name="settings_alert_wprime_toggle">تحذير W\' الحرج</string>
+    <string name="settings_alert_steep_toggle">قسم شديد الانحدار أمامك</string>
+    <string name="settings_alert_summit_toggle">الاقتراب من القمة</string>
+    <string name="settings_alert_climb_start_toggle">بدء التسلق</string>
+    <string name="settings_wprime_threshold">عتبة تنبيه W\'</string>
+    <string name="settings_wprime_threshold_hint">يُطلق التنبيه عندما ينخفض رصيد W\' عن هذه النسبة</string>
+    <string name="settings_bike_type">نوع الدراجة</string>
+    <string name="settings_bike_weight">وزن الدراجة</string>
+    <string name="settings_bike_weight_hint">الوزن الإجمالي للدراجة مع الملحقات</string>
+    <string name="settings_cp">CP (القدرة الحرجة)</string>
+    <string name="settings_cp_hint">اضبط على 0 للحساب التلقائي (FTP × 0.95).\nأو أدخل CP المُختبر من بروتوكول 3+12 دقيقة.</string>
+    <string name="settings_advanced">متقدم</string>
+    <string name="settings_advanced_hint">غيّر فقط إذا كنت تعرف قيمك من الاختبار</string>
+    <string name="settings_wprime">W\' (السعة اللاهوائية)</string>
+    <string name="settings_wprime_hint">العمل الذي يمكنك إنجازه فوق FTP قبل الإنهاك.\nالنطاق المعتاد: 15000–25000 J.\nالعدّاؤون أعلى، المتسلقون أقل.</string>
+    <string name="settings_cda">CdA (المقاومة الهوائية)</string>
+    <string name="settings_cda_hint">يُعيَّن تلقائيًا حسب وضعية الركوب أعلاه</string>
+    <string name="settings_crr">Crr (مقاومة التدحرج)</string>
+    <string name="settings_crr_hint">يُعيَّن تلقائيًا حسب سطح الطريق أعلاه</string>
+    <string name="settings_history">السجل</string>
+    <string name="settings_view_history">عرض سجل التسلق</string>
+    <string name="settings_about">حول</string>
+    <string name="settings_version">الإصدار</string>
+    <string name="settings_not_configured">اضبط FTP والوزن للبدء</string>
+    <string name="label_last_segment">القسم الأخير</string>
+    <string name="label_last">سابق</string>
+    <string name="cancel">إلغاء</string>
+    <string name="ok">حسنًا</string>
+    <string name="settings_hide_advanced">إخفاء الإعدادات المتقدمة</string>
+    <string name="settings_show_advanced">إظهار الإعدادات المتقدمة</string>
+
+    <!-- Detection settings -->
+    <string name="settings_detection">كشف التسلق</string>
+    <string name="detection_sensitive">حساس</string>
+    <string name="detection_balanced">متوازن</string>
+    <string name="detection_conservative">محافظ</string>
+    <string name="detection_sensitive_desc">يلتقط التلال الصغيرة — تضاريس هضبية، تسلقات قصيرة</string>
+    <string name="detection_balanced_desc">الافتراضي — مناسب لمعظم الركوب</string>
+    <string name="detection_conservative_desc">التسلقات الكبيرة فقط — مناطق مسطحة بها تلال</string>
+    <string name="detection_custom_desc">معلمات كشف مخصصة</string>
+    <string name="detection_show_finetune">ضبط دقيق للكشف</string>
+    <string name="detection_hide_finetune">إخفاء الضبط الدقيق</string>
+    <string name="detection_min_grade">الحد الأدنى للانحدار</string>
+    <string name="detection_min_grade_hint">الانحدار الذي يبدأ عنده كشف التسلق</string>
+    <string name="detection_min_elevation">الحد الأدنى للارتفاع</string>
+    <string name="detection_min_elevation_hint">الأمتار العمودية المطلوبة لتأكيد التسلق</string>
+    <string name="detection_confirm_distance">مسافة التأكيد</string>
+    <string name="detection_confirm_distance_hint">أمتار التسلق المطلوبة قبل التأكيد</string>
+    <string name="detection_end_distance">مسافة الإنهاء</string>
+    <string name="detection_end_distance_hint">أمتار المسطح/الهبوط لإنهاء تسلق مكتشف</string>
+
+    <!-- Fatigue/Durability -->
+    <string name="settings_durability">التحمل</string>
+    <string name="settings_fatigue_enabled">تفعيل نموذج الإرهاق</string>
+    <string name="settings_fatigue_enabled_hint">يقلل FTP الفعلي في الركوب الطويل لمراعاة الإرهاق</string>
+    <string name="settings_fatigue_decay_rate">معدل الانحلال</string>
+    <string name="settings_fatigue_decay_rate_hint">انخفاض FTP في الساعة بعد العتبة (0.01–0.10)</string>
+    <string name="settings_fatigue_threshold">ساعات العتبة</string>
+    <string name="settings_fatigue_threshold_hint">الساعات قبل أن يبدأ الإرهاق بتقليل FTP</string>
+
+    <!-- Pacing tolerance -->
+    <string name="pacing_tolerance_tight">\u00B15W</string>
+    <string name="pacing_tolerance_normal">\u00B110W</string>
+    <string name="pacing_tolerance_relaxed">\u00B120W</string>
+    <string name="pacing_tolerance_tight_desc">نطاق صارم — الأفضل لجهد مستقر كالتدريب الداخلي</string>
+    <string name="pacing_tolerance_normal_desc">الافتراضي — توازن جيد بين التوجيه والمرونة</string>
+    <string name="pacing_tolerance_relaxed_desc">نطاق واسع — إشعارات ادفع/خفف أقل</string>
+    <string name="pacing_tolerance_custom_desc">تسامح واط مخصص</string>
+
+    <!-- Riding position presets -->
+    <string name="position_drops">Drops</string>
+    <string name="position_hoods">Hoods</string>
+    <string name="position_tops">Tops</string>
+    <string name="position_aero_drops">A.Drops</string>
+    <string name="position_aero">Aero</string>
+    <string name="position_tt">TT</string>
+
+    <!-- Road surface presets -->
+    <string name="surface_smooth">ناعم</string>
+    <string name="surface_road">طريق عادي</string>
+    <string name="surface_rough">خشن</string>
+    <string name="surface_cobbles">حجري</string>
+    <string name="surface_gravel">حصى</string>
+
+    <!-- Bike type presets -->
+    <string name="bike_race">سباق</string>
+    <string name="bike_aero">ايرو</string>
+    <string name="bike_tt">TT</string>
+    <string name="bike_endurance">تحمل</string>
+    <string name="bike_custom">مخصص</string>
+
+    <!-- Pacing modes -->
+    <string name="pacing_steady">ثابت</string>
+    <string name="pacing_steady_desc">جهد متساوٍ طوال الوقت</string>
+    <string name="pacing_race">سباق</string>
+    <string name="pacing_race_desc">بداية محافظة، نهاية قوية</string>
+    <string name="pacing_survival">بقاء</string>
+    <string name="pacing_survival_desc">أقل طاقة، فقط الوصول للقمة</string>
+
+    <!-- Bonus Actions -->
+    <string name="action_toggle_view">تبديل العرض</string>
+    <string name="action_cycle_pacing">تدوير وضع الإيقاع</string>
+    <string name="action_reset_wprime">إعادة تعيين W\'</string>
+    <string name="action_pacing_mode_changed">وضع الإيقاع</string>
+    <string name="action_wprime_reset">تمت إعادة تعيين W\'</string>
+    <string name="action_wprime_reset_detail">إعادة التعيين إلى 100%%</string>
+
+    <!-- About -->
+    <string name="about_title">حول</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_privacy">سياسة الخصوصية</string>
+    <string name="about_contact">اتصل بنا</string>
+    <string name="about_contact_email">info@7climb.com</string>
+
+    <!-- History -->
+    <string name="history_title">سجل التسلق</string>
+    <string name="history_empty">لا توجد تسلقات مسجلة بعد</string>
+    <string name="history_climbs">تسلقات</string>
+    <string name="history_recent">المحاولات الأخيرة</string>
+    <string name="history_pr">PR</string>
+</resources>

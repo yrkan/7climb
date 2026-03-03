@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">7Climb</string>
+    <string name="extension_name">7Climb</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">爬坡智能</string>
+    <string name="notification_channel_description">后台爬坡监测与 W\' 追踪</string>
+    <string name="notification_title">7Climb 运行中</string>
+    <string name="notification_text">正在监测爬坡数据</string>
+
+    <!-- DataType names -->
+    <string name="datatype_wprime">W\' 余量</string>
+    <string name="datatype_wprime_desc">实时 W\' 余量与消耗仪表</string>
+    <string name="datatype_pacing">配速目标</string>
+    <string name="datatype_pacing_desc">基于物理的目标功率建议</string>
+    <string name="datatype_grade">坡度</string>
+    <string name="datatype_grade_desc">当前道路坡度百分比</string>
+    <string name="datatype_overview">爬坡概览</string>
+    <string name="datatype_overview_desc">综合视图：W\' + 配速 + 进度 + 预计到达</string>
+    <string name="datatype_eta">到顶预计</string>
+    <string name="datatype_eta_desc">到达山顶的预计时间</string>
+    <string name="datatype_progress">爬坡进度</string>
+    <string name="datatype_progress_desc">剩余距离和海拔</string>
+    <string name="datatype_profile">爬坡轮廓</string>
+    <string name="datatype_profile_desc">海拔轮廓可视化</string>
+    <string name="datatype_segment">下一段</string>
+    <string name="datatype_segment_desc">即将到来的坡度段预览</string>
+    <string name="datatype_compact">紧凑爬坡</string>
+    <string name="datatype_compact_desc">小字段的精简爬坡信息</string>
+    <string name="datatype_stats">爬坡统计</string>
+    <string name="datatype_stats_desc">VAM、W/kg、HR、踏频、能量指标</string>
+    <string name="datatype_fit">爬坡 FIT 数据</string>
+    <string name="datatype_fit_desc">将 W\' 余量和配速数据记录到 FIT 文件</string>
+    <string name="datatype_ride_metrics">骑行指标</string>
+    <string name="datatype_ride_metrics_desc">NP、IF、TSS</string>
+    <string name="datatype_power_zones">功率区间</string>
+    <string name="datatype_power_zones_desc">Coggan 功率区间分布及当前区间</string>
+    <string name="datatype_match_burn">火柴燃烧</string>
+    <string name="datatype_match_burn_desc">超CP火柴追踪与恢复计时</string>
+    <string name="datatype_next_climb">下一爬坡</string>
+    <string name="datatype_next_climb_desc">路线上下一个爬坡的距离和预计到达</string>
+
+    <!-- Labels -->
+    <string name="label_grade">坡度</string>
+    <string name="label_wprime">W\'BAL</string>
+    <string name="label_target">目标</string>
+    <string name="label_actual">实际</string>
+    <string name="label_eta">ETA</string>
+    <string name="label_remaining">剩余</string>
+    <string name="label_progress">进度</string>
+    <string name="label_distance">距离</string>
+    <string name="label_elevation">海拔</string>
+    <string name="label_power">功率</string>
+    <string name="label_next">下段</string>
+    <string name="label_avg_grade">均值</string>
+    <string name="label_category">CAT</string>
+
+    <!-- Pacing advice -->
+    <string name="advice_push">加力</string>
+    <string name="advice_ease">减力</string>
+    <string name="advice_steady">稳住</string>
+    <string name="advice_perfect">完美</string>
+
+    <!-- W\' Status -->
+    <string name="wprime_fresh">充沛</string>
+    <string name="wprime_good">良好</string>
+    <string name="wprime_working">消耗中</string>
+    <string name="wprime_depleting">下降中</string>
+    <string name="wprime_critical">危急</string>
+    <string name="wprime_empty">耗尽</string>
+
+    <!-- Alerts: W' Critical -->
+    <string name="alert_wprime_title">W\' %1$d%%</string>
+    <string name="alert_wprime_detail_full">降至 %1$dW — %2$d秒后耗尽</string>
+    <string name="alert_wprime_detail_power">降至 %1$dW — 保留余量</string>
+    <string name="alert_wprime_detail_time">%1$d秒后耗尽 — 立即降低功率</string>
+    <string name="alert_wprime_detail_basic">降低功率 — 保留余量</string>
+    <string name="alert_wprime_empty">W\' 已耗尽 — 仅限恢复</string>
+
+    <!-- Alerts: Steep Ahead -->
+    <string name="alert_steep_title">%2$dm后 %1$s</string>
+    <string name="alert_steep_detail_now">降挡 — 保持坐姿</string>
+    <string name="alert_steep_detail_ahead">减少10W — 为陡坡留力</string>
+
+    <!-- Alerts: Summit Approaching -->
+    <string name="alert_summit_title">山顶 %1$dm</string>
+    <string name="alert_summit_detail_push">W\' 良好 — 冲向顶峰</string>
+    <string name="alert_summit_detail_hold">保持输出 — 快到了</string>
+    <string name="alert_summit_detail_save">W\' %1$d%% — 稳定到顶</string>
+
+    <!-- Alerts: Climb Started -->
+    <string name="alert_climb_title">爬坡 %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_detail_power">+%1$dm — 目标 %2$dW</string>
+    <string name="alert_climb_detail_basic">+%1$dm 海拔上升</string>
+
+    <!-- Alerts: PR -->
+    <string name="alert_pr_title">PR! -%1$s</string>
+    <string name="alert_pr_detail_stats">平均 %1$dW · %2$.1f W/kg</string>
+    <string name="alert_pr_detail_name">%1$s 新最佳成绩</string>
+    <string name="alert_pr_detail_basic">新个人纪录</string>
+
+    <!-- Settings -->
+    <string name="settings_title">设置</string>
+    <string name="settings_athlete">运动员档案</string>
+    <string name="settings_ftp">FTP（阈值功率）</string>
+    <string name="settings_ftp_hint">你能维持约1小时的最大功率。\n进行20分钟全力骑行并乘以0.95。\n或使用 Zwift、TrainerRoad 等的 FTP。</string>
+    <string name="settings_weight">体重</string>
+    <string name="settings_weight_hint">你的体重</string>
+    <string name="settings_bike">自行车设置</string>
+    <string name="settings_position">骑行姿势</string>
+    <string name="settings_position_hint">影响空气动力学阻力计算</string>
+    <string name="settings_surface">路面状况</string>
+    <string name="settings_surface_hint">影响滚动阻力计算</string>
+    <string name="settings_pacing">配速策略</string>
+    <string name="settings_pacing_mode">配速模式</string>
+    <string name="settings_pacing_tolerance">配速容差</string>
+    <string name="settings_alerts">提醒</string>
+    <string name="settings_alerts_enabled">启用提醒</string>
+    <string name="settings_alert_sound">声音</string>
+    <string name="settings_alert_cooldown">冷却时间</string>
+    <string name="settings_alert_wprime_toggle">W\' 危急警告</string>
+    <string name="settings_alert_steep_toggle">前方陡坡</string>
+    <string name="settings_alert_summit_toggle">即将到顶</string>
+    <string name="settings_alert_climb_start_toggle">爬坡开始</string>
+    <string name="settings_wprime_threshold">W\' 警报阈值</string>
+    <string name="settings_wprime_threshold_hint">W\' 余量低于此百分比时触发警报</string>
+    <string name="settings_bike_type">自行车类型</string>
+    <string name="settings_bike_weight">车重</string>
+    <string name="settings_bike_weight_hint">含配件的自行车总重量</string>
+    <string name="settings_cp">CP（临界功率）</string>
+    <string name="settings_cp_hint">设为0自动计算（FTP × 0.95）。\n或输入通过3+12分钟测试得到的CP。</string>
+    <string name="settings_advanced">高级</string>
+    <string name="settings_advanced_hint">仅在通过测试获得数据后修改</string>
+    <string name="settings_wprime">W\'（无氧容量）</string>
+    <string name="settings_wprime_hint">在FTP以上到力竭可做的功。\n典型范围：15000–25000 J。\n冲刺型偏高，爬坡型偏低。</string>
+    <string name="settings_cda">CdA（气动阻力）</string>
+    <string name="settings_cda_hint">由上方骑行姿势自动设置</string>
+    <string name="settings_crr">Crr（滚动阻力）</string>
+    <string name="settings_crr_hint">由上方路面状况自动设置</string>
+    <string name="settings_history">历史</string>
+    <string name="settings_view_history">查看爬坡历史</string>
+    <string name="settings_about">关于</string>
+    <string name="settings_version">版本</string>
+    <string name="settings_not_configured">请设置 FTP 和体重以开始</string>
+    <string name="label_last_segment">上一段</string>
+    <string name="label_last">上次</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确定</string>
+    <string name="settings_hide_advanced">隐藏高级设置</string>
+    <string name="settings_show_advanced">显示高级设置</string>
+
+    <!-- Detection settings -->
+    <string name="settings_detection">爬坡检测</string>
+    <string name="detection_sensitive">敏感</string>
+    <string name="detection_balanced">均衡</string>
+    <string name="detection_conservative">保守</string>
+    <string name="detection_sensitive_desc">捕捉小坡 — 适合丘陵地形、短爬坡</string>
+    <string name="detection_balanced_desc">默认 — 适合大多数骑行</string>
+    <string name="detection_conservative_desc">仅显著爬坡 — 适合带丘陵的平坦地区</string>
+    <string name="detection_custom_desc">自定义检测参数</string>
+    <string name="detection_show_finetune">微调检测</string>
+    <string name="detection_hide_finetune">隐藏微调</string>
+    <string name="detection_min_grade">最小坡度</string>
+    <string name="detection_min_grade_hint">开始检测爬坡的坡度</string>
+    <string name="detection_min_elevation">最小爬升</string>
+    <string name="detection_min_elevation_hint">确认爬坡所需的垂直米数</string>
+    <string name="detection_confirm_distance">确认距离</string>
+    <string name="detection_confirm_distance_hint">确认前需要的爬升米数</string>
+    <string name="detection_end_distance">结束距离</string>
+    <string name="detection_end_distance_hint">结束已检测爬坡的平路/下坡米数</string>
+
+    <!-- Fatigue/Durability -->
+    <string name="settings_durability">耐久性</string>
+    <string name="settings_fatigue_enabled">启用疲劳模型</string>
+    <string name="settings_fatigue_enabled_hint">长距离骑行中考虑疲劳因素降低有效 FTP</string>
+    <string name="settings_fatigue_decay_rate">衰减速率</string>
+    <string name="settings_fatigue_decay_rate_hint">阈值时间后每小时 FTP 下降量（0.01–0.10）</string>
+    <string name="settings_fatigue_threshold">阈值时间</string>
+    <string name="settings_fatigue_threshold_hint">疲劳开始降低 FTP 前的骑行时间</string>
+
+    <!-- Pacing tolerance -->
+    <string name="pacing_tolerance_tight">\u00B15W</string>
+    <string name="pacing_tolerance_normal">\u00B110W</string>
+    <string name="pacing_tolerance_relaxed">\u00B120W</string>
+    <string name="pacing_tolerance_tight_desc">严格范围 — 最适合稳定的室内型输出</string>
+    <string name="pacing_tolerance_normal_desc">默认 — 指导与灵活性的良好平衡</string>
+    <string name="pacing_tolerance_relaxed_desc">宽松范围 — 更少的加力/减力提示</string>
+    <string name="pacing_tolerance_custom_desc">自定义瓦特容差</string>
+
+    <!-- Riding position presets -->
+    <string name="position_drops">Drops</string>
+    <string name="position_hoods">Hoods</string>
+    <string name="position_tops">Tops</string>
+    <string name="position_aero_drops">A.Drops</string>
+    <string name="position_aero">Aero</string>
+    <string name="position_tt">TT</string>
+
+    <!-- Road surface presets -->
+    <string name="surface_smooth">光滑</string>
+    <string name="surface_road">普通公路</string>
+    <string name="surface_rough">粗糙</string>
+    <string name="surface_cobbles">鹅卵石</string>
+    <string name="surface_gravel">碎石路</string>
+
+    <!-- Bike type presets -->
+    <string name="bike_race">公路车</string>
+    <string name="bike_aero">气动车</string>
+    <string name="bike_tt">TT</string>
+    <string name="bike_endurance">耐力车</string>
+    <string name="bike_custom">自定义</string>
+
+    <!-- Pacing modes -->
+    <string name="pacing_steady">稳定</string>
+    <string name="pacing_steady_desc">全程均匀输出</string>
+    <string name="pacing_race">比赛</string>
+    <string name="pacing_race_desc">保守起步，强力冲刺</string>
+    <string name="pacing_survival">生存</string>
+    <string name="pacing_survival_desc">最低能耗，到顶即可</string>
+
+    <!-- Bonus Actions -->
+    <string name="action_toggle_view">切换视图</string>
+    <string name="action_cycle_pacing">切换配速模式</string>
+    <string name="action_reset_wprime">重置 W\' 余量</string>
+    <string name="action_pacing_mode_changed">配速模式</string>
+    <string name="action_wprime_reset">W\' 余量已重置</string>
+    <string name="action_wprime_reset_detail">已重置至 100%%</string>
+
+    <!-- About -->
+    <string name="about_title">关于</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_privacy">隐私政策</string>
+    <string name="about_contact">联系我们</string>
+    <string name="about_contact_email">info@7climb.com</string>
+
+    <!-- History -->
+    <string name="history_title">爬坡历史</string>
+    <string name="history_empty">尚无爬坡记录</string>
+    <string name="history_climbs">爬坡</string>
+    <string name="history_recent">近期尝试</string>
+    <string name="history_pr">PR</string>
+</resources>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">7Climb</string>
+    <string name="extension_name">7Climb</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Stigningsintelligens</string>
+    <string name="notification_channel_description">Bakgrundsövervakning av stigningar och W\' tracking</string>
+    <string name="notification_title">7Climb Aktiv</string>
+    <string name="notification_text">Övervakar stigningsdata</string>
+
+    <!-- DataType names -->
+    <string name="datatype_wprime">W\' Balans</string>
+    <string name="datatype_wprime_desc">Realtids W\' balans med utarmningsindikator</string>
+    <string name="datatype_pacing">Pacingmål</string>
+    <string name="datatype_pacing_desc">Fysikbaserad rekommenderad måleffekt</string>
+    <string name="datatype_grade">Lutning</string>
+    <string name="datatype_grade_desc">Aktuell väglutnisprocent</string>
+    <string name="datatype_overview">Stigningsöversikt</string>
+    <string name="datatype_overview_desc">Kombinerad vy: W\' + pacing + framsteg + ETA</string>
+    <string name="datatype_eta">Topp ETA</string>
+    <string name="datatype_eta_desc">Beräknad tid till toppen</string>
+    <string name="datatype_progress">Stigningsframsteg</string>
+    <string name="datatype_progress_desc">Återstående avstånd och höjdmeter</string>
+    <string name="datatype_profile">Stigningsprofil</string>
+    <string name="datatype_profile_desc">Höjdprofil visualisering</string>
+    <string name="datatype_segment">Nästa Segment</string>
+    <string name="datatype_segment_desc">Förhandsgranskning av kommande lutningssegment</string>
+    <string name="datatype_compact">Kompakt Stigning</string>
+    <string name="datatype_compact_desc">Minimal stigningsinfo för små fält</string>
+    <string name="datatype_stats">Stigningsstatistik</string>
+    <string name="datatype_stats_desc">VAM, W/kg, HR, kadens, energimätningar</string>
+    <string name="datatype_fit">Stigning FIT Data</string>
+    <string name="datatype_fit_desc">Sparar W\' balans och pacingdata i FIT fil</string>
+    <string name="datatype_ride_metrics">Turmätningar</string>
+    <string name="datatype_ride_metrics_desc">Normalized Power, Intensity Factor, TSS</string>
+    <string name="datatype_power_zones">Effektzoner</string>
+    <string name="datatype_power_zones_desc">Coggan effektzonfördelning och aktuell zon</string>
+    <string name="datatype_match_burn">Match Burn</string>
+    <string name="datatype_match_burn_desc">Över-CP match tracking med återhämtningstimer</string>
+    <string name="datatype_next_climb">Nästa Stigning</string>
+    <string name="datatype_next_climb_desc">Avstånd och ETA till nästa stigning på rutten</string>
+
+    <!-- Labels -->
+    <string name="label_grade">LUTN</string>
+    <string name="label_wprime">W\'BAL</string>
+    <string name="label_target">MÅL</string>
+    <string name="label_actual">AKTU</string>
+    <string name="label_eta">ETA</string>
+    <string name="label_remaining">KVAR</string>
+    <string name="label_progress">FRAMST</string>
+    <string name="label_distance">AVST</string>
+    <string name="label_elevation">HÖJD</string>
+    <string name="label_power">EFFEKT</string>
+    <string name="label_next">NÄSTA</string>
+    <string name="label_avg_grade">SNI</string>
+    <string name="label_category">KAT</string>
+
+    <!-- Pacing advice -->
+    <string name="advice_push">PUSH</string>
+    <string name="advice_ease">LUGN</string>
+    <string name="advice_steady">JÄMN</string>
+    <string name="advice_perfect">PERFEKT</string>
+
+    <!-- W\' Status -->
+    <string name="wprime_fresh">PIGG</string>
+    <string name="wprime_good">BRA</string>
+    <string name="wprime_working">AKTIV</string>
+    <string name="wprime_depleting">SJUNKER</string>
+    <string name="wprime_critical">KRITISK</string>
+    <string name="wprime_empty">TOM</string>
+
+    <!-- Alerts: W' Critical -->
+    <string name="alert_wprime_title">W\' %1$d%%</string>
+    <string name="alert_wprime_detail_full">Sänk till %1$dW — tom om %2$ds</string>
+    <string name="alert_wprime_detail_power">Sänk till %1$dW — spara reserver</string>
+    <string name="alert_wprime_detail_time">Tom om %1$ds — minska effekt nu</string>
+    <string name="alert_wprime_detail_basic">Minska effekt — spara reserver</string>
+    <string name="alert_wprime_empty">W\' uttömd — bara återhämtning</string>
+
+    <!-- Alerts: Steep Ahead -->
+    <string name="alert_steep_title">%1$s om %2$dm</string>
+    <string name="alert_steep_detail_now">Växla ner — sitt kvar</string>
+    <string name="alert_steep_detail_ahead">Sänk 10W — spara till väggen</string>
+
+    <!-- Alerts: Summit Approaching -->
+    <string name="alert_summit_title">TOPP %1$dm</string>
+    <string name="alert_summit_detail_push">W\' bra — tryck på till toppen</string>
+    <string name="alert_summit_detail_hold">Håll emot — nästan framme</string>
+    <string name="alert_summit_detail_save">W\' på %1$d%% — jämnt till toppen</string>
+
+    <!-- Alerts: Climb Started -->
+    <string name="alert_climb_title">STIGNING %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_detail_power">+%1$dm — Mål %2$dW</string>
+    <string name="alert_climb_detail_basic">+%1$dm höjdmeter</string>
+
+    <!-- Alerts: PR -->
+    <string name="alert_pr_title">PR! -%1$s</string>
+    <string name="alert_pr_detail_stats">Sni %1$dW · %2$.1f W/kg</string>
+    <string name="alert_pr_detail_name">Nytt rekord på %1$s</string>
+    <string name="alert_pr_detail_basic">Nytt personligt rekord</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Inställningar</string>
+    <string name="settings_athlete">Atletprofil</string>
+    <string name="settings_ftp">FTP (Tröskeleffekt)</string>
+    <string name="settings_ftp_hint">Maxeffekt du kan hålla i ~1 timme.\nKör 20 min allt-ut och multiplicera med 0,95.\nEller använd din FTP från Zwift, TrainerRoad osv.</string>
+    <string name="settings_weight">Vikt</string>
+    <string name="settings_weight_hint">Din kroppsvikt</string>
+    <string name="settings_bike">Cykelkonfiguration</string>
+    <string name="settings_position">Körposition</string>
+    <string name="settings_position_hint">Påverkar aerodynamisk motståndsberäkning</string>
+    <string name="settings_surface">Vägyta</string>
+    <string name="settings_surface_hint">Påverkar rullmotståndsberäkning</string>
+    <string name="settings_pacing">Pacingstrategi</string>
+    <string name="settings_pacing_mode">Pacingläge</string>
+    <string name="settings_pacing_tolerance">Pacingtolerans</string>
+    <string name="settings_alerts">Varningar</string>
+    <string name="settings_alerts_enabled">Aktivera Varningar</string>
+    <string name="settings_alert_sound">Ljud</string>
+    <string name="settings_alert_cooldown">Nedkylning</string>
+    <string name="settings_alert_wprime_toggle">W\' Kritisk Varning</string>
+    <string name="settings_alert_steep_toggle">Brant Sträcka Framåt</string>
+    <string name="settings_alert_summit_toggle">Toppen Närmar Sig</string>
+    <string name="settings_alert_climb_start_toggle">Stigning Startad</string>
+    <string name="settings_wprime_threshold">W\' Varningströskel</string>
+    <string name="settings_wprime_threshold_hint">Varning utlöses när W\' balans sjunker under denna procent</string>
+    <string name="settings_bike_type">Cykeltyp</string>
+    <string name="settings_bike_weight">Cykelvikt</string>
+    <string name="settings_bike_weight_hint">Total vikt för din cykel med tillbehör</string>
+    <string name="settings_cp">CP (Critical Power)</string>
+    <string name="settings_cp_hint">Sätt till 0 för automatisk beräkning (FTP × 0,95).\nEller ange din testade CP från ett 3+12 min protokoll.</string>
+    <string name="settings_advanced">Avancerat</string>
+    <string name="settings_advanced_hint">Ändra bara om du känner till dina värden från tester</string>
+    <string name="settings_wprime">W\' (Anaerob Kapacitet)</string>
+    <string name="settings_wprime_hint">Arbete du kan utföra ovanför FTP innan utmattning.\nTypiskt intervall: 15000–25000 J.\nSprinters högre, klättrare lägre.</string>
+    <string name="settings_cda">CdA (Aerodynamisk Motstånd)</string>
+    <string name="settings_cda_hint">Ställs in automatiskt av Körposition ovan</string>
+    <string name="settings_crr">Crr (Rullmotstånd)</string>
+    <string name="settings_crr_hint">Ställs in automatiskt av Vägyta ovan</string>
+    <string name="settings_history">Historik</string>
+    <string name="settings_view_history">Visa Stigningshistorik</string>
+    <string name="settings_about">Om</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_not_configured">Ställ in din FTP och vikt för att komma igång</string>
+    <string name="label_last_segment">SISTA SEG</string>
+    <string name="label_last">SIST</string>
+    <string name="cancel">Avbryt</string>
+    <string name="ok">OK</string>
+    <string name="settings_hide_advanced">Dölj avancerade inställningar</string>
+    <string name="settings_show_advanced">Visa avancerade inställningar</string>
+
+    <!-- Detection settings -->
+    <string name="settings_detection">Stigningsdetektering</string>
+    <string name="detection_sensitive">Känslig</string>
+    <string name="detection_balanced">Balanserad</string>
+    <string name="detection_conservative">Konserv.</string>
+    <string name="detection_sensitive_desc">Fångar små kullar — kuperad terräng, korta stigningar</string>
+    <string name="detection_balanced_desc">Standard — bra för de flesta turer</string>
+    <string name="detection_conservative_desc">Bara stora stigningar — platta områden med kullar</string>
+    <string name="detection_custom_desc">Anpassade detekteringsparametrar</string>
+    <string name="detection_show_finetune">Finjustera detektering</string>
+    <string name="detection_hide_finetune">Dölj finjustering</string>
+    <string name="detection_min_grade">Minsta Lutning</string>
+    <string name="detection_min_grade_hint">Lutning där stigningsdetektering startar</string>
+    <string name="detection_min_elevation">Min Höjdstigning</string>
+    <string name="detection_min_elevation_hint">Höjdmeter som krävs för att bekräfta en stigning</string>
+    <string name="detection_confirm_distance">Bekräftelseavstånd</string>
+    <string name="detection_confirm_distance_hint">Meter stigning som behövs innan bekräftelse</string>
+    <string name="detection_end_distance">Slutavstånd</string>
+    <string name="detection_end_distance_hint">Meter platt/nedför för att avsluta en detekterad stigning</string>
+
+    <!-- Fatigue/Durability -->
+    <string name="settings_durability">Uthållighet</string>
+    <string name="settings_fatigue_enabled">Aktivera Trötthetsmodell</string>
+    <string name="settings_fatigue_enabled_hint">Minskar effektiv FTP under långa turer pga. trötthet</string>
+    <string name="settings_fatigue_decay_rate">Avklingningshastighet</string>
+    <string name="settings_fatigue_decay_rate_hint">FTP-minskning per timme efter tröskel (0,01–0,10)</string>
+    <string name="settings_fatigue_threshold">Tröskeltimmar</string>
+    <string name="settings_fatigue_threshold_hint">Timmar innan trötthet börjar minska FTP</string>
+
+    <!-- Pacing tolerance -->
+    <string name="pacing_tolerance_tight">\u00B15W</string>
+    <string name="pacing_tolerance_normal">\u00B110W</string>
+    <string name="pacing_tolerance_relaxed">\u00B120W</string>
+    <string name="pacing_tolerance_tight_desc">Snävt band — bäst för stabila inomhuslika insatser</string>
+    <string name="pacing_tolerance_normal_desc">Standard — bra balans mellan vägledning och flexibilitet</string>
+    <string name="pacing_tolerance_relaxed_desc">Brett band — färre PUSH/EASE meddelanden</string>
+    <string name="pacing_tolerance_custom_desc">Anpassad watt-tolerans</string>
+
+    <!-- Riding position presets -->
+    <string name="position_drops">Drops</string>
+    <string name="position_hoods">Hoods</string>
+    <string name="position_tops">Tops</string>
+    <string name="position_aero_drops">A.Drops</string>
+    <string name="position_aero">Aero</string>
+    <string name="position_tt">TT</string>
+
+    <!-- Road surface presets -->
+    <string name="surface_smooth">Slät</string>
+    <string name="surface_road">Väg</string>
+    <string name="surface_rough">Ojämn</string>
+    <string name="surface_cobbles">Kullersten</string>
+    <string name="surface_gravel">Grus</string>
+
+    <!-- Bike type presets -->
+    <string name="bike_race">Race</string>
+    <string name="bike_aero">Aero</string>
+    <string name="bike_tt">TT</string>
+    <string name="bike_endurance">Endurance</string>
+    <string name="bike_custom">Anpassad</string>
+
+    <!-- Pacing modes -->
+    <string name="pacing_steady">Jämn</string>
+    <string name="pacing_steady_desc">Jämn insats hela vägen</string>
+    <string name="pacing_race">Race</string>
+    <string name="pacing_race_desc">Konservativ start, stark avslutning</string>
+    <string name="pacing_survival">Överlevnad</string>
+    <string name="pacing_survival_desc">Minimal energi, bara ta dig till toppen</string>
+
+    <!-- Bonus Actions -->
+    <string name="action_toggle_view">Byt Vy</string>
+    <string name="action_cycle_pacing">Byt Pacingläge</string>
+    <string name="action_reset_wprime">Återställ W\' Balans</string>
+    <string name="action_pacing_mode_changed">Pacingläge</string>
+    <string name="action_wprime_reset">W\' Balans Återställd</string>
+    <string name="action_wprime_reset_detail">Återställd till 100%%</string>
+
+    <!-- About -->
+    <string name="about_title">Om</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_privacy">Integritetspolicy</string>
+    <string name="about_contact">Kontakt</string>
+    <string name="about_contact_email">info@7climb.com</string>
+
+    <!-- History -->
+    <string name="history_title">Stigningshistorik</string>
+    <string name="history_empty">Inga stigningar registrerade ännu</string>
+    <string name="history_climbs">Stigningar</string>
+    <string name="history_recent">Senaste Försök</string>
+    <string name="history_pr">PR</string>
+</resources>

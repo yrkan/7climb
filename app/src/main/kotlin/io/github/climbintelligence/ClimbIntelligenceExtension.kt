@@ -20,6 +20,10 @@ import io.github.climbintelligence.datatypes.glance.ClimbProfileGlanceDataType
 import io.github.climbintelligence.datatypes.glance.NextSegmentGlanceDataType
 import io.github.climbintelligence.datatypes.glance.CompactClimbGlanceDataType
 import io.github.climbintelligence.datatypes.glance.ClimbStatsGlanceDataType
+import io.github.climbintelligence.datatypes.glance.RideMetricsGlanceDataType
+import io.github.climbintelligence.datatypes.glance.PowerZonesGlanceDataType
+import io.github.climbintelligence.datatypes.glance.MatchBurnGlanceDataType
+import io.github.climbintelligence.datatypes.glance.NextClimbGlanceDataType
 import io.github.climbintelligence.datatypes.fit.ClimbFitRecording
 import io.github.climbintelligence.data.model.ClimbInfo
 import io.github.climbintelligence.engine.ClimbDataService
@@ -37,6 +41,8 @@ import io.github.climbintelligence.engine.AlertManager
 import io.github.climbintelligence.engine.RideStateMonitor
 import io.github.climbintelligence.engine.PRComparisonEngine
 import io.github.climbintelligence.engine.CheckpointManager
+import io.github.climbintelligence.engine.MetricsEngine
+import io.github.climbintelligence.engine.MatchBurnEngine
 import io.github.climbintelligence.engine.TacticalAnalyzer
 import io.hammerhead.karooext.KarooSystemService
 import io.hammerhead.karooext.extension.KarooExtension
@@ -116,6 +122,14 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
     val climbStatsTracker: ClimbStatsTracker
         get() = _climbStatsTracker ?: throw IllegalStateException("ClimbStatsTracker not initialized")
 
+    private var _metricsEngine: MetricsEngine? = null
+    val metricsEngine: MetricsEngine
+        get() = _metricsEngine ?: throw IllegalStateException("MetricsEngine not initialized")
+
+    private var _matchBurnEngine: MatchBurnEngine? = null
+    val matchBurnEngine: MatchBurnEngine
+        get() = _matchBurnEngine ?: throw IllegalStateException("MatchBurnEngine not initialized")
+
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     /** Jobs launched on Karoo connection — cancelled on disconnect to prevent duplicates */
@@ -144,6 +158,8 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
         _checkpointManager = CheckpointManager(preferencesRepository, this)
         _tacticalAnalyzer = TacticalAnalyzer()
         _climbStatsTracker = ClimbStatsTracker(preferencesRepository)
+        _metricsEngine = MetricsEngine(preferencesRepository)
+        _matchBurnEngine = MatchBurnEngine(preferencesRepository)
         _alertManager = AlertManager(this, preferencesRepository)
         _rideStateMonitor = RideStateMonitor(
             extension = this,
@@ -182,6 +198,11 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                 connectionJobs += serviceScope.launch {
                     climbDataService.liveState.collect { state ->
                         _wPrimeEngine?.update(state)
+                        _metricsEngine?.update(state)
+                        _matchBurnEngine?.update(state)
+                        // Feed fatigue-adjusted FTP and W' state to pacing calculator
+                        _pacingCalculator?.effectiveFtpOverride = _metricsEngine?.effectiveFtp ?: 0
+                        _pacingCalculator?.wPrimePercent = _wPrimeEngine?.state?.value?.percentage ?: 100.0
                         _pacingCalculator?.update(state, _climbDataService?.activeClimb?.value)
                         _climbDetector?.update(state)
                         _climbStatsTracker?.update(state, _climbDataService?.activeClimb?.value)
@@ -371,6 +392,8 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
         _tacticalAnalyzer = null
         _prComparisonEngine = null
         _climbRepository = null
+        _matchBurnEngine = null
+        _metricsEngine = null
         _climbDetector = null
         _pacingCalculator = null
         _wPrimeEngine = null
@@ -402,7 +425,11 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
             ClimbProfileGlanceDataType(this),
             NextSegmentGlanceDataType(this),
             CompactClimbGlanceDataType(this),
-            ClimbStatsGlanceDataType(this)
+            ClimbStatsGlanceDataType(this),
+            RideMetricsGlanceDataType(this),
+            PowerZonesGlanceDataType(this),
+            MatchBurnGlanceDataType(this),
+            NextClimbGlanceDataType(this)
         )
     }
 
@@ -415,6 +442,8 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                     val wPrimeState = _wPrimeEngine?.state?.value ?: return@addConsumer
                     val pacingTarget = _pacingCalculator?.target?.value ?: return@addConsumer
                     val prComparison = _prComparisonEngine?.comparison?.value
+                    val metrics = _metricsEngine?.state?.value
+                    val matchBurn = _matchBurnEngine?.state?.value
 
                     emitter.onNext(
                         ClimbFitRecording.buildRecordValues(
@@ -423,7 +452,10 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                             pacingAdviceOrdinal = pacingTarget.advice.ordinal,
                             targetPower = pacingTarget.targetPower,
                             prDeltaMs = prComparison?.deltaMs,
-                            hasPR = prComparison?.hasPR == true
+                            hasPR = prComparison?.hasPR == true,
+                            normalizedPower = metrics?.normalizedPower ?: 0,
+                            tss = metrics?.trainingStressScore ?: 0.0,
+                            matchCount = matchBurn?.totalMatches ?: 0
                         )
                     )
                 } catch (e: Exception) {

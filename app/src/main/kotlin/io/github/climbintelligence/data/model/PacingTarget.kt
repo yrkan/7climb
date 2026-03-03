@@ -23,7 +23,11 @@ data class PacingTarget(
     val delta: Int = 0,
     val advice: PacingAdvice = PacingAdvice.STEADY,
     val projectedTimeSeconds: Long = 0L,
-    val mode: PacingMode = PacingMode.STEADY
+    val mode: PacingMode = PacingMode.STEADY,
+    val strategyPhase: String = "",
+    val firstHalfTarget: Int = 0,
+    val secondHalfTarget: Int = 0
 ) {
     val hasTarget: Boolean get() = targetPower > 0
+    val hasStrategy: Boolean get() = strategyPhase.isNotEmpty()
 }

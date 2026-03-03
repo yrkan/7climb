@@ -9,7 +9,10 @@ import io.github.climbintelligence.ClimbIntelligenceExtension
 import io.github.climbintelligence.data.model.ClimbInfo
 import io.github.climbintelligence.data.model.ClimbStats
 import io.github.climbintelligence.data.model.LiveClimbState
+import io.github.climbintelligence.data.model.MatchBurnState
+import io.github.climbintelligence.data.model.NextClimbInfo
 import io.github.climbintelligence.data.model.PacingTarget
+import io.github.climbintelligence.data.model.RideMetrics
 import io.github.climbintelligence.data.model.WPrimeState
 import io.github.climbintelligence.engine.PRComparison
 import io.github.climbintelligence.engine.TacticalAnalyzer
@@ -38,7 +41,10 @@ data class ClimbDisplayState(
     val climb: ClimbInfo? = null,
     val prComparison: PRComparison = PRComparison(),
     val tacticalInsight: TacticalAnalyzer.TacticalInsight? = null,
-    val climbStats: ClimbStats = ClimbStats()
+    val climbStats: ClimbStats = ClimbStats(),
+    val rideMetrics: RideMetrics = RideMetrics(),
+    val matchBurn: MatchBurnState = MatchBurnState(),
+    val nextClimb: NextClimbInfo = NextClimbInfo()
 ) {
     companion object {
         val PREVIEW = ClimbDisplayState(
@@ -66,6 +72,21 @@ data class ClimbDisplayState(
                 elapsedSeconds = 1800, avgPower = 235, maxPower = 310,
                 avgHR = 162, maxHR = 175, avgCadence = 78,
                 wKg = 3.5, avgWKg = 3.4, isTracking = true
+            ),
+            rideMetrics = RideMetrics(
+                normalizedPower = 245, intensityFactor = 0.92,
+                trainingStressScore = 87.0, variabilityIndex = 1.04,
+                elapsedSeconds = 3600, avgPower = 235, totalKj = 846.0,
+                powerZones = intArrayOf(120, 900, 1200, 800, 400, 150, 30),
+                currentZone = 3, hasData = true
+            ),
+            matchBurn = MatchBurnState(
+                totalMatches = 5, activeMatch = false,
+                totalKjAboveCp = 12.3, lastMatchRecoverySeconds = 45,
+                hasData = true
+            ),
+            nextClimb = NextClimbInfo(
+                distanceToStart = 2300.0, etaSeconds = 500, hasNext = true
             )
         )
     }
@@ -179,7 +200,10 @@ abstract class GlanceDataType(
             climb = climb,
             prComparison = climbExtension.prComparisonEngine.comparison.value,
             tacticalInsight = insight,
-            climbStats = climbExtension.climbStatsTracker.state.value
+            climbStats = climbExtension.climbStatsTracker.state.value,
+            rideMetrics = climbExtension.metricsEngine.state.value,
+            matchBurn = climbExtension.matchBurnEngine.state.value,
+            nextClimb = climbExtension.climbDataService.nextClimb.value
         )
     }
 }

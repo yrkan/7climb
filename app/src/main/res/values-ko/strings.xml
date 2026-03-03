@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">7Climb</string>
+    <string name="extension_name">7Climb</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">클라임 인텔리전스</string>
+    <string name="notification_channel_description">백그라운드 등반 모니터링 및 W\' 추적</string>
+    <string name="notification_title">7Climb 활성</string>
+    <string name="notification_text">등반 데이터 모니터링 중</string>
+
+    <!-- DataType names -->
+    <string name="datatype_wprime">W\' 밸런스</string>
+    <string name="datatype_wprime_desc">실시간 W\' 밸런스 및 소모 게이지</string>
+    <string name="datatype_pacing">페이싱 목표</string>
+    <string name="datatype_pacing_desc">물리 기반 목표 파워 추천</string>
+    <string name="datatype_grade">경사도</string>
+    <string name="datatype_grade_desc">현재 도로 경사 백분율</string>
+    <string name="datatype_overview">등반 개요</string>
+    <string name="datatype_overview_desc">복합 뷰: W\' + 페이싱 + 진행률 + 도착예정</string>
+    <string name="datatype_eta">정상 도착예정</string>
+    <string name="datatype_eta_desc">정상까지 예상 소요 시간</string>
+    <string name="datatype_progress">등반 진행</string>
+    <string name="datatype_progress_desc">남은 거리 및 고도</string>
+    <string name="datatype_profile">등반 프로필</string>
+    <string name="datatype_profile_desc">고도 프로필 시각화</string>
+    <string name="datatype_segment">다음 구간</string>
+    <string name="datatype_segment_desc">다음 경사 구간 미리보기</string>
+    <string name="datatype_compact">간략 등반</string>
+    <string name="datatype_compact_desc">작은 필드용 최소 등반 정보</string>
+    <string name="datatype_stats">등반 통계</string>
+    <string name="datatype_stats_desc">VAM, W/kg, HR, 케이던스, 에너지 지표</string>
+    <string name="datatype_fit">등반 FIT 데이터</string>
+    <string name="datatype_fit_desc">W\' 밸런스 및 페이싱 데이터를 FIT 파일에 기록</string>
+    <string name="datatype_ride_metrics">라이드 지표</string>
+    <string name="datatype_ride_metrics_desc">NP, IF, TSS</string>
+    <string name="datatype_power_zones">파워 존</string>
+    <string name="datatype_power_zones_desc">Coggan 파워 존 분포 및 현재 존</string>
+    <string name="datatype_match_burn">매치 번</string>
+    <string name="datatype_match_burn_desc">CP 이상 매치 추적 및 회복 타이머</string>
+    <string name="datatype_next_climb">다음 등반</string>
+    <string name="datatype_next_climb_desc">경로상 다음 등반까지 거리 및 도착예정</string>
+
+    <!-- Labels -->
+    <string name="label_grade">경사</string>
+    <string name="label_wprime">W\'BAL</string>
+    <string name="label_target">목표</string>
+    <string name="label_actual">실제</string>
+    <string name="label_eta">ETA</string>
+    <string name="label_remaining">잔여</string>
+    <string name="label_progress">진행</string>
+    <string name="label_distance">거리</string>
+    <string name="label_elevation">고도</string>
+    <string name="label_power">파워</string>
+    <string name="label_next">다음</string>
+    <string name="label_avg_grade">평균</string>
+    <string name="label_category">CAT</string>
+
+    <!-- Pacing advice -->
+    <string name="advice_push">밀어</string>
+    <string name="advice_ease">줄여</string>
+    <string name="advice_steady">유지</string>
+    <string name="advice_perfect">완벽</string>
+
+    <!-- W\' Status -->
+    <string name="wprime_fresh">충만</string>
+    <string name="wprime_good">양호</string>
+    <string name="wprime_working">소모중</string>
+    <string name="wprime_depleting">감소중</string>
+    <string name="wprime_critical">위험</string>
+    <string name="wprime_empty">고갈</string>
+
+    <!-- Alerts: W' Critical -->
+    <string name="alert_wprime_title">W\' %1$d%%</string>
+    <string name="alert_wprime_detail_full">%1$dW로 줄이세요 — %2$d초 후 고갈</string>
+    <string name="alert_wprime_detail_power">%1$dW로 줄이세요 — 여력을 남기세요</string>
+    <string name="alert_wprime_detail_time">%1$d초 후 고갈 — 지금 파워를 줄이세요</string>
+    <string name="alert_wprime_detail_basic">파워를 줄이세요 — 여력을 남기세요</string>
+    <string name="alert_wprime_empty">W\' 고갈 — 회복만 가능</string>
+
+    <!-- Alerts: Steep Ahead -->
+    <string name="alert_steep_title">%2$dm 후 %1$s</string>
+    <string name="alert_steep_detail_now">기어를 내리세요 — 안장에 앉으세요</string>
+    <string name="alert_steep_detail_ahead">10W 줄이세요 — 급경사에 대비</string>
+
+    <!-- Alerts: Summit Approaching -->
+    <string name="alert_summit_title">정상 %1$dm</string>
+    <string name="alert_summit_detail_push">W\' 양호 — 정상까지 밀어붙이세요</string>
+    <string name="alert_summit_detail_hold">현재 노력 유지 — 거의 다 왔습니다</string>
+    <string name="alert_summit_detail_save">W\' %1$d%% — 정상까지 꾸준히</string>
+
+    <!-- Alerts: Climb Started -->
+    <string name="alert_climb_title">등반 %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_detail_power">+%1$dm — 목표 %2$dW</string>
+    <string name="alert_climb_detail_basic">+%1$dm 고도 상승</string>
+
+    <!-- Alerts: PR -->
+    <string name="alert_pr_title">PR! -%1$s</string>
+    <string name="alert_pr_detail_stats">평균 %1$dW · %2$.1f W/kg</string>
+    <string name="alert_pr_detail_name">%1$s 최고 기록 갱신</string>
+    <string name="alert_pr_detail_basic">새 개인 기록</string>
+
+    <!-- Settings -->
+    <string name="settings_title">설정</string>
+    <string name="settings_athlete">선수 프로필</string>
+    <string name="settings_ftp">FTP (역치 파워)</string>
+    <string name="settings_ftp_hint">약 1시간 유지 가능한 최대 파워.\n20분 전력 주행 후 0.95를 곱하세요.\n또는 Zwift, TrainerRoad 등의 FTP를 사용하세요.</string>
+    <string name="settings_weight">체중</string>
+    <string name="settings_weight_hint">본인 체중</string>
+    <string name="settings_bike">자전거 설정</string>
+    <string name="settings_position">라이딩 포지션</string>
+    <string name="settings_position_hint">공기역학 드래그 계산에 영향</string>
+    <string name="settings_surface">노면 상태</string>
+    <string name="settings_surface_hint">구름 저항 계산에 영향</string>
+    <string name="settings_pacing">페이싱 전략</string>
+    <string name="settings_pacing_mode">페이싱 모드</string>
+    <string name="settings_pacing_tolerance">페이싱 허용 범위</string>
+    <string name="settings_alerts">알림</string>
+    <string name="settings_alerts_enabled">알림 활성화</string>
+    <string name="settings_alert_sound">소리</string>
+    <string name="settings_alert_cooldown">쿨다운</string>
+    <string name="settings_alert_wprime_toggle">W\' 위험 경고</string>
+    <string name="settings_alert_steep_toggle">급경사 구간 예고</string>
+    <string name="settings_alert_summit_toggle">정상 접근 중</string>
+    <string name="settings_alert_climb_start_toggle">등반 시작</string>
+    <string name="settings_wprime_threshold">W\' 알림 임계값</string>
+    <string name="settings_wprime_threshold_hint">W\' 밸런스가 이 비율 아래로 떨어지면 알림 발생</string>
+    <string name="settings_bike_type">자전거 유형</string>
+    <string name="settings_bike_weight">자전거 무게</string>
+    <string name="settings_bike_weight_hint">액세서리 포함 자전거 총 무게</string>
+    <string name="settings_cp">CP (임계 파워)</string>
+    <string name="settings_cp_hint">자동 계산은 0으로 설정 (FTP × 0.95).\n또는 3+12분 프로토콜로 테스트한 CP를 입력하세요.</string>
+    <string name="settings_advanced">고급</string>
+    <string name="settings_advanced_hint">테스트로 확인된 값이 있을 때만 변경하세요</string>
+    <string name="settings_wprime">W\' (무산소 용량)</string>
+    <string name="settings_wprime_hint">FTP 이상에서 소진까지 가능한 일량.\n일반적 범위: 15000–25000 J.\n스프린터는 높고, 클라이머는 낮은 편.</string>
+    <string name="settings_cda">CdA (공기 저항)</string>
+    <string name="settings_cda_hint">위의 라이딩 포지션에 따라 자동 설정됩니다</string>
+    <string name="settings_crr">Crr (구름 저항)</string>
+    <string name="settings_crr_hint">위의 노면 상태에 따라 자동 설정됩니다</string>
+    <string name="settings_history">기록</string>
+    <string name="settings_view_history">등반 기록 보기</string>
+    <string name="settings_about">정보</string>
+    <string name="settings_version">버전</string>
+    <string name="settings_not_configured">시작하려면 FTP와 체중을 설정하세요</string>
+    <string name="label_last_segment">마지막 구간</string>
+    <string name="label_last">이전</string>
+    <string name="cancel">취소</string>
+    <string name="ok">확인</string>
+    <string name="settings_hide_advanced">고급 설정 숨기기</string>
+    <string name="settings_show_advanced">고급 설정 보기</string>
+
+    <!-- Detection settings -->
+    <string name="settings_detection">등반 감지</string>
+    <string name="detection_sensitive">민감</string>
+    <string name="detection_balanced">균형</string>
+    <string name="detection_conservative">보수적</string>
+    <string name="detection_sensitive_desc">작은 언덕도 감지 — 언덕 지형, 짧은 등반용</string>
+    <string name="detection_balanced_desc">기본값 — 대부분의 라이딩에 적합</string>
+    <string name="detection_conservative_desc">주요 등반만 — 언덕이 있는 평지 지역용</string>
+    <string name="detection_custom_desc">사용자 정의 감지 매개변수</string>
+    <string name="detection_show_finetune">감지 세부 조정</string>
+    <string name="detection_hide_finetune">세부 조정 숨기기</string>
+    <string name="detection_min_grade">최소 경사도</string>
+    <string name="detection_min_grade_hint">등반 감지가 시작되는 경사도</string>
+    <string name="detection_min_elevation">최소 고도 상승</string>
+    <string name="detection_min_elevation_hint">등반 확인에 필요한 수직 미터</string>
+    <string name="detection_confirm_distance">확인 거리</string>
+    <string name="detection_confirm_distance_hint">확인 전 필요한 등반 미터</string>
+    <string name="detection_end_distance">종료 거리</string>
+    <string name="detection_end_distance_hint">감지된 등반을 종료하는 평지/내리막 미터</string>
+
+    <!-- Fatigue/Durability -->
+    <string name="settings_durability">내구성</string>
+    <string name="settings_fatigue_enabled">피로 모델 활성화</string>
+    <string name="settings_fatigue_enabled_hint">장거리 라이드에서 피로를 반영하여 유효 FTP를 감소시킵니다</string>
+    <string name="settings_fatigue_decay_rate">감소율</string>
+    <string name="settings_fatigue_decay_rate_hint">임계 시간 이후 시간당 FTP 감소량 (0.01–0.10)</string>
+    <string name="settings_fatigue_threshold">임계 시간</string>
+    <string name="settings_fatigue_threshold_hint">피로가 FTP를 줄이기 시작하는 시간</string>
+
+    <!-- Pacing tolerance -->
+    <string name="pacing_tolerance_tight">\u00B15W</string>
+    <string name="pacing_tolerance_normal">\u00B110W</string>
+    <string name="pacing_tolerance_relaxed">\u00B120W</string>
+    <string name="pacing_tolerance_tight_desc">엄격한 범위 — 안정적인 실내 훈련 같은 노력에 최적</string>
+    <string name="pacing_tolerance_normal_desc">기본값 — 안내와 유연성의 좋은 균형</string>
+    <string name="pacing_tolerance_relaxed_desc">넓은 범위 — PUSH/EASE 프롬프트 감소</string>
+    <string name="pacing_tolerance_custom_desc">사용자 정의 와트 허용 범위</string>
+
+    <!-- Riding position presets -->
+    <string name="position_drops">Drops</string>
+    <string name="position_hoods">Hoods</string>
+    <string name="position_tops">Tops</string>
+    <string name="position_aero_drops">A.Drops</string>
+    <string name="position_aero">Aero</string>
+    <string name="position_tt">TT</string>
+
+    <!-- Road surface presets -->
+    <string name="surface_smooth">매끄러움</string>
+    <string name="surface_road">일반 도로</string>
+    <string name="surface_rough">거친 노면</string>
+    <string name="surface_cobbles">자갈길</string>
+    <string name="surface_gravel">비포장</string>
+
+    <!-- Bike type presets -->
+    <string name="bike_race">레이스</string>
+    <string name="bike_aero">에어로</string>
+    <string name="bike_tt">TT</string>
+    <string name="bike_endurance">엔듀런스</string>
+    <string name="bike_custom">사용자 정의</string>
+
+    <!-- Pacing modes -->
+    <string name="pacing_steady">꾸준히</string>
+    <string name="pacing_steady_desc">전체적으로 균일한 노력</string>
+    <string name="pacing_race">레이스</string>
+    <string name="pacing_race_desc">보수적 시작, 강하게 마무리</string>
+    <string name="pacing_survival">서바이벌</string>
+    <string name="pacing_survival_desc">최소 에너지, 정상까지만 도달</string>
+
+    <!-- Bonus Actions -->
+    <string name="action_toggle_view">뷰 전환</string>
+    <string name="action_cycle_pacing">페이싱 모드 순환</string>
+    <string name="action_reset_wprime">W\' 밸런스 초기화</string>
+    <string name="action_pacing_mode_changed">페이싱 모드</string>
+    <string name="action_wprime_reset">W\' 밸런스 초기화됨</string>
+    <string name="action_wprime_reset_detail">100%%로 초기화</string>
+
+    <!-- About -->
+    <string name="about_title">정보</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_privacy">개인정보처리방침</string>
+    <string name="about_contact">문의</string>
+    <string name="about_contact_email">info@7climb.com</string>
+
+    <!-- History -->
+    <string name="history_title">등반 기록</string>
+    <string name="history_empty">아직 기록된 등반이 없습니다</string>
+    <string name="history_climbs">등반</string>
+    <string name="history_recent">최근 시도</string>
+    <string name="history_pr">PR</string>
+</resources>

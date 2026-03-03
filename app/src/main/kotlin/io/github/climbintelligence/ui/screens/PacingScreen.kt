@@ -18,6 +18,7 @@ import io.github.climbintelligence.R
 import io.github.climbintelligence.data.model.PacingMode
 import io.github.climbintelligence.data.model.PacingTolerance
 import io.github.climbintelligence.ui.theme.Theme
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
@@ -30,6 +31,13 @@ fun PacingScreen(onNavigateBack: () -> Unit) {
         .collectAsState(initial = PacingMode.STEADY)
     val pacingTolerance by (prefs?.pacingToleranceFlow ?: flowOf(PacingTolerance.NORMAL))
         .collectAsState(initial = PacingTolerance.NORMAL)
+
+    val fatigueEnabled by (prefs?.fatigueEnabledFlow ?: flowOf(true))
+        .collectAsState(initial = true)
+    val fatigueDecayRate by (prefs?.fatigueDecayRateFlow ?: flowOf(0.03))
+        .collectAsState(initial = 0.03)
+    val fatigueThresholdHours by (prefs?.fatigueThresholdHoursFlow ?: flowOf(2.0))
+        .collectAsState(initial = 2.0)
 
     SubScreenScaffold(
         title = stringResource(R.string.settings_pacing),
@@ -56,6 +64,152 @@ fun PacingScreen(onNavigateBack: () -> Unit) {
             null -> stringResource(R.string.pacing_tolerance_custom_desc)
         }
         HintText(toleranceDesc)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Durability / Fatigue section
+        PresetLabel(stringResource(R.string.settings_durability))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 4.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(if (fatigueEnabled) Theme.colors.optimal else Theme.colors.surface)
+                .clickable { scope.launch { prefs?.updateFatigueEnabled(!fatigueEnabled) } }
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.settings_fatigue_enabled),
+                    color = if (fatigueEnabled) Theme.colors.background else Theme.colors.text,
+                    fontSize = 13.sp,
+                    fontWeight = if (fatigueEnabled) FontWeight.Bold else FontWeight.Medium
+                )
+                Text(
+                    text = stringResource(R.string.settings_fatigue_enabled_hint),
+                    color = if (fatigueEnabled) Theme.colors.background.copy(alpha = 0.7f) else Theme.colors.dim,
+                    fontSize = 10.sp
+                )
+            }
+        }
+
+        if (fatigueEnabled) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Decay rate
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.settings_fatigue_decay_rate),
+                        color = Theme.colors.text,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = stringResource(R.string.settings_fatigue_decay_rate_hint),
+                        color = Theme.colors.dim,
+                        fontSize = 10.sp
+                    )
+                }
+                Text(
+                    text = "%.2f".format(fatigueDecayRate),
+                    color = Theme.colors.text,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                listOf(0.01, 0.03, 0.05, 0.08).forEach { rate ->
+                    val isSelected = kotlin.math.abs(fatigueDecayRate - rate) < 0.005
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(if (isSelected) Theme.colors.optimal else Theme.colors.surface)
+                            .clickable { scope.launch { prefs?.updateFatigueDecayRate(rate) } }
+                            .padding(vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "%.2f".format(rate),
+                            color = if (isSelected) Theme.colors.background else Theme.colors.dim,
+                            fontSize = 11.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Threshold hours
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.settings_fatigue_threshold),
+                        color = Theme.colors.text,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = stringResource(R.string.settings_fatigue_threshold_hint),
+                        color = Theme.colors.dim,
+                        fontSize = 10.sp
+                    )
+                }
+                Text(
+                    text = "%.1fh".format(fatigueThresholdHours),
+                    color = Theme.colors.text,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                listOf(1.0, 1.5, 2.0, 3.0).forEach { hours ->
+                    val isSelected = kotlin.math.abs(fatigueThresholdHours - hours) < 0.05
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(if (isSelected) Theme.colors.optimal else Theme.colors.surface)
+                            .clickable { scope.launch { prefs?.updateFatigueThresholdHours(hours) } }
+                            .padding(vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "%.1fh".format(hours),
+                            color = if (isSelected) Theme.colors.background else Theme.colors.dim,
+                            fontSize = 11.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
     }

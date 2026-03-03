@@ -110,6 +110,8 @@ class RideStateMonitor(
                     extension.wPrimeEngine.reset()
                     extension.climbDetector.reset()
                     extension.alertManager.reset()
+                    extension.metricsEngine.reset()
+                    extension.matchBurnEngine.reset()
 
                     android.util.Log.i(TAG, "Ride ended")
                 }

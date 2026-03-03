@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">7Climb</string>
+    <string name="extension_name">7Climb</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Klimintelligentie</string>
+    <string name="notification_channel_description">Achtergrond klimmonitoring en W\' tracking</string>
+    <string name="notification_title">7Climb Actief</string>
+    <string name="notification_text">Klimdata wordt bewaakt</string>
+
+    <!-- DataType names -->
+    <string name="datatype_wprime">W\' Balans</string>
+    <string name="datatype_wprime_desc">Realtime W\' balans met uitputtingsmeter</string>
+    <string name="datatype_pacing">Pacingdoel</string>
+    <string name="datatype_pacing_desc">Fysica-gebaseerd doelvermogen advies</string>
+    <string name="datatype_grade">Helling</string>
+    <string name="datatype_grade_desc">Huidig weghellingpercentage</string>
+    <string name="datatype_overview">Klimoverzicht</string>
+    <string name="datatype_overview_desc">Gecombineerd: W\' + pacing + voortgang + ETA</string>
+    <string name="datatype_eta">Top ETA</string>
+    <string name="datatype_eta_desc">Geschatte tijd tot de top</string>
+    <string name="datatype_progress">Klimvoortgang</string>
+    <string name="datatype_progress_desc">Resterende afstand en hoogtemeters</string>
+    <string name="datatype_profile">Klimprofiel</string>
+    <string name="datatype_profile_desc">Hoogteprofiel visualisatie</string>
+    <string name="datatype_segment">Volgend Segment</string>
+    <string name="datatype_segment_desc">Vooruitblik op komend hellingssegment</string>
+    <string name="datatype_compact">Compact Klim</string>
+    <string name="datatype_compact_desc">Minimale kliminfo voor kleine velden</string>
+    <string name="datatype_stats">Klimstatistieken</string>
+    <string name="datatype_stats_desc">VAM, W/kg, HR, cadans, energiemetingen</string>
+    <string name="datatype_fit">Klim FIT Data</string>
+    <string name="datatype_fit_desc">Slaat W\' balans en pacingdata op in FIT bestand</string>
+    <string name="datatype_ride_metrics">Ritmeting</string>
+    <string name="datatype_ride_metrics_desc">Normalized Power, Intensity Factor, TSS</string>
+    <string name="datatype_power_zones">Vermogenszones</string>
+    <string name="datatype_power_zones_desc">Coggan vermogenszoneverdeling en huidige zone</string>
+    <string name="datatype_match_burn">Match Burn</string>
+    <string name="datatype_match_burn_desc">Boven-CP match tracking met hersteltimer</string>
+    <string name="datatype_next_climb">Volgende Klim</string>
+    <string name="datatype_next_climb_desc">Afstand en ETA naar de volgende klim op de route</string>
+
+    <!-- Labels -->
+    <string name="label_grade">HELL</string>
+    <string name="label_wprime">W\'BAL</string>
+    <string name="label_target">DOEL</string>
+    <string name="label_actual">HUIDIG</string>
+    <string name="label_eta">ETA</string>
+    <string name="label_remaining">REST</string>
+    <string name="label_progress">VOORTG</string>
+    <string name="label_distance">AFST</string>
+    <string name="label_elevation">HOOGTE</string>
+    <string name="label_power">VERM</string>
+    <string name="label_next">VLGND</string>
+    <string name="label_avg_grade">GEM</string>
+    <string name="label_category">CAT</string>
+
+    <!-- Pacing advice -->
+    <string name="advice_push">PUSH</string>
+    <string name="advice_ease">RUSTIG</string>
+    <string name="advice_steady">GELIJK</string>
+    <string name="advice_perfect">PERFECT</string>
+
+    <!-- W\' Status -->
+    <string name="wprime_fresh">FRIS</string>
+    <string name="wprime_good">GOED</string>
+    <string name="wprime_working">BEZIG</string>
+    <string name="wprime_depleting">DALEND</string>
+    <string name="wprime_critical">KRITIEK</string>
+    <string name="wprime_empty">LEEG</string>
+
+    <!-- Alerts: W' Critical -->
+    <string name="alert_wprime_title">W\' %1$d%%</string>
+    <string name="alert_wprime_detail_full">Minder naar %1$dW — leeg in %2$ds</string>
+    <string name="alert_wprime_detail_power">Minder naar %1$dW — spaar reserves</string>
+    <string name="alert_wprime_detail_time">Leeg in %1$ds — verminder vermogen nu</string>
+    <string name="alert_wprime_detail_basic">Verminder vermogen — spaar reserves</string>
+    <string name="alert_wprime_empty">W\' uitgeput — alleen herstel</string>
+
+    <!-- Alerts: Steep Ahead -->
+    <string name="alert_steep_title">%1$s in %2$dm</string>
+    <string name="alert_steep_detail_now">Schakel terug — blijf zitten</string>
+    <string name="alert_steep_detail_ahead">10W minder — spaar voor de muur</string>
+
+    <!-- Alerts: Summit Approaching -->
+    <string name="alert_summit_title">TOP %1$dm</string>
+    <string name="alert_summit_detail_push">W\' goed — doorduwen naar de top</string>
+    <string name="alert_summit_detail_hold">Houd vol — bijna daar</string>
+    <string name="alert_summit_detail_save">W\' op %1$d%% — gelijkmatig naar de top</string>
+
+    <!-- Alerts: Climb Started -->
+    <string name="alert_climb_title">KLIM %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_detail_power">+%1$dm — Doel %2$dW</string>
+    <string name="alert_climb_detail_basic">+%1$dm hoogtemeters</string>
+
+    <!-- Alerts: PR -->
+    <string name="alert_pr_title">PR! -%1$s</string>
+    <string name="alert_pr_detail_stats">Gem %1$dW · %2$.1f W/kg</string>
+    <string name="alert_pr_detail_name">Nieuw record op %1$s</string>
+    <string name="alert_pr_detail_basic">Nieuw persoonlijk record</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Instellingen</string>
+    <string name="settings_athlete">Atleetprofiel</string>
+    <string name="settings_ftp">FTP (Drempelvermogen)</string>
+    <string name="settings_ftp_hint">Maximaal vermogen dat je ~1 uur kunt volhouden.\nDoe een 20 min alles-eruit inspanning en vermenigvuldig met 0,95.\nOf gebruik je FTP van Zwift, TrainerRoad, etc.</string>
+    <string name="settings_weight">Gewicht</string>
+    <string name="settings_weight_hint">Je lichaamsgewicht</string>
+    <string name="settings_bike">Fietsopstelling</string>
+    <string name="settings_position">Rijpositie</string>
+    <string name="settings_position_hint">Beïnvloedt de luchtweerstandberekening</string>
+    <string name="settings_surface">Wegdek</string>
+    <string name="settings_surface_hint">Beïnvloedt de rolweerstandberekening</string>
+    <string name="settings_pacing">Pacingstrategie</string>
+    <string name="settings_pacing_mode">Pacingmodus</string>
+    <string name="settings_pacing_tolerance">Pacingtolerantie</string>
+    <string name="settings_alerts">Waarschuwingen</string>
+    <string name="settings_alerts_enabled">Waarschuwingen inschakelen</string>
+    <string name="settings_alert_sound">Geluid</string>
+    <string name="settings_alert_cooldown">Afkoeltijd</string>
+    <string name="settings_alert_wprime_toggle">W\' Kritieke Waarschuwing</string>
+    <string name="settings_alert_steep_toggle">Steil Stuk Vooruit</string>
+    <string name="settings_alert_summit_toggle">Top Nadert</string>
+    <string name="settings_alert_climb_start_toggle">Klim Gestart</string>
+    <string name="settings_wprime_threshold">W\' Waarschuwingsdrempel</string>
+    <string name="settings_wprime_threshold_hint">Waarschuwing gaat af wanneer W\' balans onder dit percentage daalt</string>
+    <string name="settings_bike_type">Fietstype</string>
+    <string name="settings_bike_weight">Fietsgewicht</string>
+    <string name="settings_bike_weight_hint">Totaalgewicht van je fiets met accessoires</string>
+    <string name="settings_cp">CP (Critical Power)</string>
+    <string name="settings_cp_hint">Stel in op 0 voor automatische berekening (FTP × 0,95).\nOf voer je geteste CP in van een 3+12 min protocol.</string>
+    <string name="settings_advanced">Geavanceerd</string>
+    <string name="settings_advanced_hint">Wijzig alleen als je je waarden kent uit testen</string>
+    <string name="settings_wprime">W\' (Anaërobe Capaciteit)</string>
+    <string name="settings_wprime_hint">Arbeid die je boven FTP kunt leveren voor uitputting.\nTypisch bereik: 15000–25000 J.\nSprinters hoger, klimmers lager.</string>
+    <string name="settings_cda">CdA (Luchtweerstand)</string>
+    <string name="settings_cda_hint">Automatisch ingesteld door Rijpositie hierboven</string>
+    <string name="settings_crr">Crr (Rolweerstand)</string>
+    <string name="settings_crr_hint">Automatisch ingesteld door Wegdek hierboven</string>
+    <string name="settings_history">Geschiedenis</string>
+    <string name="settings_view_history">Klimgeschiedenis Bekijken</string>
+    <string name="settings_about">Over</string>
+    <string name="settings_version">Versie</string>
+    <string name="settings_not_configured">Stel je FTP en gewicht in om te beginnen</string>
+    <string name="label_last_segment">LAATSTE SEG</string>
+    <string name="label_last">LTST</string>
+    <string name="cancel">Annuleren</string>
+    <string name="ok">OK</string>
+    <string name="settings_hide_advanced">Geavanceerd verbergen</string>
+    <string name="settings_show_advanced">Geavanceerd tonen</string>
+
+    <!-- Detection settings -->
+    <string name="settings_detection">Klimdetectie</string>
+    <string name="detection_sensitive">Gevoelig</string>
+    <string name="detection_balanced">Gebalanceerd</string>
+    <string name="detection_conservative">Conserv.</string>
+    <string name="detection_sensitive_desc">Vangt kleine heuvels — heuvelachtig terrein, korte klimmen</string>
+    <string name="detection_balanced_desc">Standaard — goed voor de meeste ritten</string>
+    <string name="detection_conservative_desc">Alleen grote klimmen — vlak terrein met heuvels</string>
+    <string name="detection_custom_desc">Aangepaste detectieparameters</string>
+    <string name="detection_show_finetune">Detectie fijnafstemmen</string>
+    <string name="detection_hide_finetune">Fijnafstemming verbergen</string>
+    <string name="detection_min_grade">Minimale Helling</string>
+    <string name="detection_min_grade_hint">Helling waarbij klimdetectie start</string>
+    <string name="detection_min_elevation">Min Hoogtestijging</string>
+    <string name="detection_min_elevation_hint">Hoogtemeters vereist om een klim te bevestigen</string>
+    <string name="detection_confirm_distance">Bevestigingsafstand</string>
+    <string name="detection_confirm_distance_hint">Meters klimmen nodig voor bevestiging</string>
+    <string name="detection_end_distance">Eindafstand</string>
+    <string name="detection_end_distance_hint">Meters vlak/afdaling om een gedetecteerde klim te beëindigen</string>
+
+    <!-- Fatigue/Durability -->
+    <string name="settings_durability">Duurzaamheid</string>
+    <string name="settings_fatigue_enabled">Vermoeidheidsmodel Inschakelen</string>
+    <string name="settings_fatigue_enabled_hint">Verlaagt effectieve FTP tijdens lange ritten vanwege vermoeidheid</string>
+    <string name="settings_fatigue_decay_rate">Vervalsnelheid</string>
+    <string name="settings_fatigue_decay_rate_hint">FTP-verlaging per uur na drempel (0,01–0,10)</string>
+    <string name="settings_fatigue_threshold">Drempel Uren</string>
+    <string name="settings_fatigue_threshold_hint">Uren voordat vermoeidheid FTP begint te verlagen</string>
+
+    <!-- Pacing tolerance -->
+    <string name="pacing_tolerance_tight">\u00B15W</string>
+    <string name="pacing_tolerance_normal">\u00B110W</string>
+    <string name="pacing_tolerance_relaxed">\u00B120W</string>
+    <string name="pacing_tolerance_tight_desc">Strakke band — het beste voor stabiele inspanningen</string>
+    <string name="pacing_tolerance_normal_desc">Standaard — goede balans tussen sturing en flexibiliteit</string>
+    <string name="pacing_tolerance_relaxed_desc">Brede band — minder PUSH/EASE meldingen</string>
+    <string name="pacing_tolerance_custom_desc">Aangepaste watt-tolerantie</string>
+
+    <!-- Riding position presets -->
+    <string name="position_drops">Drops</string>
+    <string name="position_hoods">Hoods</string>
+    <string name="position_tops">Tops</string>
+    <string name="position_aero_drops">A.Drops</string>
+    <string name="position_aero">Aero</string>
+    <string name="position_tt">TT</string>
+
+    <!-- Road surface presets -->
+    <string name="surface_smooth">Glad</string>
+    <string name="surface_road">Weg</string>
+    <string name="surface_rough">Ruw</string>
+    <string name="surface_cobbles">Kasseien</string>
+    <string name="surface_gravel">Grind</string>
+
+    <!-- Bike type presets -->
+    <string name="bike_race">Race</string>
+    <string name="bike_aero">Aero</string>
+    <string name="bike_tt">TT</string>
+    <string name="bike_endurance">Endurance</string>
+    <string name="bike_custom">Aangepast</string>
+
+    <!-- Pacing modes -->
+    <string name="pacing_steady">Gelijkmatig</string>
+    <string name="pacing_steady_desc">Gelijke inspanning gedurende de hele klim</string>
+    <string name="pacing_race">Race</string>
+    <string name="pacing_race_desc">Voorzichtig starten, sterk finishen</string>
+    <string name="pacing_survival">Overleven</string>
+    <string name="pacing_survival_desc">Minimale energie, gewoon de top halen</string>
+
+    <!-- Bonus Actions -->
+    <string name="action_toggle_view">Weergave Wisselen</string>
+    <string name="action_cycle_pacing">Pacingmodus Wisselen</string>
+    <string name="action_reset_wprime">W\' Balans Resetten</string>
+    <string name="action_pacing_mode_changed">Pacingmodus</string>
+    <string name="action_wprime_reset">W\' Balans Reset</string>
+    <string name="action_wprime_reset_detail">Reset naar 100%%</string>
+
+    <!-- About -->
+    <string name="about_title">Over</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_privacy">Privacybeleid</string>
+    <string name="about_contact">Contact</string>
+    <string name="about_contact_email">info@7climb.com</string>
+
+    <!-- History -->
+    <string name="history_title">Klimgeschiedenis</string>
+    <string name="history_empty">Nog geen klimmen vastgelegd</string>
+    <string name="history_climbs">Klimmen</string>
+    <string name="history_recent">Recente Pogingen</string>
+    <string name="history_pr">PR</string>
+</resources>

@@ -4,6 +4,7 @@ import io.github.climbintelligence.ClimbIntelligenceExtension
 import io.github.climbintelligence.data.model.ClimbInfo
 import io.github.climbintelligence.data.model.ClimbSegment
 import io.github.climbintelligence.data.model.LiveClimbState
+import io.github.climbintelligence.data.model.NextClimbInfo
 import io.github.climbintelligence.util.ElevationPolylineDecoder
 import io.hammerhead.karooext.models.DataType
 import io.hammerhead.karooext.models.OnNavigationState
@@ -33,6 +34,10 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
     /** Whether a route with climbs is currently loaded */
     private val _hasRoute = MutableStateFlow(false)
     val hasRoute: StateFlow<Boolean> = _hasRoute.asStateFlow()
+
+    /** Next upcoming climb on the route */
+    private val _nextClimb = MutableStateFlow(NextClimbInfo())
+    val nextClimb: StateFlow<NextClimbInfo> = _nextClimb.asStateFlow()
 
     // Consumer IDs for cleanup
     private val powerConsumerId = AtomicReference<String?>(null)
@@ -354,6 +359,26 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                 progress = progress,
                 isActive = true
             )
+
+            // While on a climb, look for the next one after this climb
+            val nextAfterCurrent = climbs.firstOrNull { it.startDistance > onClimb.startDistance + onClimb.length }
+            if (nextAfterCurrent != null) {
+                val distToNext = nextAfterCurrent.startDistance - dist
+                val speed = currentSpeed.get()
+                val eta = if (speed > 0.5) (distToNext / speed).toLong() else 0L
+                _nextClimb.value = NextClimbInfo(
+                    distanceToStart = distToNext,
+                    etaSeconds = eta,
+                    climbName = nextAfterCurrent.name,
+                    climbCategory = nextAfterCurrent.category,
+                    climbLength = nextAfterCurrent.length,
+                    climbElevation = nextAfterCurrent.elevation,
+                    climbAvgGrade = nextAfterCurrent.avgGrade,
+                    hasNext = true
+                )
+            } else {
+                _nextClimb.value = NextClimbInfo()
+            }
         } else {
             // Not on a climb — show next upcoming climb (if any)
             val next = climbs.firstOrNull { it.startDistance > dist }
@@ -364,9 +389,27 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                     progress = 0.0,
                     isActive = false
                 )
-            } else if (_activeClimb.value?.isFromRoute == true) {
-                // Past all route climbs
-                _activeClimb.value = null
+
+                // Update next climb countdown
+                val distToNext = next.startDistance - dist
+                val speed = currentSpeed.get()
+                val eta = if (speed > 0.5) (distToNext / speed).toLong() else 0L
+                _nextClimb.value = NextClimbInfo(
+                    distanceToStart = distToNext,
+                    etaSeconds = eta,
+                    climbName = next.name,
+                    climbCategory = next.category,
+                    climbLength = next.length,
+                    climbElevation = next.elevation,
+                    climbAvgGrade = next.avgGrade,
+                    hasNext = true
+                )
+            } else {
+                if (_activeClimb.value?.isFromRoute == true) {
+                    // Past all route climbs
+                    _activeClimb.value = null
+                }
+                _nextClimb.value = NextClimbInfo()
             }
         }
     }

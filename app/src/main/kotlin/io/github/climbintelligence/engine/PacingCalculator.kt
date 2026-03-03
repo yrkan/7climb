@@ -31,6 +31,10 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
     private var mode = PacingMode.STEADY
     @Volatile
     private var toleranceWatts = 10
+    @Volatile
+    var effectiveFtpOverride: Int = 0
+    @Volatile
+    var wPrimePercent: Double = 100.0
 
     init {
         scope.launch {
@@ -77,6 +81,13 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
             (climb.distanceToTop / speed).toLong()
         } else 0L
 
+        // Compute whole-climb strategy for active route climbs with segment data
+        val (phase, firstHalf, secondHalf) = if (
+            climb != null && climb.isActive && climb.isFromRoute && climb.segments.isNotEmpty()
+        ) {
+            computeClimbStrategy(climb, targetPower)
+        } else Triple("", 0, 0)
+
         _target.value = PacingTarget(
             targetPower = targetPower,
             rangeLow = targetPower - tolerance,
@@ -84,47 +95,68 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
             delta = delta,
             advice = advice,
             projectedTimeSeconds = projectedTime,
-            mode = mode
+            mode = mode,
+            strategyPhase = phase,
+            firstHalfTarget = firstHalf,
+            secondHalfTarget = secondHalf
         )
     }
 
     /**
-     * FTP-based pacing with gradient adjustment.
-     *
-     * On steep grades aerodynamic drag is negligible (slow speed), so pushing
-     * slightly above base is optimal. On shallow grades aero matters more,
-     * so ease slightly to maintain efficiency.
+     * Whole-climb pacing strategy: negative-split approach adjusted by W' state.
+     * Returns (phase, firstHalfTarget, secondHalfTarget).
+     */
+    private fun computeClimbStrategy(climb: ClimbInfo, basePower: Int): Triple<String, Int, Int> {
+        val progress = climb.progress
+
+        val phase = when {
+            progress > 0.90 -> "SPRINT"
+            progress > 0.60 -> "PUSH"
+            progress > 0.30 -> "BUILD"
+            else -> "SAVE"
+        }
+
+        // Adjust split based on W' balance — conserve when low
+        val splitBias = when {
+            wPrimePercent < 30 -> 0.88
+            wPrimePercent < 60 -> 0.93
+            else -> 0.97
+        }
+
+        val firstHalf = (basePower * splitBias).toInt()
+        val secondHalf = (basePower * (2.0 - splitBias)).toInt()
+
+        return Triple(phase, firstHalf, secondHalf)
+    }
+
+    /**
+     * Physics-based pacing using CdA, Crr, mass, and altitude-adjusted air density.
+     * CdA/Crr/bike weight now directly affect pacing targets.
      */
     private fun calculateTargetPower(grade: Double, altitude: Double): Int {
         if (grade < 1.0) return 0 // Only pace on climbs
 
-        val ftp = profile.ftp.toDouble()
+        val ftp = (if (effectiveFtpOverride > 0) effectiveFtpOverride else profile.ftp).toDouble()
+        if (ftp <= 0) return 0
 
-        // Base FTP fraction per pacing mode
-        val baseFraction = when (mode) {
-            PacingMode.STEADY -> 0.90
-            PacingMode.RACE -> 1.00
-            PacingMode.SURVIVAL -> 0.75
+        val mass = profile.totalMass
+        val cda = profile.cda
+        val crr = profile.crr
+
+        // Speed that FTP produces at current conditions
+        val ftpSpeed = PhysicsUtils.speedFromPower(ftp, mass, grade, crr, cda, altitude)
+
+        // Mode-specific speed target relative to FTP speed
+        val targetSpeed = when (mode) {
+            PacingMode.STEADY -> ftpSpeed * 0.92
+            PacingMode.RACE -> ftpSpeed * 1.00
+            PacingMode.SURVIVAL -> ftpSpeed * 0.80
         }
 
-        // Gradient adjustment: push harder on steep (all gravity, negligible aero),
-        // ease slightly on shallow (aero still matters)
-        val gradientFactor = when {
-            grade >= 10.0 -> 1.05
-            grade >= 6.0 -> 1.02
-            grade >= 3.0 -> 1.00
-            else -> 0.97
-        }
+        // Power required for target speed
+        val targetPower = PhysicsUtils.powerRequired(mass, grade, crr, cda, altitude, targetSpeed).toInt()
 
-        // Altitude correction: VO2max drops ~6.5% per 1000m above 1500m
-        // Reduces effective FTP proportionally (capped at 25% reduction)
-        val altitudeFactor = if (altitude > 1500) {
-            1.0 - ((altitude - 1500) / 1000.0 * 0.065).coerceAtMost(0.25)
-        } else 1.0
-
-        val targetPower = (ftp * baseFraction * gradientFactor * altitudeFactor).toInt()
-
-        // Clamp to mode-specific range
+        // Safety clamp to mode-specific FTP-relative ranges
         return when (mode) {
             PacingMode.STEADY -> targetPower.coerceIn((ftp * 0.6).toInt(), (ftp * 1.05).toInt())
             PacingMode.RACE -> targetPower.coerceIn((ftp * 0.7).toInt(), (ftp * 1.15).toInt())

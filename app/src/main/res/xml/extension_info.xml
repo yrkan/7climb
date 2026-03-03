@@ -86,6 +86,38 @@
         graphical="true"
         icon="@drawable/ic_climb" />
 
+    <!-- Ride metrics: NP, IF, TSS -->
+    <DataType
+        typeId="ride-metrics"
+        description="@string/datatype_ride_metrics_desc"
+        displayName="@string/datatype_ride_metrics"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Power zones distribution -->
+    <DataType
+        typeId="power-zones"
+        description="@string/datatype_power_zones_desc"
+        displayName="@string/datatype_power_zones"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Match burn tracker -->
+    <DataType
+        typeId="match-burn"
+        description="@string/datatype_match_burn_desc"
+        displayName="@string/datatype_match_burn"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
+    <!-- Next climb countdown -->
+    <DataType
+        typeId="next-climb"
+        description="@string/datatype_next_climb_desc"
+        displayName="@string/datatype_next_climb"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
     <!-- Bonus Actions (hardware button actions) -->
     <BonusAction
         actionId="toggle-view"

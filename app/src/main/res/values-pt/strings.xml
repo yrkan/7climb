@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">7Climb</string>
+    <string name="extension_name">7Climb</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Inteligência de Subida</string>
+    <string name="notification_channel_description">Monitoramento de subidas e rastreamento W\' em segundo plano</string>
+    <string name="notification_title">7Climb Ativo</string>
+    <string name="notification_text">Monitorando dados de subida</string>
+
+    <!-- DataType names -->
+    <string name="datatype_wprime">W\' Balance</string>
+    <string name="datatype_wprime_desc">W\' balance em tempo real com indicador de esgotamento</string>
+    <string name="datatype_pacing">Ritmo Alvo</string>
+    <string name="datatype_pacing_desc">Potência alvo recomendada baseada em física</string>
+    <string name="datatype_grade">Inclinação</string>
+    <string name="datatype_grade_desc">Percentual de inclinação atual</string>
+    <string name="datatype_overview">Visão Geral</string>
+    <string name="datatype_overview_desc">Vista composta: W\' + ritmo + progresso + ETA</string>
+    <string name="datatype_eta">ETA Cume</string>
+    <string name="datatype_eta_desc">Tempo estimado para atingir o cume</string>
+    <string name="datatype_progress">Progresso Subida</string>
+    <string name="datatype_progress_desc">Distância e desnível restantes</string>
+    <string name="datatype_profile">Perfil Subida</string>
+    <string name="datatype_profile_desc">Visualização do perfil altimétrico</string>
+    <string name="datatype_segment">Segmento Seguinte</string>
+    <string name="datatype_segment_desc">Visualização do próximo segmento de inclinação</string>
+    <string name="datatype_compact">Subida Compacta</string>
+    <string name="datatype_compact_desc">Info mínima de subida para campos pequenos</string>
+    <string name="datatype_stats">Stats Subida</string>
+    <string name="datatype_stats_desc">VAM, W/kg, HR, cadência, métricas de energia</string>
+    <string name="datatype_fit">Dados FIT Subida</string>
+    <string name="datatype_fit_desc">Grava W\' balance e ritmo no arquivo FIT</string>
+    <string name="datatype_ride_metrics">Métricas Pedal</string>
+    <string name="datatype_ride_metrics_desc">Normalized Power, Intensity Factor, TSS</string>
+    <string name="datatype_power_zones">Zonas de Potência</string>
+    <string name="datatype_power_zones_desc">Distribuição de zonas de potência Coggan e zona atual</string>
+    <string name="datatype_match_burn">Match Burn</string>
+    <string name="datatype_match_burn_desc">Rastreamento de esforços acima do CP com timer de recuperação</string>
+    <string name="datatype_next_climb">Próxima Subida</string>
+    <string name="datatype_next_climb_desc">Distância e ETA até a próxima subida na rota</string>
+
+    <!-- Labels -->
+    <string name="label_grade">INCL</string>
+    <string name="label_wprime">W\'BAL</string>
+    <string name="label_target">ALVO</string>
+    <string name="label_actual">REAL</string>
+    <string name="label_eta">ETA</string>
+    <string name="label_remaining">RESTA</string>
+    <string name="label_progress">PROGR</string>
+    <string name="label_distance">DIST</string>
+    <string name="label_elevation">DESNV</string>
+    <string name="label_power">POT</string>
+    <string name="label_next">PRÓX</string>
+    <string name="label_avg_grade">MÉD</string>
+    <string name="label_category">CAT</string>
+
+    <!-- Pacing advice -->
+    <string name="advice_push">FORÇA</string>
+    <string name="advice_ease">CALMA</string>
+    <string name="advice_steady">FIRME</string>
+    <string name="advice_perfect">PERFEITO</string>
+
+    <!-- W\' Status -->
+    <string name="wprime_fresh">FRESCO</string>
+    <string name="wprime_good">BOM</string>
+    <string name="wprime_working">ESFORÇO</string>
+    <string name="wprime_depleting">CAINDO</string>
+    <string name="wprime_critical">CRÍTICO</string>
+    <string name="wprime_empty">VAZIO</string>
+
+    <!-- Alerts: W' Critical -->
+    <string name="alert_wprime_title">W\' %1$d%%</string>
+    <string name="alert_wprime_detail_full">Reduzir para %1$dW — vazio em %2$ds</string>
+    <string name="alert_wprime_detail_power">Reduzir para %1$dW — guardar reservas</string>
+    <string name="alert_wprime_detail_time">Vazio em %1$ds — reduzir potência agora</string>
+    <string name="alert_wprime_detail_basic">Reduzir potência — guardar reservas</string>
+    <string name="alert_wprime_empty">W\' esgotado — apenas recuperação</string>
+
+    <!-- Alerts: Steep Ahead -->
+    <string name="alert_steep_title">%1$s em %2$dm</string>
+    <string name="alert_steep_detail_now">Trocar marcha — ficar sentado</string>
+    <string name="alert_steep_detail_ahead">Reduzir 10W — guardar para o muro</string>
+
+    <!-- Alerts: Summit Approaching -->
+    <string name="alert_summit_title">CUME %1$dm</string>
+    <string name="alert_summit_detail_push">W\' bom — empurrar até o topo</string>
+    <string name="alert_summit_detail_hold">Manter esforço — quase lá</string>
+    <string name="alert_summit_detail_save">W\' em %1$d%% — constante até o topo</string>
+
+    <!-- Alerts: Climb Started -->
+    <string name="alert_climb_title">SUBIDA %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_detail_power">+%1$dm — Alvo %2$dW</string>
+    <string name="alert_climb_detail_basic">+%1$dm de desnível</string>
+
+    <!-- Alerts: PR -->
+    <string name="alert_pr_title">PR! -%1$s</string>
+    <string name="alert_pr_detail_stats">Méd %1$dW · %2$.1f W/kg</string>
+    <string name="alert_pr_detail_name">Novo recorde em %1$s</string>
+    <string name="alert_pr_detail_basic">Novo recorde pessoal</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Configurações</string>
+    <string name="settings_athlete">Perfil do Atleta</string>
+    <string name="settings_ftp">FTP (Potência Limiar)</string>
+    <string name="settings_ftp_hint">Potência máxima que consegue manter por ~1 hora.\nFaça um esforço de 20 min no máximo e multiplique por 0.95.\nOu use o seu FTP do Zwift, TrainerRoad, etc.</string>
+    <string name="settings_weight">Peso</string>
+    <string name="settings_weight_hint">O seu peso corporal</string>
+    <string name="settings_bike">Config Bicicleta</string>
+    <string name="settings_position">Posição de Pilotagem</string>
+    <string name="settings_position_hint">Afeta o cálculo da resistência aerodinâmica</string>
+    <string name="settings_surface">Superfície da Estrada</string>
+    <string name="settings_surface_hint">Afeta o cálculo da resistência ao rolamento</string>
+    <string name="settings_pacing">Estratégia de Ritmo</string>
+    <string name="settings_pacing_mode">Modo de Ritmo</string>
+    <string name="settings_pacing_tolerance">Tolerância de Ritmo</string>
+    <string name="settings_alerts">Alertas</string>
+    <string name="settings_alerts_enabled">Ativar Alertas</string>
+    <string name="settings_alert_sound">Som</string>
+    <string name="settings_alert_cooldown">Intervalo mínimo</string>
+    <string name="settings_alert_wprime_toggle">Alerta W\' Crítico</string>
+    <string name="settings_alert_steep_toggle">Trecho Íngreme à Frente</string>
+    <string name="settings_alert_summit_toggle">Cume Próximo</string>
+    <string name="settings_alert_climb_start_toggle">Subida Detetada</string>
+    <string name="settings_wprime_threshold">Limiar de Alerta W\'</string>
+    <string name="settings_wprime_threshold_hint">O alerta dispara quando W\' cai abaixo desta percentagem</string>
+    <string name="settings_bike_type">Tipo de Bicicleta</string>
+    <string name="settings_bike_weight">Peso da Bicicleta</string>
+    <string name="settings_bike_weight_hint">Peso total da bicicleta com acessórios</string>
+    <string name="settings_cp">CP (Potência Crítica)</string>
+    <string name="settings_cp_hint">Coloque 0 para cálculo automático (FTP × 0.95).\nOu insira o seu CP testado com protocolo 3+12 min.</string>
+    <string name="settings_advanced">Avançado</string>
+    <string name="settings_advanced_hint">Altere apenas se conhecer os seus valores por testes</string>
+    <string name="settings_wprime">W\' (Capacidade Anaeróbia)</string>
+    <string name="settings_wprime_hint">Trabalho que pode fazer acima do FTP antes do esgotamento.\nFaixa típica: 15000–25000 J.\nVelocistas tendem mais alto, escaladores mais baixo.</string>
+    <string name="settings_cda">CdA (Resistência Aero)</string>
+    <string name="settings_cda_hint">Definido automaticamente pela Posição acima</string>
+    <string name="settings_crr">Crr (Resistência Rolamento)</string>
+    <string name="settings_crr_hint">Definido automaticamente pela Superfície acima</string>
+    <string name="settings_history">Histórico</string>
+    <string name="settings_view_history">Ver Histórico de Subidas</string>
+    <string name="settings_about">Sobre</string>
+    <string name="settings_version">Versão</string>
+    <string name="settings_not_configured">Defina o seu FTP e peso para começar</string>
+    <string name="label_last_segment">ÚLT SEG</string>
+    <string name="label_last">ÚLT</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">OK</string>
+    <string name="settings_hide_advanced">Ocultar configurações avançadas</string>
+    <string name="settings_show_advanced">Mostrar configurações avançadas</string>
+
+    <!-- Detection settings -->
+    <string name="settings_detection">Deteção de Subida</string>
+    <string name="detection_sensitive">Sensível</string>
+    <string name="detection_balanced">Equilibrado</string>
+    <string name="detection_conservative">Conserv.</string>
+    <string name="detection_sensitive_desc">Deteta pequenas colinas — terreno ondulado, subidas curtas</string>
+    <string name="detection_balanced_desc">Predefinido — bom para a maioria dos pedais</string>
+    <string name="detection_conservative_desc">Apenas subidas significativas — regiões planas com colinas</string>
+    <string name="detection_custom_desc">Parâmetros de deteção personalizados</string>
+    <string name="detection_show_finetune">Ajustar deteção</string>
+    <string name="detection_hide_finetune">Ocultar ajuste fino</string>
+    <string name="detection_min_grade">Inclinação Mínima</string>
+    <string name="detection_min_grade_hint">Inclinação na qual a deteção começa</string>
+    <string name="detection_min_elevation">Desnível Mínimo</string>
+    <string name="detection_min_elevation_hint">Metros verticais necessários para confirmar uma subida</string>
+    <string name="detection_confirm_distance">Distância de Confirmação</string>
+    <string name="detection_confirm_distance_hint">Metros de subida necessários antes de confirmar</string>
+    <string name="detection_end_distance">Distância de Fim</string>
+    <string name="detection_end_distance_hint">Metros de plano/descida para terminar uma subida detetada</string>
+
+    <!-- Fatigue/Durability -->
+    <string name="settings_durability">Resistência</string>
+    <string name="settings_fatigue_enabled">Ativar Modelo de Fadiga</string>
+    <string name="settings_fatigue_enabled_hint">Reduz o FTP efetivo em pedais longos para considerar a fadiga</string>
+    <string name="settings_fatigue_decay_rate">Taxa de Decaimento</string>
+    <string name="settings_fatigue_decay_rate_hint">Redução do FTP por hora após o limiar (0.01–0.10)</string>
+    <string name="settings_fatigue_threshold">Horas de Limiar</string>
+    <string name="settings_fatigue_threshold_hint">Horas antes de a fadiga começar a reduzir o FTP</string>
+
+    <!-- Pacing tolerance -->
+    <string name="pacing_tolerance_tight">\u00B15W</string>
+    <string name="pacing_tolerance_normal">\u00B110W</string>
+    <string name="pacing_tolerance_relaxed">\u00B120W</string>
+    <string name="pacing_tolerance_tight_desc">Banda estrita — ideal para esforços constantes tipo rolo</string>
+    <string name="pacing_tolerance_normal_desc">Predefinido — bom equilíbrio entre orientação e flexibilidade</string>
+    <string name="pacing_tolerance_relaxed_desc">Banda larga — menos avisos FORÇA/CALMA</string>
+    <string name="pacing_tolerance_custom_desc">Tolerância em watts personalizada</string>
+
+    <!-- Riding position presets -->
+    <string name="position_drops">Drops</string>
+    <string name="position_hoods">Hoods</string>
+    <string name="position_tops">Tops</string>
+    <string name="position_aero_drops">A.Drops</string>
+    <string name="position_aero">Aero</string>
+    <string name="position_tt">TT</string>
+
+    <!-- Road surface presets -->
+    <string name="surface_smooth">Liso</string>
+    <string name="surface_road">Estrada</string>
+    <string name="surface_rough">Rugoso</string>
+    <string name="surface_cobbles">Paralelepípedo</string>
+    <string name="surface_gravel">Cascalho</string>
+
+    <!-- Bike type presets -->
+    <string name="bike_race">Corrida</string>
+    <string name="bike_aero">Aero</string>
+    <string name="bike_tt">TT</string>
+    <string name="bike_endurance">Endurance</string>
+    <string name="bike_custom">Person.</string>
+
+    <!-- Pacing modes -->
+    <string name="pacing_steady">Constante</string>
+    <string name="pacing_steady_desc">Esforço uniforme durante toda a subida</string>
+    <string name="pacing_race">Corrida</string>
+    <string name="pacing_race_desc">Início conservador, final forte</string>
+    <string name="pacing_survival">Sobrevivência</string>
+    <string name="pacing_survival_desc">Energia mínima, apenas chegar ao topo</string>
+
+    <!-- Bonus Actions -->
+    <string name="action_toggle_view">Alternar Vista</string>
+    <string name="action_cycle_pacing">Mudar Modo de Ritmo</string>
+    <string name="action_reset_wprime">Resetar W\' Balance</string>
+    <string name="action_pacing_mode_changed">Modo de Ritmo</string>
+    <string name="action_wprime_reset">W\' Balance Resetado</string>
+    <string name="action_wprime_reset_detail">Resetado para 100%%</string>
+
+    <!-- About -->
+    <string name="about_title">Sobre</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_privacy">Política de Privacidade</string>
+    <string name="about_contact">Contacto</string>
+    <string name="about_contact_email">info@7climb.com</string>
+
+    <!-- History -->
+    <string name="history_title">Histórico de Subidas</string>
+    <string name="history_empty">Nenhuma subida registada</string>
+    <string name="history_climbs">Subidas</string>
+    <string name="history_recent">Tentativas Recentes</string>
+    <string name="history_pr">PR</string>
+</resources>

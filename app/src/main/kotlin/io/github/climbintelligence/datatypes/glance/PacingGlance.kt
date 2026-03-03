@@ -101,6 +101,9 @@ private fun PacingMediumWide(state: ClimbDisplayState) {
                             GlanceModifier.padding(start = 8.dp)
                         )
                     }
+                    if (state.pacing.hasStrategy) {
+                        LabelText(state.pacing.strategyPhase, fontSize = 11)
+                    }
                 }
             }
         }
@@ -167,6 +170,20 @@ private fun PacingLarge(state: ClimbDisplayState) {
                         GlanceColors.Label,
                         valueFontSize = 16, labelFontSize = 12
                     )
+                    // Show strategy if active
+                    if (state.pacing.hasStrategy) {
+                        GlanceDivider()
+                        MetricValueRow(
+                            "STRATEGY", state.pacing.strategyPhase,
+                            GlanceColors.Optimal,
+                            valueFontSize = 16, labelFontSize = 12
+                        )
+                        MetricValueRow(
+                            "SPLIT", "${state.pacing.firstHalfTarget}W / ${state.pacing.secondHalfTarget}W",
+                            GlanceColors.Label,
+                            valueFontSize = 14, labelFontSize = 12
+                        )
+                    }
                 }
             }
         }
