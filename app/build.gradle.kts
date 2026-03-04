@@ -14,8 +14,8 @@ android {
         applicationId = "io.github.climbintelligence"
         minSdk = 23
         targetSdk = 35
-        versionCode = 9
-        versionName = "3.0.1"
+        versionCode = 10
+        versionName = "3.0.2"
     }
 
     buildTypes {

@@ -9,6 +9,10 @@ import io.github.climbintelligence.data.model.ClimbSegment
  */
 class TacticalAnalyzer {
 
+    private var cachedInsight: TacticalInsight? = null
+    private var cachedProgress: Double = -1.0
+    private var cachedClimbId: String = ""
+
     data class TacticalInsight(
         val type: InsightType,
         val distanceAhead: Double,   // meters to this section
@@ -200,10 +204,17 @@ class TacticalAnalyzer {
      * Prioritizes: CRITICAL > close HIGH > rest.
      */
     fun getPrimaryInsight(climb: ClimbInfo, currentProgress: Double): TacticalInsight? {
-        val all = analyzeClimb(climb, currentProgress)
+        if (climb.id == cachedClimbId &&
+            kotlin.math.abs(currentProgress - cachedProgress) < 0.01) {
+            return cachedInsight
+        }
+        cachedClimbId = climb.id
+        cachedProgress = currentProgress
 
-        return all.firstOrNull { it.priority == Priority.CRITICAL }
+        val all = analyzeClimb(climb, currentProgress)
+        cachedInsight = all.firstOrNull { it.priority == Priority.CRITICAL }
             ?: all.firstOrNull { it.priority == Priority.HIGH && it.distanceAhead < 300 }
             ?: all.firstOrNull()
+        return cachedInsight
     }
 }

@@ -1,7 +1,5 @@
 package io.github.climbintelligence.data.model
 
-import kotlinx.serialization.Serializable
-
 enum class WPrimeStatus {
     FRESH,      // > 90%
     GOOD,       // 70-90%
@@ -11,7 +9,6 @@ enum class WPrimeStatus {
     EMPTY       // < 10%
 }
 
-@Serializable
 data class WPrimeState(
     val balance: Double = 20000.0,
     val maxBalance: Double = 20000.0,

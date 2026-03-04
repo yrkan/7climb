@@ -25,28 +25,39 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
     private val _target = MutableStateFlow(PacingTarget())
     val target: StateFlow<PacingTarget> = _target.asStateFlow()
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
-    @Volatile
     private var profile = AthleteProfile()
-    @Volatile
     private var mode = PacingMode.STEADY
-    @Volatile
     private var toleranceWatts = 10
-    @Volatile
     var effectiveFtpOverride: Int = 0
-    @Volatile
+        set(value) {
+            if (field != value) { field = value; invalidateCache() }
+        }
     var wPrimePercent: Double = 100.0
+
+    // Physics cache
+    private var lastGrade = Double.NaN
+    private var lastAltitude = Double.NaN
+    private var lastTargetPower = 0
+    private var lastCacheFtp = 0
+    private var lastCacheMode = mode
+
+    private fun invalidateCache() {
+        lastGrade = Double.NaN
+    }
 
     init {
         scope.launch {
             preferencesRepository.athleteProfileFlow.collect { p ->
                 profile = p
+                invalidateCache()
             }
         }
         scope.launch {
             preferencesRepository.pacingModeFlow.collect { m ->
                 mode = m
+                invalidateCache()
             }
         }
         scope.launch {
@@ -147,6 +158,15 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
         val ftp = (if (effectiveFtpOverride > 0) effectiveFtpOverride else profile.ftp).toDouble()
         if (ftp <= 0) return 0
 
+        // Reuse cached result if inputs unchanged
+        val ftpInt = ftp.toInt()
+        if (kotlin.math.abs(grade - lastGrade) < 0.1 &&
+            kotlin.math.abs(altitude - lastAltitude) < 5.0 &&
+            ftpInt == lastCacheFtp && mode == lastCacheMode &&
+            lastTargetPower > 0) {
+            return lastTargetPower
+        }
+
         val mass = profile.totalMass
         val cda = profile.cda
         val crr = profile.crr
@@ -165,10 +185,17 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
         val targetPower = PhysicsUtils.powerRequired(mass, grade, crr, cda, altitude, targetSpeed).toInt()
 
         // Safety clamp to mode-specific FTP-relative ranges
-        return when (mode) {
+        val result = when (mode) {
             PacingMode.STEADY -> targetPower.coerceIn((ftp * 0.6).toInt(), (ftp * 1.05).toInt())
             PacingMode.RACE -> targetPower.coerceIn((ftp * 0.7).toInt(), (ftp * 1.15).toInt())
             PacingMode.SURVIVAL -> targetPower.coerceIn((ftp * 0.5).toInt(), (ftp * 0.9).toInt())
         }
+
+        lastGrade = grade
+        lastAltitude = altitude
+        lastCacheFtp = ftpInt
+        lastCacheMode = mode
+        lastTargetPower = result
+        return result
     }
 }

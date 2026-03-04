@@ -167,8 +167,8 @@ private fun ZonesLarge(state: ClimbDisplayState) {
                     ValueText(ZONE_NAMES[i], zColor, 11, GlanceModifier.padding(end = 2.dp))
                     Box(modifier = GlanceModifier.defaultWeight().height(6.dp).background(GlanceColors.Frame)) {
                         Row(modifier = GlanceModifier.fillMaxSize()) {
-                            val filled = (pct * 20).toInt().coerceIn(0, 20)
-                            for (j in 0 until 20) {
+                            val filled = (pct * 10).toInt().coerceIn(0, 10)
+                            for (j in 0 until 10) {
                                 Box(
                                     modifier = GlanceModifier.fillMaxHeight().defaultWeight()
                                         .background(if (j < filled) zColor else GlanceColors.Background)
@@ -214,7 +214,7 @@ private fun ZoneBar(zones: IntArray, height: Int) {
     val total = zones.sum().coerceAtLeast(1)
     Row(modifier = GlanceModifier.fillMaxWidth().height(height.dp).padding(vertical = 1.dp)) {
         for (i in 0..6) {
-            val segments = (zones[i].toDouble() / total * 20).toInt().coerceIn(0, 20)
+            val segments = (zones[i].toDouble() / total * 10).toInt().coerceIn(0, 10)
             if (segments > 0) {
                 for (j in 0 until segments) {
                     Box(
@@ -225,8 +225,8 @@ private fun ZoneBar(zones: IntArray, height: Int) {
             }
         }
         // Fill remaining with background
-        val filled = (0..6).sumOf { (zones[it].toDouble() / total * 20).toInt().coerceIn(0, 20) }
-        for (j in filled until 20) {
+        val filled = (0..6).sumOf { (zones[it].toDouble() / total * 10).toInt().coerceIn(0, 10) }
+        for (j in filled until 10) {
             Box(
                 modifier = GlanceModifier.fillMaxHeight().defaultWeight()
                     .background(GlanceColors.Background)

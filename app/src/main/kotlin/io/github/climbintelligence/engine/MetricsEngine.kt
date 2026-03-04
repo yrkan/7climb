@@ -18,21 +18,18 @@ class MetricsEngine(preferencesRepository: PreferencesRepository) {
     private val _state = MutableStateFlow(RideMetrics())
     val state: StateFlow<RideMetrics> = _state.asStateFlow()
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
-    @Volatile
     private var ftp = 0
-    @Volatile
     private var fatigueEnabled = true
-    @Volatile
     private var fatigueDecayRate = 0.03
-    @Volatile
     private var fatigueThresholdHours = 2.0
 
     // NP circular buffer (30s window)
     private val npWindow = IntArray(30)
     private var npWindowIndex = 0
     private var npWindowCount = 0
+    private var npWindowSum = 0
     private var npSumPow4 = 0.0
     private var npCount = 0L
 
@@ -77,14 +74,14 @@ class MetricsEngine(preferencesRepository: PreferencesRepository) {
         totalEnergyJoules += power // 1 sample per second = power * 1s
 
         // NP: 30s rolling average, then fourth-power accumulation
+        val oldPower = npWindow[npWindowIndex]
         npWindow[npWindowIndex] = power
+        npWindowSum = npWindowSum - oldPower + power
         npWindowIndex = (npWindowIndex + 1) % 30
         npWindowCount = minOf(npWindowCount + 1, 30)
 
         if (npWindowCount >= 30) {
-            // Calculate rolling 30s average
-            val rollingAvg = npWindow.sum().toDouble() / 30.0
-            // Accumulate fourth power of rolling average
+            val rollingAvg = npWindowSum.toDouble() / 30.0
             npSumPow4 += rollingAvg.pow(4)
             npCount++
         }
@@ -154,6 +151,7 @@ class MetricsEngine(preferencesRepository: PreferencesRepository) {
         npWindow.fill(0)
         npWindowIndex = 0
         npWindowCount = 0
+        npWindowSum = 0
         npSumPow4 = 0.0
         npCount = 0L
         totalPowerSum = 0L

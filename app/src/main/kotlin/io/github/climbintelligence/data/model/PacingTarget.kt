@@ -1,7 +1,5 @@
 package io.github.climbintelligence.data.model
 
-import kotlinx.serialization.Serializable
-
 enum class PacingAdvice {
     EASE_OFF,
     STEADY,
@@ -15,7 +13,6 @@ enum class PacingMode {
     SURVIVAL
 }
 
-@Serializable
 data class PacingTarget(
     val targetPower: Int = 0,
     val rangeLow: Int = 0,

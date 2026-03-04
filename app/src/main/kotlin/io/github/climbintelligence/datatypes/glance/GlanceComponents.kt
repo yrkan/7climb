@@ -136,7 +136,7 @@ fun MetricValueRow(
 }
 
 /**
- * Proportional progress bar using 20 quantized segments.
+ * Proportional progress bar using 10 quantized segments.
  * Each segment gets defaultWeight() so Glance distributes evenly.
  */
 @Composable
@@ -147,7 +147,7 @@ fun ProgressBar(
     modifier: GlanceModifier = GlanceModifier
 ) {
     val pct = progress.coerceIn(0.0, 1.0)
-    val totalSegments = 20
+    val totalSegments = 10
     val filledSegments = (pct * totalSegments).toInt().coerceIn(0, totalSegments)
 
     Box(

@@ -1,8 +1,5 @@
 package io.github.climbintelligence.data.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class RideMetrics(
     val normalizedPower: Int = 0,
     val intensityFactor: Double = 0.0,

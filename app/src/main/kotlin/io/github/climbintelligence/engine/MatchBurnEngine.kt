@@ -17,9 +17,8 @@ class MatchBurnEngine(preferencesRepository: PreferencesRepository) {
     private val _state = MutableStateFlow(MatchBurnState())
     val state: StateFlow<MatchBurnState> = _state.asStateFlow()
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
-    @Volatile
     private var cp = 0
 
     // Match state machine

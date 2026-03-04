@@ -40,9 +40,9 @@ class ClimbDetector {
     @Volatile private var minElevationGain = 15.0
 
     // Altitude/distance buffer for smoothing
-    private val altitudeBuffer = mutableListOf<Double>()
-    private val distanceBuffer = mutableListOf<Double>()
-    private val gradeBuffer = mutableListOf<Double>()
+    private val altitudeBuffer = ArrayDeque<Double>()
+    private val distanceBuffer = ArrayDeque<Double>()
+    private val gradeBuffer = ArrayDeque<Double>()
 
     // Climb tracking
     private var climbStartDistance = 0.0
@@ -69,20 +69,25 @@ class ClimbDetector {
         if (!state.hasData) return
 
         // Add to buffers
-        gradeBuffer.add(state.grade)
-        altitudeBuffer.add(state.altitude)
-        distanceBuffer.add(state.distance)
+        gradeBuffer.addLast(state.grade)
+        altitudeBuffer.addLast(state.altitude)
+        distanceBuffer.addLast(state.distance)
 
-        // Keep buffer size manageable
+        // Keep buffer size manageable — O(1) removal on ArrayDeque
         if (gradeBuffer.size > SMOOTHING_WINDOW * 2) {
-            gradeBuffer.removeAt(0)
-            altitudeBuffer.removeAt(0)
-            distanceBuffer.removeAt(0)
+            gradeBuffer.removeFirst()
+            altitudeBuffer.removeFirst()
+            distanceBuffer.removeFirst()
         }
 
-        // Smooth grade
+        // Smooth grade — iterate last N elements without allocating a list
         val smoothedGrade = if (gradeBuffer.size >= SMOOTHING_WINDOW) {
-            gradeBuffer.takeLast(SMOOTHING_WINDOW).average()
+            var sum = 0.0
+            val startIdx = gradeBuffer.size - SMOOTHING_WINDOW
+            for (i in startIdx until gradeBuffer.size) {
+                sum += gradeBuffer[i]
+            }
+            sum / SMOOTHING_WINDOW
         } else {
             state.grade
         }

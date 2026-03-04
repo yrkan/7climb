@@ -10,9 +10,15 @@ import io.hammerhead.karooext.models.DataType
 import io.hammerhead.karooext.models.OnNavigationState
 import io.hammerhead.karooext.models.OnStreamState
 import io.hammerhead.karooext.models.StreamState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
 
 class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
@@ -64,12 +70,20 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
     @Volatile
     private var hasReceivedData = false
 
+    /** Set by sensor callbacks, cleared by 1Hz timer after emission.
+     *  Prevents stale emissions when sensors are paused (e.g. ride pause). */
+    @Volatile
+    private var sensorUpdatedSinceLastEmit = false
+
+    private var emitJob: Job? = null
+
     // Cached route elevation profile points
     @Volatile
     private var routeElevationPoints: List<ElevationPolylineDecoder.ElevationPoint> = emptyList()
 
     fun startStreaming() {
         android.util.Log.i(TAG, "Starting data stream subscriptions")
+        emitJob?.cancel() // Defensive: prevent duplicate timers on reconnect
 
         try {
             // --- Navigation state subscription ---
@@ -89,7 +103,7 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                         state.dataPoint.singleValue?.toInt()?.let { value ->
                             currentPower.set(value)
                             hasReceivedData = true
-                            emitState()
+                            sensorUpdatedSinceLastEmit = true
                         }
                     }
                 }
@@ -103,7 +117,7 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                     if (state is StreamState.Streaming) {
                         state.dataPoint.singleValue?.toInt()?.let { value ->
                             currentHR.set(value)
-                            emitState()
+                            sensorUpdatedSinceLastEmit = true
                         }
                     }
                 }
@@ -117,7 +131,7 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                     if (state is StreamState.Streaming) {
                         state.dataPoint.singleValue?.toInt()?.let { value ->
                             currentCadence.set(value)
-                            emitState()
+                            sensorUpdatedSinceLastEmit = true
                         }
                     }
                 }
@@ -131,7 +145,7 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                     if (state is StreamState.Streaming) {
                         state.dataPoint.singleValue?.let { value ->
                             currentSpeed.set(value)
-                            emitState()
+                            sensorUpdatedSinceLastEmit = true
                         }
                     }
                 }
@@ -145,7 +159,7 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                     if (state is StreamState.Streaming) {
                         state.dataPoint.singleValue?.let { value ->
                             currentAltitude.set(value)
-                            emitState()
+                            sensorUpdatedSinceLastEmit = true
                         }
                     }
                 }
@@ -159,7 +173,7 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                     if (state is StreamState.Streaming) {
                         state.dataPoint.singleValue?.let { value ->
                             currentGrade.set(value)
-                            emitState()
+                            sensorUpdatedSinceLastEmit = true
                         }
                     }
                 }
@@ -173,8 +187,8 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                     if (state is StreamState.Streaming) {
                         state.dataPoint.singleValue?.let { value ->
                             currentDistance.set(value)
+                            sensorUpdatedSinceLastEmit = true
                             updateActiveClimbFromRoute()
-                            emitState()
                         }
                     }
                 }
@@ -189,12 +203,25 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                         val values = state.dataPoint.values
                         values["lat"]?.let { currentLat.set(it) }
                         values["lng"]?.let { currentLon.set(it) }
-                        emitState()
+                        sensorUpdatedSinceLastEmit = true
                     }
                 }
             )
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to start streaming: ${e.message}")
+        }
+
+        // Single 1Hz emission timer — replaces per-callback emitState() calls.
+        // Only emits when at least one sensor has fired since the last emission,
+        // preventing stale data accumulation during ride pause.
+        emitJob = CoroutineScope(Dispatchers.Main.immediate).launch {
+            while (isActive) {
+                delay(1000)
+                if (hasReceivedData && sensorUpdatedSinceLastEmit) {
+                    sensorUpdatedSinceLastEmit = false
+                    emitState()
+                }
+            }
         }
     }
 
@@ -454,6 +481,8 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
 
     fun stopStreaming() {
         android.util.Log.i(TAG, "Stopping data stream subscriptions")
+        emitJob?.cancel()
+        emitJob = null
         removeConsumer(powerConsumerId)
         removeConsumer(hrConsumerId)
         removeConsumer(cadenceConsumerId)

@@ -1,15 +1,11 @@
 package io.github.climbintelligence.data.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Match(
     val durationSeconds: Int = 0,
     val peakPower: Int = 0,
     val kjAboveCp: Double = 0.0
 )
 
-@Serializable
 data class MatchBurnState(
     val totalMatches: Int = 0,
     val activeMatch: Boolean = false,

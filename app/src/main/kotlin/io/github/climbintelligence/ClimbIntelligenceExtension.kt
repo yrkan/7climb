@@ -203,9 +203,10 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                         // Feed fatigue-adjusted FTP and W' state to pacing calculator
                         _pacingCalculator?.effectiveFtpOverride = _metricsEngine?.effectiveFtp ?: 0
                         _pacingCalculator?.wPrimePercent = _wPrimeEngine?.state?.value?.percentage ?: 100.0
-                        _pacingCalculator?.update(state, _climbDataService?.activeClimb?.value)
+                        val currentClimb = _climbDataService?.activeClimb?.value
+                        _pacingCalculator?.update(state, currentClimb)
                         _climbDetector?.update(state)
-                        _climbStatsTracker?.update(state, _climbDataService?.activeClimb?.value)
+                        _climbStatsTracker?.update(state, currentClimb)
                     }
                 }
 

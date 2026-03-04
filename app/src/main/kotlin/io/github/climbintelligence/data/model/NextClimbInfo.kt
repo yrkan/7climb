@@ -1,8 +1,5 @@
 package io.github.climbintelligence.data.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class NextClimbInfo(
     val distanceToStart: Double = 0.0,
     val etaSeconds: Long = 0,

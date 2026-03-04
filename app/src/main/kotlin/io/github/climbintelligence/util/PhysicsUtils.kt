@@ -91,12 +91,12 @@ object PhysicsUtils {
 
         // Newton's method approximation
         var speed = 3.0 // initial guess 3 m/s
-        for (i in 0 until 20) {
+        for (i in 0 until 10) {
             val f = totalForce(totalMassKg, gradePercent, crr, cda, altitudeM, speed)
             val pCalc = f * speed
             val error = pCalc - powerWatts
 
-            if (kotlin.math.abs(error) < 0.1) break
+            if (kotlin.math.abs(error) < 1.0) break
 
             // Derivative: dP/dv ≈ F + v * dF/dv
             val rho = airDensity(altitudeM)
