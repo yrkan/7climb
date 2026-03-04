@@ -363,7 +363,7 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
             // While on a climb, look for the next one after this climb
             val nextAfterCurrent = climbs.firstOrNull { it.startDistance > onClimb.startDistance + onClimb.length }
             if (nextAfterCurrent != null) {
-                val distToNext = nextAfterCurrent.startDistance - dist
+                val distToNext = (nextAfterCurrent.startDistance - dist).coerceAtLeast(0.0)
                 val speed = currentSpeed.get()
                 val eta = if (speed > 0.5) (distToNext / speed).toLong() else 0L
                 _nextClimb.value = NextClimbInfo(
@@ -391,7 +391,7 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                 )
 
                 // Update next climb countdown
-                val distToNext = next.startDistance - dist
+                val distToNext = (next.startDistance - dist).coerceAtLeast(0.0)
                 val speed = currentSpeed.get()
                 val eta = if (speed > 0.5) (distToNext / speed).toLong() else 0L
                 _nextClimb.value = NextClimbInfo(

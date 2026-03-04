@@ -27,7 +27,9 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    @Volatile
     private var profile = AthleteProfile()
+    @Volatile
     private var mode = PacingMode.STEADY
     @Volatile
     private var toleranceWatts = 10
@@ -124,7 +126,13 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
         }
 
         val firstHalf = (basePower * splitBias).toInt()
-        val secondHalf = (basePower * (2.0 - splitBias)).toInt()
+        // Cap second half: when W' is low, don't push above basePower
+        val secondHalfBias = if (wPrimePercent < 60) {
+            ((splitBias + 1.0) / 2.0).coerceAtMost(1.0)
+        } else {
+            2.0 - splitBias
+        }
+        val secondHalf = (basePower * secondHalfBias).toInt()
 
         return Triple(phase, firstHalf, secondHalf)
     }

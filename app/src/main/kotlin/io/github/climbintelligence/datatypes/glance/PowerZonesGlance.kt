@@ -64,7 +64,7 @@ private fun ZonesSmall(state: ClimbDisplayState) {
 private fun ZonesSmallWide(state: ClimbDisplayState) {
     val m = state.rideMetrics
     val zone = m.currentZone
-    if (!m.hasData || zone < 0) {
+    if (!m.hasData || zone !in 0..6) {
         Box(modifier = GlanceModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             ValueText(BaseDataType.NO_DATA, GlanceColors.Label, 28)
         }

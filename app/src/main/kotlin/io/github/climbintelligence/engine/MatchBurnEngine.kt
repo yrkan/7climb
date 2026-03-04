@@ -28,7 +28,7 @@ class MatchBurnEngine(preferencesRepository: PreferencesRepository) {
     private var matchPeakPower = 0
     private var matchKjAboveCp = 0.0
     private var belowCpCounter = 0
-    private var matchEndTime = 0L
+    private var matchEndElapsed = 0L
     private var totalMatches = 0
     private var totalKjAboveCp = 0.0
     private val recentMatches = mutableListOf<Match>()
@@ -67,8 +67,8 @@ class MatchBurnEngine(preferencesRepository: PreferencesRepository) {
         } else if (inMatch) {
             belowCpCounter++
             if (belowCpCounter >= 5) {
-                // Finalize match
-                val duration = (elapsedSeconds - matchStartSeconds - belowCpCounter).toInt().coerceAtLeast(1)
+                // Finalize match (full effort window including grace period)
+                val duration = (elapsedSeconds - matchStartSeconds).toInt().coerceAtLeast(1)
                 val match = Match(
                     durationSeconds = duration,
                     peakPower = matchPeakPower,
@@ -78,13 +78,13 @@ class MatchBurnEngine(preferencesRepository: PreferencesRepository) {
                 if (recentMatches.size > 10) recentMatches.removeAt(0)
                 totalMatches++
                 totalKjAboveCp += matchKjAboveCp
-                matchEndTime = System.currentTimeMillis()
+                matchEndElapsed = elapsedSeconds
                 inMatch = false
             }
         }
 
-        val recoverySec = if (!inMatch && matchEndTime > 0) {
-            ((System.currentTimeMillis() - matchEndTime) / 1000L).toInt()
+        val recoverySec = if (!inMatch && matchEndElapsed > 0) {
+            (elapsedSeconds - matchEndElapsed).toInt()
         } else 0
 
         _state.value = MatchBurnState(
@@ -105,7 +105,7 @@ class MatchBurnEngine(preferencesRepository: PreferencesRepository) {
         matchPeakPower = 0
         matchKjAboveCp = 0.0
         belowCpCounter = 0
-        matchEndTime = 0L
+        matchEndElapsed = 0L
         totalMatches = 0
         totalKjAboveCp = 0.0
         recentMatches.clear()

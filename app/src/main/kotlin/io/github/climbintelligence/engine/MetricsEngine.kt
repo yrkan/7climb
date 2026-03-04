@@ -77,7 +77,6 @@ class MetricsEngine(preferencesRepository: PreferencesRepository) {
         totalEnergyJoules += power // 1 sample per second = power * 1s
 
         // NP: 30s rolling average, then fourth-power accumulation
-        val oldPower = npWindow[npWindowIndex]
         npWindow[npWindowIndex] = power
         npWindowIndex = (npWindowIndex + 1) % 30
         npWindowCount = minOf(npWindowCount + 1, 30)
