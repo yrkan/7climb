@@ -40,6 +40,8 @@
     <string name="datatype_match_burn_desc">Above-CP match tracking with recovery timer</string>
     <string name="datatype_next_climb">Next Climb</string>
     <string name="datatype_next_climb_desc">Distance and ETA to next climb on route</string>
+    <string name="datatype_wprime_history">W\' History</string>
+    <string name="datatype_wprime_history_desc">W\' balance chart over the ride — green above zero, purple in deficit (reserve depth)</string>
 
     <!-- Labels -->
     <string name="label_grade">GRADE</string>
@@ -77,6 +79,8 @@
     <string name="alert_wprime_detail_time">Empty in %1$ds — reduce power now</string>
     <string name="alert_wprime_detail_basic">Reduce power — save reserves</string>
     <string name="alert_wprime_empty">W\' depleted — recovery only</string>
+    <string name="alert_wprime_deficit_title">W\' DEFICIT %1$d%%</string>
+    <string name="alert_wprime_deficit_detail">Beyond model — W\'max may be under-tuned</string>
 
     <!-- Alerts: Steep Ahead -->
     <string name="alert_steep_title">%1$s in %2$dm</string>
@@ -130,6 +134,14 @@
     <string name="settings_bike_weight_hint">Total weight of your bike with accessories</string>
     <string name="settings_cp">CP (Critical Power)</string>
     <string name="settings_cp_hint">Set to 0 for automatic calculation (FTP × 0.95).\nOr enter your tested CP from a 3+12 min protocol.</string>
+    <string name="settings_use_karoo_profile">Use profile from Karoo</string>
+    <string name="settings_use_karoo_profile_hint">Read FTP and body weight from the Karoo\'s rider profile instead of entering them here. Recommended — keeps a single source of truth.</string>
+    <string name="settings_karoo_ftp">Karoo FTP</string>
+    <string name="settings_karoo_weight">Karoo Weight</string>
+    <string name="settings_max_power">P-max (1s sprint power)</string>
+    <string name="settings_max_power_hint">Best 1-second sprint power. Used by the Morton 3-parameter model to estimate Maximum Power Available (MPA) given current fatigue. 0 disables.</string>
+    <string name="settings_use_three_param_model">Use 3-parameter model</string>
+    <string name="settings_use_three_param_model_hint">Enables Morton P-max-aware MPA calculation. Needs a configured P-max above.</string>
     <string name="settings_advanced">Advanced</string>
     <string name="settings_advanced_hint">Only change if you know your values from testing</string>
     <string name="settings_wprime">W\' (Anaerobic Capacity)</string>

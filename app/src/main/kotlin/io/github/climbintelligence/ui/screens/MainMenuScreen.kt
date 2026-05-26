@@ -50,7 +50,7 @@ fun MainMenuScreen(
 
     // Subtitles
     val athleteSubtitle = if (profile.isConfigured) {
-        "FTP: ${profile.ftp}W \u00B7 ${"%.1f".format(profile.weight)}kg"
+        "FTP: ${profile.effectiveFtp}W \u00B7 ${"%.1f".format(profile.effectiveWeight)}kg"
     } else {
         stringResource(R.string.settings_not_configured)
     }

@@ -20,6 +20,7 @@ import io.github.climbintelligence.datatypes.glance.ClimbProfileGlanceDataType
 import io.github.climbintelligence.datatypes.glance.NextSegmentGlanceDataType
 import io.github.climbintelligence.datatypes.glance.CompactClimbGlanceDataType
 import io.github.climbintelligence.datatypes.glance.ClimbStatsGlanceDataType
+import io.github.climbintelligence.datatypes.glance.WPrimeHistoryGlanceDataType
 import io.github.climbintelligence.datatypes.glance.RideMetricsGlanceDataType
 import io.github.climbintelligence.datatypes.glance.PowerZonesGlanceDataType
 import io.github.climbintelligence.datatypes.glance.MatchBurnGlanceDataType
@@ -33,6 +34,7 @@ import io.hammerhead.karooext.models.FitEffect
 import io.hammerhead.karooext.models.OnStreamState
 import io.hammerhead.karooext.models.RideState
 import io.hammerhead.karooext.models.StreamState
+import io.hammerhead.karooext.models.UserProfile
 import io.github.climbintelligence.engine.ClimbStatsTracker
 import io.github.climbintelligence.engine.WPrimeEngine
 import io.github.climbintelligence.engine.PacingCalculator
@@ -192,6 +194,20 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                     preferencesRepository.detectionSettingsFlow.collect { settings ->
                         _climbDetector?.updateSettings(settings)
                     }
+                }
+
+                // Bridge the Karoo's rider profile into our preferences so the
+                // W' / pacing engines pick up FTP + weight without forcing
+                // the rider to maintain those values in two places.
+                val userProfileConsumerId = karooSystem.addConsumer { profile: UserProfile ->
+                    serviceScope.launch {
+                        preferencesRepository.updateKarooFtp(profile.ftp)
+                        preferencesRepository.updateKarooWeight(profile.weight.toDouble())
+                    }
+                }
+                connectionJobs += serviceScope.launch {
+                    try { kotlinx.coroutines.awaitCancellation() }
+                    finally { karooSystem.removeConsumer(userProfileConsumerId) }
                 }
 
                 // Wire data flow: ClimbDataService -> WPrimeEngine, PacingCalculator, ClimbDetector
@@ -430,7 +446,8 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
             RideMetricsGlanceDataType(this),
             PowerZonesGlanceDataType(this),
             MatchBurnGlanceDataType(this),
-            NextClimbGlanceDataType(this)
+            NextClimbGlanceDataType(this),
+            WPrimeHistoryGlanceDataType(this)
         )
     }
 

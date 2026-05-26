@@ -52,8 +52,8 @@ class ClimbStatsTracker(preferencesRepository: PreferencesRepository) {
     init {
         scope.launch {
             preferencesRepository.athleteProfileFlow.collect { profile ->
-                if (profile.isConfigured && profile.weight > 0) {
-                    weight = profile.weight
+                if (profile.isConfigured && profile.effectiveWeight > 0) {
+                    weight = profile.effectiveWeight
                     profileLoaded = true
                 }
             }

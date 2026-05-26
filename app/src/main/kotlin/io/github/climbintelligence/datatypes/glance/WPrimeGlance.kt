@@ -42,16 +42,39 @@ private fun statusText(status: WPrimeStatus): String = when (status) {
     WPrimeStatus.DEPLETING -> "DEPLETING"
     WPrimeStatus.CRITICAL -> "CRITICAL"
     WPrimeStatus.EMPTY -> "EMPTY"
+    WPrimeStatus.DEFICIT -> "DEFICIT"
 }
 
+// Time-horizon symbols. ▼ = heading toward EMPTY (depleting), ▲ = heading
+// toward FULL (recovering). Distinct at a glance even on a tiny field, unlike
+// the old "TTE"/"TTF" whose only difference was an E vs F. Selection keys off
+// timeToEmpty / timeToFull directly — those are already computed from the
+// engine's 30s-smoothed power, so the symbol no longer flips at 1 Hz as
+// instantaneous power crosses CP (the prior bug, which keyed off the raw
+// depletionRate / recoveryRate and also blanked the field on edge ticks).
+private const val SYMBOL_EMPTYING = "▼"
+private const val SYMBOL_FILLING = "▲"
+
+// During a direction-change settle the engine holds the PREVIOUS direction's
+// value, so there's no placeholder to render — a positive value is always a
+// real horizon. Hidden (both -1) at full W' and when there's no clear horizon.
 private fun timeLabel(state: ClimbDisplayState): String {
     val w = state.wPrime
     return when {
-        w.depletionRate > 0 && w.timeToEmpty > 0 ->
-            "TTE ${PhysicsUtils.formatTime(w.timeToEmpty)}"
-        w.recoveryRate > 0 && w.timeToFull > 0 ->
-            "TTF ${PhysicsUtils.formatTime(w.timeToFull)}"
+        w.timeToEmpty > 0 -> "$SYMBOL_EMPTYING ${PhysicsUtils.formatTime(w.timeToEmpty)}"
+        w.timeToFull > 0 -> "$SYMBOL_FILLING ${PhysicsUtils.formatTime(w.timeToFull)}"
         else -> ""
+    }
+}
+
+// Red while heading toward empty (a warning state — you're spending W'),
+// green while heading toward full (recovering). Matches the ▼/▲ symbol.
+private fun timeColor(state: ClimbDisplayState): androidx.compose.ui.graphics.Color {
+    val w = state.wPrime
+    return when {
+        w.timeToEmpty > 0 -> GlanceColors.Problem
+        w.timeToFull > 0 -> GlanceColors.Optimal
+        else -> GlanceColors.Label
     }
 }
 
@@ -101,7 +124,7 @@ private fun WPrimeMediumWide(state: ClimbDisplayState) {
                 WPrimeBar(pct, color)
             }
             if (time.isNotEmpty()) {
-                LabelText(time)
+                LabelText(time, color = timeColor(state))
             }
         }
     }
@@ -148,7 +171,7 @@ private fun WPrimeLarge(state: ClimbDisplayState) {
             MetricValueRow("STATUS", status, color, valueFontSize = 18, labelFontSize = 12)
             MetricValueRow("ENERGY", balanceKj, GlanceColors.White, valueFontSize = 18, labelFontSize = 12)
             if (time.isNotEmpty()) {
-                LabelText(time, fontSize = 12)
+                LabelText(time, fontSize = 12, color = timeColor(state))
             }
         }
     }

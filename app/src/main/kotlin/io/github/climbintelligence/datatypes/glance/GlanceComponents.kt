@@ -83,14 +83,15 @@ fun GlanceVerticalDivider(
 fun LabelText(
     text: String,
     modifier: GlanceModifier = GlanceModifier,
-    fontSize: Int = 12
+    fontSize: Int = 12,
+    color: Color = GlanceColors.Label
 ) {
     Text(
         text = text,
         modifier = modifier,
         style = TextStyle(
             fontSize = fontSize.sp,
-            color = ColorProvider(GlanceColors.Label)
+            color = ColorProvider(color)
         ),
         maxLines = 1
     )

@@ -118,6 +118,14 @@
         graphical="true"
         icon="@drawable/ic_climb" />
 
+    <!-- W' balance over-time chart -->
+    <DataType
+        typeId="wprime-history"
+        description="@string/datatype_wprime_history_desc"
+        displayName="@string/datatype_wprime_history"
+        graphical="true"
+        icon="@drawable/ic_climb" />
+
     <!-- Bonus Actions (hardware button actions) -->
     <BonusAction
         actionId="toggle-view"

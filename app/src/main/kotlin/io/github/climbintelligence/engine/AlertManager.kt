@@ -21,6 +21,7 @@ class AlertManager(
     companion object {
         private const val TAG = "AlertManager"
         private const val ALERT_WPRIME = "climb_wprime"
+        private const val ALERT_WPRIME_DEFICIT = "climb_wprime_deficit"
         private const val ALERT_STEEP = "climb_steep"
         private const val ALERT_SUMMIT = "climb_summit"
         private const val ALERT_CLIMB_START = "climb_started"
@@ -30,6 +31,7 @@ class AlertManager(
     private var scope: CoroutineScope? = null
 
     private val wPrimeLastAlert = AtomicLong(0)
+    private val wPrimeDeficitLastAlert = AtomicLong(0)
     private val steepLastAlert = AtomicLong(0)
     private val summitLastAlert = AtomicLong(0)
     private val climbStartLastAlert = AtomicLong(0)
@@ -39,12 +41,16 @@ class AlertManager(
     @Volatile private var cooldownMs = 30_000L
     @Volatile private var wPrimeAlertThreshold = 20.0
     @Volatile private var alertWPrimeEnabled = true
+    @Volatile private var alertWPrimeDeficitEnabled = true
     @Volatile private var alertSteepEnabled = true
     @Volatile private var alertSummitEnabled = true
     @Volatile private var alertClimbStartEnabled = true
 
     /** Track whether W' was previously below threshold — alert only fires on crossing */
     @Volatile private var wasWPrimeBelowThreshold = false
+
+    /** Track whether W' was previously below 0% — DEFICIT alert fires once per crossing */
+    @Volatile private var wasWPrimeBelowZero = false
 
     fun startMonitoring() {
         scope?.cancel()
@@ -64,6 +70,9 @@ class AlertManager(
         }
         scope?.launch {
             preferencesRepository.alertWPrimeFlow.collect { alertWPrimeEnabled = it }
+        }
+        scope?.launch {
+            preferencesRepository.alertWPrimeDeficitFlow.collect { alertWPrimeDeficitEnabled = it }
         }
         scope?.launch {
             preferencesRepository.alertSteepFlow.collect { alertSteepEnabled = it }
@@ -113,6 +122,25 @@ class AlertManager(
                     )
                 }
                 wasWPrimeBelowThreshold = isBelow
+
+                // DEFICIT alert: one-shot on crossing below 0%. Fires independently
+                // of the W' critical alert (a rider can have both fire in sequence on
+                // the same drawdown). Carries a different message: the deficit is the
+                // model's signal that W'max may be calibrated too low for this rider.
+                val isInDeficit = wPrimeState.percentage < 0
+                if (isInDeficit && !wasWPrimeBelowZero && alertWPrimeDeficitEnabled) {
+                    val pctInt = wPrimeState.percentage.toInt()
+                    val title = extension.getString(R.string.alert_wprime_deficit_title, pctInt)
+                    val detail = extension.getString(R.string.alert_wprime_deficit_detail)
+                    dispatchWithCooldown(
+                        lastAlert = wPrimeDeficitLastAlert,
+                        alertId = ALERT_WPRIME_DEFICIT,
+                        title = title,
+                        detail = detail,
+                        urgent = true
+                    )
+                }
+                wasWPrimeBelowZero = isInDeficit
             }
         }
 
@@ -296,10 +324,12 @@ class AlertManager(
 
     fun reset() {
         wPrimeLastAlert.set(0)
+        wPrimeDeficitLastAlert.set(0)
         steepLastAlert.set(0)
         summitLastAlert.set(0)
         climbStartLastAlert.set(0)
         wasWPrimeBelowThreshold = false
+        wasWPrimeBelowZero = false
     }
 
     fun destroy() {

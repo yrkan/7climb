@@ -43,7 +43,7 @@ class MetricsEngine(preferencesRepository: PreferencesRepository) {
     init {
         scope.launch {
             preferencesRepository.athleteProfileFlow.collect { p ->
-                ftp = p.ftp
+                ftp = p.effectiveFtp
             }
         }
         scope.launch {

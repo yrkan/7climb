@@ -30,6 +30,11 @@ class PreferencesRepository(private val context: Context) {
         private val KEY_CRR = doublePreferencesKey("crr")
         private val KEY_BIKE_WEIGHT = doublePreferencesKey("bike_weight")
         private val KEY_CP = intPreferencesKey("cp")
+        private val KEY_MAX_POWER = intPreferencesKey("max_power")
+        private val KEY_USE_KAROO_PROFILE = booleanPreferencesKey("use_karoo_profile")
+        private val KEY_KAROO_FTP = intPreferencesKey("karoo_ftp")
+        private val KEY_KAROO_WEIGHT = doublePreferencesKey("karoo_weight")
+        private val KEY_USE_THREE_PARAM_MODEL = booleanPreferencesKey("use_three_param_model")
         private val KEY_PACING_MODE = stringPreferencesKey("pacing_mode")
 
         // Alert settings
@@ -41,6 +46,11 @@ class PreferencesRepository(private val context: Context) {
         private val KEY_ALERT_SOUND = booleanPreferencesKey("alert_sound")
         private val KEY_ALERT_COOLDOWN = intPreferencesKey("alert_cooldown")
         private val KEY_WPRIME_ALERT_THRESHOLD = intPreferencesKey("wprime_alert_threshold")
+        private val KEY_ALERT_WPRIME_DEFICIT = booleanPreferencesKey("alert_wprime_deficit")
+
+        // W' history chart settings (W'-history-chart feature)
+        private val KEY_WPRIME_CHART_WINDOW_MIN = intPreferencesKey("wprime_chart_window_min")
+        private val KEY_WPRIME_CHART_REDRAW_SEC = intPreferencesKey("wprime_chart_redraw_sec")
 
         // Detection settings
         private val KEY_DETECTION_SENSITIVITY = stringPreferencesKey("detection_sensitivity")
@@ -68,7 +78,12 @@ class PreferencesRepository(private val context: Context) {
                 cda = prefs[KEY_CDA] ?: 0.321,
                 crr = prefs[KEY_CRR] ?: 0.005,
                 bikeWeight = prefs[KEY_BIKE_WEIGHT] ?: 8.0,
-                cp = prefs[KEY_CP] ?: 0
+                cp = prefs[KEY_CP] ?: 0,
+                maxPower = prefs[KEY_MAX_POWER] ?: 0,
+                useKarooProfile = prefs[KEY_USE_KAROO_PROFILE] ?: true,
+                karooFtp = prefs[KEY_KAROO_FTP] ?: 0,
+                karooWeight = prefs[KEY_KAROO_WEIGHT] ?: 0.0,
+                useThreeParamModel = prefs[KEY_USE_THREE_PARAM_MODEL] ?: false,
             )
         }
         .distinctUntilChanged()
@@ -113,6 +128,28 @@ class PreferencesRepository(private val context: Context) {
 
     val wPrimeAlertThresholdFlow: Flow<Int> = context.dataStore.data
         .map { prefs -> prefs[KEY_WPRIME_ALERT_THRESHOLD] ?: 20 }
+        .distinctUntilChanged()
+
+    /** One-shot alert when W' crosses below 0% (DEFICIT). Default ON. */
+    val alertWPrimeDeficitFlow: Flow<Boolean> = context.dataStore.data
+        .map { prefs -> prefs[KEY_ALERT_WPRIME_DEFICIT] ?: true }
+        .distinctUntilChanged()
+
+    /**
+     * Visible window for the W' history chart, in minutes.
+     * 0 = full ride; 5–240 = rolling window. Default 0.
+     */
+    val wPrimeChartWindowMinutesFlow: Flow<Int> = context.dataStore.data
+        .map { prefs -> prefs[KEY_WPRIME_CHART_WINDOW_MIN] ?: 0 }
+        .distinctUntilChanged()
+
+    /**
+     * Minimum interval between chart Bitmap redraws, in seconds. Samples
+     * still append at 1Hz; only the chart bitmap regen is throttled.
+     * Default 2, range 1–10.
+     */
+    val wPrimeChartRedrawSecondsFlow: Flow<Int> = context.dataStore.data
+        .map { prefs -> prefs[KEY_WPRIME_CHART_REDRAW_SEC] ?: 2 }
         .distinctUntilChanged()
 
     // Detection settings
@@ -223,6 +260,29 @@ class PreferencesRepository(private val context: Context) {
         context.dataStore.edit { it[KEY_CP] = cp.coerceIn(0, 500) }
     }
 
+    suspend fun updateMaxPower(maxPower: Int) {
+        context.dataStore.edit { it[KEY_MAX_POWER] = maxPower.coerceIn(0, 2500) }
+    }
+
+    suspend fun updateUseKarooProfile(use: Boolean) {
+        context.dataStore.edit { it[KEY_USE_KAROO_PROFILE] = use }
+    }
+
+    /** Called from ClimbIntelligenceExtension when the Karoo's UserProfile
+     *  stream emits new values. Bypasses the rider-visible "manual" fields,
+     *  so flipping the Karoo's profile doesn't overwrite the typed values. */
+    suspend fun updateKarooFtp(ftp: Int) {
+        context.dataStore.edit { it[KEY_KAROO_FTP] = ftp.coerceIn(0, 600) }
+    }
+
+    suspend fun updateKarooWeight(weightKg: Double) {
+        context.dataStore.edit { it[KEY_KAROO_WEIGHT] = weightKg.coerceIn(0.0, 200.0) }
+    }
+
+    suspend fun updateUseThreeParamModel(use: Boolean) {
+        context.dataStore.edit { it[KEY_USE_THREE_PARAM_MODEL] = use }
+    }
+
     suspend fun updatePacingMode(mode: PacingMode) {
         context.dataStore.edit { it[KEY_PACING_MODE] = mode.name }
     }
@@ -257,6 +317,24 @@ class PreferencesRepository(private val context: Context) {
 
     suspend fun updateWPrimeAlertThreshold(percent: Int) {
         context.dataStore.edit { it[KEY_WPRIME_ALERT_THRESHOLD] = percent.coerceIn(5, 50) }
+    }
+
+    suspend fun updateAlertWPrimeDeficit(enabled: Boolean) {
+        context.dataStore.edit { it[KEY_ALERT_WPRIME_DEFICIT] = enabled }
+    }
+
+    suspend fun updateWPrimeChartWindowMinutes(minutes: Int) {
+        // 0 = full ride; 5–240 = rolling window. Anything between 1 and 4 snaps to 5.
+        val clamped = when {
+            minutes <= 0 -> 0
+            minutes < 5  -> 5
+            else         -> minutes.coerceAtMost(240)
+        }
+        context.dataStore.edit { it[KEY_WPRIME_CHART_WINDOW_MIN] = clamped }
+    }
+
+    suspend fun updateWPrimeChartRedrawSeconds(seconds: Int) {
+        context.dataStore.edit { it[KEY_WPRIME_CHART_REDRAW_SEC] = seconds.coerceIn(1, 10) }
     }
 
     suspend fun updateDetectionSensitivity(sensitivity: DetectionSensitivity) {

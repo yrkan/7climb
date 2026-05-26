@@ -16,6 +16,13 @@ object ClimbFitRecording {
     private const val UINT8: Short = 2
     private const val UINT16: Short = 132
     private const val SINT32: Short = 133
+    /**
+     * SINT8 base type id (FIT SDK base types: enum=0, sint8=1, uint8=2, ...).
+     * As of the W'-history-chart PR, W_Prime_Percent is recorded as SINT8 so
+     * the negative range (rider overdrawn past W'max) is preserved in the FIT
+     * file — required for honest post-ride analysis (intervals.icu et al).
+     */
+    private const val SINT8: Short = 1
 
     val wPrimeBalanceField = DeveloperField(
         fieldDefinitionNumber = 0,
@@ -26,7 +33,7 @@ object ClimbFitRecording {
 
     val wPrimePercentField = DeveloperField(
         fieldDefinitionNumber = 1,
-        fitBaseTypeId = UINT8,
+        fitBaseTypeId = SINT8,
         fieldName = "W_Prime_Percent",
         units = "percent"
     )
@@ -85,8 +92,11 @@ object ClimbFitRecording {
         matchCount: Int = 0
     ): WriteToRecordMesg {
         val values = mutableListOf(
+            // W_Prime_Balance: Float32 records the honest unclamped value (can be negative).
+            // W_Prime_Percent: Sint8 — saturate at the type's range, not at 0/100,
+            // so deficit (-X%) is preserved while extreme out-of-range values can't overflow.
             FieldValue(wPrimeBalanceField, wPrimeBalance),
-            FieldValue(wPrimePercentField, wPrimePercent.coerceIn(0.0, 100.0)),
+            FieldValue(wPrimePercentField, wPrimePercent.coerceIn(-128.0, 127.0)),
             FieldValue(pacingStatusField, pacingAdviceOrdinal.toDouble()),
             FieldValue(targetPowerField, targetPower.toDouble())
         )
@@ -115,7 +125,7 @@ object ClimbFitRecording {
         return WriteToSessionMesg(
             listOf(
                 FieldValue(wPrimeBalanceField, wPrimeBalance),
-                FieldValue(wPrimePercentField, wPrimePercent.coerceIn(0.0, 100.0))
+                FieldValue(wPrimePercentField, wPrimePercent.coerceIn(-128.0, 127.0))
             )
         )
     }

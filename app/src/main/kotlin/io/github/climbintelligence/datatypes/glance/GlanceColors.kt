@@ -29,6 +29,8 @@ object GlanceColors {
     val WPrimeDepleting = Color(0xFFFF9800)
     val WPrimeCritical = Color(0xFFF44336)
     val WPrimeEmpty = Color(0xFF9E9E9E)
+    /** DEFICIT — W' below 0%, model says rider is overdrawn (W'max likely under-calibrated). */
+    val WPrimeDeficit = Color(0xFF9C27B0)  // purple — distinct from existing palette
 
     // PR delta
     val Ahead = Color(0xFF4CAF50)
@@ -87,7 +89,8 @@ object GlanceColors {
         percentage > 50 -> WPrimeWorking
         percentage > 30 -> WPrimeDepleting
         percentage > 10 -> WPrimeCritical
-        else -> WPrimeEmpty
+        percentage >= 0 -> WPrimeEmpty
+        else            -> WPrimeDeficit
     }
 
     fun pacingColor(advice: PacingAdvice): Color = when (advice) {

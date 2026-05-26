@@ -155,7 +155,7 @@ class PacingCalculator(private val preferencesRepository: PreferencesRepository)
     private fun calculateTargetPower(grade: Double, altitude: Double): Int {
         if (grade < 1.0) return 0 // Only pace on climbs
 
-        val ftp = (if (effectiveFtpOverride > 0) effectiveFtpOverride else profile.ftp).toDouble()
+        val ftp = (if (effectiveFtpOverride > 0) effectiveFtpOverride else profile.effectiveFtp).toDouble()
         if (ftp <= 0) return 0
 
         // Reuse cached result if inputs unchanged

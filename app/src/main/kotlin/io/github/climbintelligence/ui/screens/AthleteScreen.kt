@@ -24,20 +24,43 @@ fun AthleteScreen(onNavigateBack: () -> Unit) {
         title = stringResource(R.string.settings_athlete),
         onNavigateBack = onNavigateBack
     ) {
-        NumericRow(
-            label = stringResource(R.string.settings_ftp),
-            value = profile.ftp,
-            unit = "W",
-            onValueChange = { scope.launch { prefs?.updateFtp(it) } }
+        ToggleRow(
+            label = stringResource(R.string.settings_use_karoo_profile),
+            enabled = profile.useKarooProfile,
+            onToggle = { scope.launch { prefs?.updateUseKarooProfile(it) } }
         )
-        HintText(stringResource(R.string.settings_ftp_hint))
+        HintText(stringResource(R.string.settings_use_karoo_profile_hint))
 
-        DecimalRow(
-            label = stringResource(R.string.settings_weight),
-            value = profile.weight,
-            unit = "kg",
-            onValueChange = { scope.launch { prefs?.updateWeight(it) } }
-        )
+        // FTP row — read-only when toggle is on AND Karoo has a value;
+        // editable otherwise. Same pattern for weight below.
+        if (profile.useKarooProfile && profile.karooFtp > 0) {
+            InfoRow(
+                label = stringResource(R.string.settings_karoo_ftp),
+                value = "${profile.karooFtp} W"
+            )
+        } else {
+            NumericRow(
+                label = stringResource(R.string.settings_ftp),
+                value = profile.ftp,
+                unit = "W",
+                onValueChange = { scope.launch { prefs?.updateFtp(it) } }
+            )
+            HintText(stringResource(R.string.settings_ftp_hint))
+        }
+
+        if (profile.useKarooProfile && profile.karooWeight > 0.0) {
+            InfoRow(
+                label = stringResource(R.string.settings_karoo_weight),
+                value = "%.1f kg".format(profile.karooWeight)
+            )
+        } else {
+            DecimalRow(
+                label = stringResource(R.string.settings_weight),
+                value = profile.weight,
+                unit = "kg",
+                onValueChange = { scope.launch { prefs?.updateWeight(it) } }
+            )
+        }
 
         // Advanced (W', CP)
         SectionHeader(stringResource(R.string.settings_advanced))
@@ -65,6 +88,21 @@ fun AthleteScreen(onNavigateBack: () -> Unit) {
                     onValueChange = { scope.launch { prefs?.updateCp(it) } }
                 )
                 HintText(stringResource(R.string.settings_cp_hint))
+
+                NumericRow(
+                    label = stringResource(R.string.settings_max_power),
+                    value = profile.maxPower,
+                    unit = "W",
+                    onValueChange = { scope.launch { prefs?.updateMaxPower(it) } }
+                )
+                HintText(stringResource(R.string.settings_max_power_hint))
+
+                ToggleRow(
+                    label = stringResource(R.string.settings_use_three_param_model),
+                    enabled = profile.useThreeParamModel,
+                    onToggle = { scope.launch { prefs?.updateUseThreeParamModel(it) } }
+                )
+                HintText(stringResource(R.string.settings_use_three_param_model_hint))
             }
         }
 
