@@ -90,7 +90,7 @@
     <string name="alert_summit_detail_save">W\' на %1$d%% — ровно до верха</string>
 
     <!-- Alerts: Climb Started -->
-    <string name="alert_climb_title">ПОДЪЁМ %1$.1f%% · %2$.1fкм</string>
+    <string name="alert_climb_title">ПОДЪЁМ %1$.1f%% · %2$.2fкм</string>
     <string name="alert_climb_detail_power">+%1$dм — Цель %2$dW</string>
     <string name="alert_climb_detail_basic">+%1$dм набор высоты</string>
 

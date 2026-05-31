@@ -90,7 +90,7 @@
     <string name="alert_summit_detail_save">W\' ב-%1$d%% — יציב עד הפסגה</string>
 
     <!-- Alerts: Climb Started -->
-    <string name="alert_climb_title">טיפוס %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_title">טיפוס %1$.1f%% · %2$.2fkm</string>
     <string name="alert_climb_detail_power">+%1$dm — יעד %2$dW</string>
     <string name="alert_climb_detail_basic">+%1$dm עלייה בגובה</string>
 

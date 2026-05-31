@@ -90,7 +90,7 @@
     <string name="alert_summit_detail_save">W\' %1$d%% — 정상까지 꾸준히</string>
 
     <!-- Alerts: Climb Started -->
-    <string name="alert_climb_title">등반 %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_title">등반 %1$.1f%% · %2$.2fkm</string>
     <string name="alert_climb_detail_power">+%1$dm — 목표 %2$dW</string>
     <string name="alert_climb_detail_basic">+%1$dm 고도 상승</string>
 
