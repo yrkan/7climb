@@ -65,6 +65,19 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
         private const val NOTIFICATION_CHANNEL_ID = "climb_intelligence_bg"
         private const val NOTIFICATION_ID = 2001
 
+        /**
+         * Feature flag for the homegrown ClimbDetector. As of the
+         * `feature/climber-as-canonical-source` PR (karoo-ext 1.1.8+), the
+         * Karoo CLIMB stream is the single source of truth for climb detection
+         * + active climb fields, matching the rider's mental model around
+         * Karoo's CLIMBER (with its own low/medium/high sensitivity setting).
+         *
+         * Set to true ONLY for short-window A/B debugging on the device. A
+         * future cleanup PR (`chore/remove-homegrown-detector`) deletes the
+         * detector class + this flag entirely.
+         */
+        private const val USE_HOMEGROWN_DETECTOR = false
+
         @Volatile
         var instance: ClimbIntelligenceExtension? = null
             private set
@@ -194,7 +207,7 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                     }
                 }
 
-                // Wire data flow: ClimbDataService -> WPrimeEngine, PacingCalculator, ClimbDetector
+                // Wire data flow: ClimbDataService -> WPrimeEngine, PacingCalculator, (legacy ClimbDetector)
                 connectionJobs += serviceScope.launch {
                     climbDataService.liveState.collect { state ->
                         _wPrimeEngine?.update(state)
@@ -205,37 +218,47 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                         _pacingCalculator?.wPrimePercent = _wPrimeEngine?.state?.value?.percentage ?: 100.0
                         val currentClimb = _climbDataService?.activeClimb?.value
                         _pacingCalculator?.update(state, currentClimb)
-                        _climbDetector?.update(state)
+                        if (USE_HOMEGROWN_DETECTOR) {
+                            _climbDetector?.update(state)
+                        }
                         _climbStatsTracker?.update(state, currentClimb)
                     }
                 }
 
-                // Wire ClimbDetector → "Climb Started" alert
-                connectionJobs += serviceScope.launch {
-                    var wasConfirmed = false
-                    climbDetector.detectionState.collect { state ->
-                        if (state == ClimbDetector.DetectionState.CONFIRMED_CLIMB && !wasConfirmed) {
-                            wasConfirmed = true
-                            val climb = _climbDetector?.detectedClimb?.value ?: return@collect
-                            _alertManager?.dispatchClimbStarted(
-                                name = climb.name,
-                                lengthKm = climb.distanceClimbedKm,
-                                avgGrade = climb.avgGrade,
-                                elevationM = climb.elevation
-                            )
-                        } else if (state == ClimbDetector.DetectionState.NOT_CLIMBING) {
-                            wasConfirmed = false
+                // Wire ClimbDetector → "Climb Started" alert (LEGACY — disabled when CLIMBER is authoritative)
+                if (USE_HOMEGROWN_DETECTOR) {
+                    connectionJobs += serviceScope.launch {
+                        var wasConfirmed = false
+                        climbDetector.detectionState.collect { state ->
+                            if (state == ClimbDetector.DetectionState.CONFIRMED_CLIMB && !wasConfirmed) {
+                                wasConfirmed = true
+                                val climb = _climbDetector?.detectedClimb?.value ?: return@collect
+                                _alertManager?.dispatchClimbStarted(
+                                    name = climb.name,
+                                    lengthKm = climb.distanceClimbedKm,
+                                    avgGrade = climb.avgGrade,
+                                    elevationM = climb.elevation
+                                )
+                            } else if (state == ClimbDetector.DetectionState.NOT_CLIMBING) {
+                                wasConfirmed = false
+                            }
                         }
                     }
                 }
 
-                // Wire active climb → "Climb Started" + "Summit Approaching" alerts (route climbs)
+                // Wire active climb → "Climb Started" + "Summit Approaching" alerts.
+                // Fires for route climbs (hasRouteMetrics) AND Karoo CLIMB-stream-driven
+                // climbs (length > 0 with distanceToTop > 0). With the homegrown detector
+                // disabled, both surviving paths carry a real total length — the 300m
+                // misleading alert is structurally impossible now.
                 connectionJobs += serviceScope.launch {
                     var climbStartFired = false
                     var summitAlertFired = false
                     var lastClimbId = ""
                     climbDataService.activeClimb.collect { climb ->
-                        if (climb == null || !climb.isActive || !climb.hasRouteMetrics) {
+                        val hasTrustedLength = climb != null && climb.isActive &&
+                            climb.length > 0.0 && climb.distanceToTop > 0.0
+                        if (!hasTrustedLength) {
                             if (climb?.id != lastClimbId) {
                                 climbStartFired = false
                                 summitAlertFired = false
@@ -243,6 +266,8 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                             }
                             return@collect
                         }
+                        // After the trusted-length check above, climb is non-null
+                        @Suppress("NAME_SHADOWING") val climb = climb!!
                         if (climb.id != lastClimbId) {
                             climbStartFired = false
                             summitAlertFired = false
@@ -253,9 +278,12 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                             climbStartFired = true
                             _alertManager?.dispatchClimbStarted(
                                 name = climb.name,
-                                lengthKm = climb.length / 1000.0,
+                                // Remaining-from-here, not whole-climb totals — match what
+                                // CLIMBER shows. Detection can lag (you may already be into the
+                                // climb), so the rider needs what's ahead from NOW.
+                                lengthKm = climb.distanceToTop / 1000.0,
                                 avgGrade = climb.avgGrade,
-                                elevationM = climb.elevation
+                                elevationM = climb.elevationToTop
                             )
                         }
                         if (!summitAlertFired && climb.distanceToTop in 50.0..500.0) {
@@ -265,11 +293,13 @@ class ClimbIntelligenceExtension : KarooExtension("climbintelligence", BuildConf
                     }
                 }
 
-                // Wire detected climbs → ClimbDataService.activeClimb (when no route loaded)
-                connectionJobs += serviceScope.launch {
-                    climbDetector.detectedClimb.collect { detected ->
-                        if (!climbDataService.hasRoute.value) {
-                            climbDataService.updateActiveClimb(detected)
+                // Wire detected climbs → ClimbDataService.activeClimb (LEGACY — disabled when CLIMBER is authoritative)
+                if (USE_HOMEGROWN_DETECTOR) {
+                    connectionJobs += serviceScope.launch {
+                        climbDetector.detectedClimb.collect { detected ->
+                            if (!climbDataService.hasRoute.value) {
+                                climbDataService.updateActiveClimb(detected)
+                            }
                         }
                     }
                 }

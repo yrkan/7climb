@@ -90,7 +90,7 @@
     <string name="alert_summit_detail_save">W\' na %1$d%% — równo do szczytu</string>
 
     <!-- Alerts: Climb Started -->
-    <string name="alert_climb_title">PODJAZD %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_title">PODJAZD %1$.1f%% · %2$.2fkm</string>
     <string name="alert_climb_detail_power">+%1$dm — Cel %2$dW</string>
     <string name="alert_climb_detail_basic">+%1$dm przewyższenia</string>
 

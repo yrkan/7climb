@@ -55,6 +55,9 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
     private val distanceConsumerId = AtomicReference<String?>(null)
     private val locationConsumerId = AtomicReference<String?>(null)
     private val navigationConsumerId = AtomicReference<String?>(null)
+    // Karoo CLIMB stream (karoo-ext 1.1.8+) — native Climber detection on routes + freestyle
+    private val climbStreamConsumerId = AtomicReference<String?>(null)
+    private val climbNumberConsumerId = AtomicReference<String?>(null)
 
     // Current values (thread-safe via AtomicReference)
     private val currentPower = AtomicReference(0)
@@ -66,6 +69,30 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
     private val currentDistance = AtomicReference(0.0)
     private val currentLat = AtomicReference(0.0)
     private val currentLon = AtomicReference(0.0)
+    private val lastLocationMs = AtomicReference(0L)  // wall-clock of the last GPS fix
+
+    // CLIMB stream cached fields (last emitted values)
+    private val currentClimbDistanceToTop = AtomicReference(0.0)
+    private val currentClimbElevationToTop = AtomicReference(0.0)
+    private val currentClimbDistanceFromBottom = AtomicReference(0.0)
+    private val currentClimbElevationFromBottom = AtomicReference(0.0)
+    private val currentClimbElevationTotal = AtomicReference(0.0)
+    private val currentClimbNumber = AtomicReference(0)
+    private val lastClimbStreamEmitMs = AtomicReference(0L)
+    private val climbStreamStartTimestamp = AtomicReference(0L)
+    // Last tick while the CLIMB stream was active — lets us tell a brief stream blip on
+    // the SAME climb from a genuinely new climb when the stream re-activates.
+    private val lastClimbActiveMs = AtomicReference(0L)
+    private val lastClimbDistFromBottom = AtomicReference(0.0)
+    // Previous CLIMB emit's identity/geometry — to detect the stale carry-over tick at a
+    // climb switch (Karoo bumps climbNum before refreshing distance/elevation fields).
+    private val lastEmitClimbNum = AtomicReference(-1)
+    private val lastEmitDistToTop = AtomicReference(-1.0)
+    private val lastEmitDistFromBottom = AtomicReference(-1.0)
+
+    /** True while the Karoo CLIMB stream is emitting on an active climb. */
+    private val _climbStreamActive = MutableStateFlow(false)
+    val climbStreamActive: StateFlow<Boolean> = _climbStreamActive.asStateFlow()
 
     @Volatile
     private var hasReceivedData = false
@@ -80,6 +107,31 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
     // Cached route elevation profile points
     @Volatile
     private var routeElevationPoints: List<ElevationPolylineDecoder.ElevationPoint> = emptyList()
+
+    // Cached route coordinate geometry (lat/lng + cumulative distance) for mapping
+    // a live GPS fix to a distance-along-route, independent of ride distance.
+    @Volatile
+    private var routeGeometry: List<ElevationPolylineDecoder.RoutePoint> = emptyList()
+
+    // Last good distance-along-route (m). Held when the GPS fix is stale so we never
+    // blend route-frame with ride-frame distance, and seeds the continuity window.
+    private val lastRouteDistance = AtomicReference(0.0)
+
+    // A GPS fix older than this is treated as "no fix" (hold last route distance).
+    private val gpsFixMaxAgeMs = 5_000L
+    // A CLIMB-stream re-activation with distanceFromBottom still continuing (not reset toward
+    // a new base) is the SAME climb session — no re-alert. distanceFromBottom continuity is
+    // the real discriminator; the gap is just a generous staleness bound.
+    private val climbSessionContinuationGapMs = 300_000L
+    private val climbSessionContinuationTolM = 200.0
+
+    // routePolyline hash of the currently-latched route. Karoo re-emits NavigatingRoute
+    // for the same route while progressively pruning the climb you're on and re-basing the
+    // rest to your position; the polyline stays identical. We latch the full climb list on
+    // the first populated emit and only rebuild when this signature changes (a real route
+    // change) or on Idle. 0 = nothing latched.
+    @Volatile
+    private var loadedRouteSignature: Int = 0
 
     fun startStreaming() {
         android.util.Log.i(TAG, "Starting data stream subscriptions")
@@ -201,9 +253,106 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                     val state = event.state
                     if (state is StreamState.Streaming) {
                         val values = state.dataPoint.values
-                        values["lat"]?.let { currentLat.set(it) }
-                        values["lng"]?.let { currentLon.set(it) }
+                        values[DataType.Field.LOC_LATITUDE]?.let { currentLat.set(it) }
+                        values[DataType.Field.LOC_LONGITUDE]?.let { currentLon.set(it) }
+                        lastLocationMs.set(System.currentTimeMillis())
                         sensorUpdatedSinceLastEmit = true
+                    }
+                }
+            )
+
+            // --- Karoo CLIMB stream (1.1.8+) ---
+            // Compound DataType carrying DISTANCE_FROM_BOTTOM, DISTANCE_TO_TOP,
+            // ELEVATION_FROM_BOTTOM, ELEVATION_TO_TOP, CLIMB_ELEVATION — driven by
+            // Karoo's native Climber detection on routes AND freestyle rides.
+            climbStreamConsumerId.set(
+                climbExtension.karooSystem.addConsumer(
+                    OnStreamState.StartStreaming(DataType.Type.CLIMB)
+                ) { event: OnStreamState ->
+                    val state = event.state
+                    if (state is StreamState.Streaming) {
+                        val values = state.dataPoint.values
+                        values[DataType.Field.DISTANCE_TO_TOP]?.let { currentClimbDistanceToTop.set(it) }
+                        values[DataType.Field.DISTANCE_FROM_BOTTOM]?.let { currentClimbDistanceFromBottom.set(it) }
+                        values[DataType.Field.ELEVATION_TO_TOP]?.let { currentClimbElevationToTop.set(it) }
+                        values[DataType.Field.ELEVATION_FROM_BOTTOM]?.let { currentClimbElevationFromBottom.set(it) }
+                        values[DataType.Field.CLIMB_ELEVATION]?.let { currentClimbElevationTotal.set(it) }
+                        lastClimbStreamEmitMs.set(System.currentTimeMillis())
+
+                        // Stale carry-over guard: at a climb switch Karoo flips climbNum
+                        // BEFORE refreshing distanceToTop/FromBottom, so the first tick of the
+                        // new climb still carries the previous climb's geometry. Acting on it
+                        // alerts the old climb's tail (and fools the continuation check). Skip
+                        // that tick — act only once the geometry refreshes for the new climb.
+                        val emitClimbNum = currentClimbNumber.get()
+                        val emitDToTop = currentClimbDistanceToTop.get()
+                        val emitDFromBot = currentClimbDistanceFromBottom.get()
+                        val staleTransition = emitClimbNum != lastEmitClimbNum.get() &&
+                            emitDToTop == lastEmitDistToTop.get() &&
+                            emitDFromBot == lastEmitDistFromBottom.get()
+                        if (staleTransition) {
+                            return@addConsumer
+                        }
+
+                        val onClimb = currentClimbDistanceToTop.get() > 0.0 ||
+                                      currentClimbDistanceFromBottom.get() > 0.0
+                        val wasActive = _climbStreamActive.value
+                        _climbStreamActive.value = onClimb
+
+                        if (onClimb && !wasActive) {
+                            // Only start a NEW session (→ new climb-started alert) for a
+                            // genuinely new climb. If the stream merely blipped and we're
+                            // still up the SAME climb (distanceFromBottom continues, short
+                            // gap), keep the existing session id so we don't re-alert.
+                            val now = System.currentTimeMillis()
+                            val gapMs = now - lastClimbActiveMs.get()
+                            val dFromBot = currentClimbDistanceFromBottom.get()
+                            val continuation = lastClimbActiveMs.get() > 0L &&
+                                gapMs < climbSessionContinuationGapMs &&
+                                dFromBot >= lastClimbDistFromBottom.get() - climbSessionContinuationTolM
+                            if (continuation) {
+                                android.util.Log.i(
+                                    TAG,
+                                    "CLIMB stream re-activated mid-climb (gap ${gapMs}ms," +
+                                        " dFromBot ${dFromBot.toInt()}m) — continuation, keeping session"
+                                )
+                            } else {
+                                climbStreamStartTimestamp.set(now)
+                                android.util.Log.i(
+                                    TAG,
+                                    "CLIMB stream activated — top in ${currentClimbDistanceToTop.get().toInt()}m" +
+                                        " (${currentClimbElevationToTop.get().toInt()}m elevation)"
+                                )
+                            }
+                        } else if (!onClimb && wasActive) {
+                            android.util.Log.i(TAG, "CLIMB stream ended")
+                        }
+
+                        if (onClimb) {
+                            lastClimbActiveMs.set(System.currentTimeMillis())
+                            lastClimbDistFromBottom.set(currentClimbDistanceFromBottom.get())
+                        }
+
+                        // Record this processed emit so the next switch can detect a stale tick.
+                        lastEmitClimbNum.set(emitClimbNum)
+                        lastEmitDistToTop.set(emitDToTop)
+                        lastEmitDistFromBottom.set(emitDFromBot)
+
+                        updateActiveClimbFromStream()
+                        sensorUpdatedSinceLastEmit = true
+                    }
+                }
+            )
+
+            climbNumberConsumerId.set(
+                climbExtension.karooSystem.addConsumer(
+                    OnStreamState.StartStreaming(DataType.Type.CLIMB_NUMBER)
+                ) { event: OnStreamState ->
+                    val state = event.state
+                    if (state is StreamState.Streaming) {
+                        state.dataPoint.values[DataType.Field.CLIMB_NUMBER]?.toInt()?.let {
+                            currentClimbNumber.set(it)
+                        }
                     }
                 }
             )
@@ -217,6 +366,16 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
         emitJob = CoroutineScope(Dispatchers.Main.immediate).launch {
             while (isActive) {
                 delay(1000)
+                // Watchdog: deactivate CLIMB stream if no emit in the last 5s
+                // (Karoo sometimes stops emitting without an explicit zero-out
+                // when a climb ends; without this the activeClimb would stick).
+                if (_climbStreamActive.value &&
+                    (System.currentTimeMillis() - lastClimbStreamEmitMs.get()) > 5000L
+                ) {
+                    android.util.Log.i(TAG, "CLIMB stream watchdog: no emit in 5s — deactivating")
+                    _climbStreamActive.value = false
+                    updateActiveClimbFromStream()
+                }
                 if (hasReceivedData && sensorUpdatedSinceLastEmit) {
                     sensorUpdatedSinceLastEmit = false
                     emitState()
@@ -233,30 +392,43 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                 android.util.Log.i(TAG, "Route loaded: ${state.name}, ${state.climbs.size} climbs")
                 _hasRoute.value = true
 
-                // Decode elevation polyline for segment analysis
-                routeElevationPoints = state.routeElevationPolyline?.let { polyline ->
-                    when (val result = ElevationPolylineDecoder.decodeSafe(polyline)) {
-                        is ElevationPolylineDecoder.DecodeResult.Success -> {
-                            android.util.Log.i(TAG, "Decoded ${result.points.size} elevation points")
-                            ElevationPolylineDecoder.smooth(result.points)
+                // Only (re)decode geometry + reset the latched climb list when the route
+                // genuinely changes — keyed on the routePolyline. Karoo re-emits the same
+                // route repeatedly while pruning the active climb; the polyline is stable.
+                val signature = state.routePolyline.hashCode()
+                val isNewRoute = signature != loadedRouteSignature
+                if (isNewRoute) {
+                    loadedRouteSignature = signature
+                    routeElevationPoints = state.routeElevationPolyline?.let { polyline ->
+                        when (val result = ElevationPolylineDecoder.decodeSafe(polyline)) {
+                            is ElevationPolylineDecoder.DecodeResult.Success -> {
+                                android.util.Log.i(TAG, "Decoded ${result.points.size} elevation points")
+                                ElevationPolylineDecoder.smooth(result.points)
+                            }
+                            is ElevationPolylineDecoder.DecodeResult.Error -> {
+                                android.util.Log.w(TAG, "Elevation decode failed: ${result.message}")
+                                emptyList()
+                            }
                         }
-                        is ElevationPolylineDecoder.DecodeResult.Error -> {
-                            android.util.Log.w(TAG, "Elevation decode failed: ${result.message}")
-                            emptyList()
-                        }
-                    }
-                } ?: emptyList()
-
-                // Convert Karoo climbs to our ClimbInfo model
-                val climbs = state.climbs.mapIndexed { index, karooClimb ->
-                    buildClimbInfo(index, karooClimb)
+                    } ?: emptyList()
+                    routeGeometry = ElevationPolylineDecoder.buildRouteGeometry(state.routePolyline)
+                    _routeClimbs.value = emptyList()
                 }
-                _routeClimbs.value = climbs
+
+                // Latch the FULL climb list from the first populated emit for this route, and
+                // keep it: Karoo later drops the climb you're on and re-bases the rest to your
+                // position, which would otherwise make the active climb un-matchable mid-ascent.
+                if (_routeClimbs.value.isEmpty() && state.climbs.isNotEmpty()) {
+                    _routeClimbs.value = state.climbs.mapIndexed { index, karooClimb ->
+                        buildClimbInfo(index, karooClimb)
+                    }
+                }
+
 
                 // Set first upcoming climb as active if none is set
-                if (_activeClimb.value == null && climbs.isNotEmpty()) {
-                    val dist = currentDistance.get()
-                    val upcoming = climbs.firstOrNull { dist < it.startDistance + it.length }
+                if (_activeClimb.value == null && _routeClimbs.value.isNotEmpty()) {
+                    val dist = currentRouteDistance()
+                    val upcoming = _routeClimbs.value.firstOrNull { dist < it.startDistance + it.length }
                     if (upcoming != null) {
                         _activeClimb.value = upcoming.copy(isActive = false)
                     }
@@ -273,6 +445,8 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                     }
                 } ?: emptyList()
 
+                routeGeometry = ElevationPolylineDecoder.buildRouteGeometry(state.polyline)
+
                 val climbs = state.climbs.mapIndexed { index, karooClimb ->
                     buildClimbInfo(index, karooClimb)
                 }
@@ -284,6 +458,8 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                 _hasRoute.value = false
                 _routeClimbs.value = emptyList()
                 routeElevationPoints = emptyList()
+                routeGeometry = emptyList()
+                loadedRouteSignature = 0  // route unloaded — next load rebuilds + re-latches
                 // Don't clear activeClimb — ClimbDetector may provide detected climbs
             }
         }
@@ -361,13 +537,50 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
 
     /**
      * Called on every distance update — checks if rider is on a route climb
-     * and updates activeClimb with live progress metrics.
+     * and updates activeClimb with live progress metrics. When the Karoo CLIMB
+     * stream is firing (karoo-ext 1.1.8+), it owns activeClimb's progress fields
+     * and this method skips that write; the nextClimb countdown stays computed
+     * here from route position regardless of stream state.
      */
+    /**
+     * Rider's current distance along the loaded route (m), derived from the GPS
+     * fix so it is independent of ride/recording distance — which desyncs when a
+     * route is added mid-ride or the rider joins partway.
+     *
+     * Frame safety: with a route loaded we stay in route-distance space. If the GPS
+     * fix is stale we HOLD the last good route-distance rather than blend in ride
+     * distance (a different origin), which would otherwise jump the climb state by
+     * kilometres. With no route loaded there are no route climbs to match, so ride
+     * distance is the harmless legacy default.
+     */
+    private fun currentRouteDistance(): Double {
+        if (routeGeometry.isEmpty()) return currentDistance.get()
+
+        val lat = currentLat.get()
+        val lon = currentLon.get()
+        val fixAgeMs = System.currentTimeMillis() - lastLocationMs.get()
+        // No usable fix — stale, or the (0,0) "null island" sentinel Karoo emits before a
+        // GPS lock. Hold the last good route-distance rather than map a bogus point, which
+        // otherwise snaps to an arbitrary far vertex and matches a wrong/phantom climb.
+        if (fixAgeMs > gpsFixMaxAgeMs || (lat == 0.0 && lon == 0.0)) return lastRouteDistance.get()
+
+        val prior = lastRouteDistance.get().takeIf { it > 0.0 }  // continuity hint after first match
+        val matched = ElevationPolylineDecoder.nearestDistanceAlong(routeGeometry, lat, lon, prior)
+        val offRoute = matched == null
+        // Off-route (GPS farther than maxSnapM from the route) → hold the last good
+        // route-distance, don't corrupt it with a far snap. We re-acquire (global nearest)
+        // automatically once back within range.
+        if (matched != null) lastRouteDistance.set(matched)
+        val routeDist = lastRouteDistance.get()
+        return routeDist
+    }
+
     private fun updateActiveClimbFromRoute() {
         val climbs = _routeClimbs.value
         if (climbs.isEmpty()) return
 
-        val dist = currentDistance.get()
+        val dist = currentRouteDistance()
+        val streamOwnsActiveClimb = _climbStreamActive.value
 
         // Find the climb we're currently on
         val onClimb = climbs.firstOrNull { climb ->
@@ -375,17 +588,13 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
         }
 
         if (onClimb != null) {
-            val distOnClimb = dist - onClimb.startDistance
-            val distToTop = onClimb.length - distOnClimb
-            val progress = (distOnClimb / onClimb.length).coerceIn(0.0, 1.0)
-            val elevToTop = onClimb.elevation * (distToTop / onClimb.length)
-
-            _activeClimb.value = onClimb.copy(
-                distanceToTop = distToTop,
-                elevationToTop = elevToTop,
-                progress = progress,
-                isActive = true
-            )
+            // CLIMBER-led detection: the route path no longer marks a climb active on
+            // its own. CLIMBER (the CLIMB stream) is the sole detector; GPS is used only
+            // to identify WHICH route climb we're on — which updateActiveClimbFromStream
+            // does (matching this same GPS route-distance to a routeClimb) so it can
+            // attach the route's polyline/segments + metadata once CLIMBER has fired.
+            // Activating here would fire the climb-started alert before CLIMBER detects,
+            // then again when it does (the double-alert observed on a mid-climb join).
 
             // While on a climb, look for the next one after this climb
             val nextAfterCurrent = climbs.firstOrNull { it.startDistance > onClimb.startDistance + onClimb.length }
@@ -410,12 +619,14 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
             // Not on a climb — show next upcoming climb (if any)
             val next = climbs.firstOrNull { it.startDistance > dist }
             if (next != null) {
-                _activeClimb.value = next.copy(
-                    distanceToTop = next.length,
-                    elevationToTop = next.elevation,
-                    progress = 0.0,
-                    isActive = false
-                )
+                if (!streamOwnsActiveClimb) {
+                    _activeClimb.value = next.copy(
+                        distanceToTop = next.length,
+                        elevationToTop = next.elevation,
+                        progress = 0.0,
+                        isActive = false
+                    )
+                }
 
                 // Update next climb countdown
                 val distToNext = (next.startDistance - dist).coerceAtLeast(0.0)
@@ -432,12 +643,96 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
                     hasNext = true
                 )
             } else {
-                if (_activeClimb.value?.isFromRoute == true) {
+                if (!streamOwnsActiveClimb && _activeClimb.value?.isFromRoute == true) {
                     // Past all route climbs
                     _activeClimb.value = null
                 }
                 _nextClimb.value = NextClimbInfo()
             }
+        }
+    }
+
+    /**
+     * Build _activeClimb from the Karoo CLIMB stream cached fields. Called from
+     * the CLIMB consumer callback (karoo-ext 1.1.8+). When a route climb is
+     * underfoot, route metadata (name, category, segments) is overlaid with the
+     * stream's authoritative distanceToTop / elevationToTop / progress.
+     * Otherwise a stream-only ClimbInfo is synthesized — no segments means
+     * Layer 2 (route strategy) and Layer 3 (tactical analyzer) won't fire,
+     * but Layer 1 pacing target still works off the median grade.
+     */
+    private fun updateActiveClimbFromStream() {
+        if (!_climbStreamActive.value) {
+            // Stream just deactivated — clear stream-driven climb (route-only
+            // climbs are managed by updateActiveClimbFromRoute).
+            val current = _activeClimb.value
+            if (current != null && !current.isFromRoute) {
+                _activeClimb.value = null
+            }
+            return
+        }
+
+        val distToTop = currentClimbDistanceToTop.get()
+        val distFromBottom = currentClimbDistanceFromBottom.get()
+        val elevToTop = currentClimbElevationToTop.get()
+        val elevFromBottom = currentClimbElevationFromBottom.get()
+        val climbElevationTotal = currentClimbElevationTotal.get()
+        val totalLength = distToTop + distFromBottom
+        // Total ascent = remaining-to-top + done-from-bottom (conserved across the
+        // climb). CLIMB_ELEVATION is NOT total ascent — on-device trace showed it
+        // reads ~237 m and grows with elevFromBottom, while eToTop+eFromBot = ~407 m
+        // matched Karoo's own Climber drawer. So we do not use CLIMB_ELEVATION here.
+        val totalElevation = elevToTop + elevFromBottom
+        val progress = if (totalLength > 0.0)
+            (distFromBottom / totalLength).coerceIn(0.0, 1.0) else 0.0
+        val avgGrade = if (totalLength > 0.0)
+            (totalElevation / totalLength) * 100.0 else 0.0
+
+        val dist = currentRouteDistance()
+        val routeClimb = _routeClimbs.value.firstOrNull { rc ->
+            dist >= rc.startDistance && dist < (rc.startDistance + rc.length)
+        }
+
+        _activeClimb.value = if (routeClimb != null) {
+            // Route climb metadata + stream's authoritative progress AND totals.
+            // The CLIMB_ELEVATION-derived totalElevation is ground truth; the route
+            // summary's NavigationState.Climb.totalElevation can be badly understated
+            // (e.g. 300 m on a ~1200 m climb), which previously leaked a wrong
+            // elevation into the climb-started alert. Override length/elevation too.
+            routeClimb.copy(
+                length = totalLength,
+                elevation = totalElevation,
+                distanceToTop = distToTop,
+                elevationToTop = elevToTop,
+                progress = progress,
+                isActive = true
+            )
+        } else {
+            // No route — synthesize from stream alone (no segments / category)
+            val startTs = climbStreamStartTimestamp.get()
+                .takeIf { it > 0 } ?: System.currentTimeMillis()
+            val lengthKm = "%.1f km".format(totalLength / 1000.0)
+            ClimbInfo(
+                // Id keyed on the stream-session start (startTs), NOT climbNum: Karoo flips
+                // climbNum at onset and re-detects within one continuous CLIMBER session
+                // (e.g. a 1.1 km climb growing into an 8 km one). The climb-started alert
+                // gate keys on id, so a session-stable id => one alert per session. A real
+                // new session (stream re-activates) gets a fresh startTs and re-alerts.
+                id = "karoo_climb_${startTs}",
+                name = "Climb ($lengthKm)",
+                category = 0,
+                length = totalLength,
+                elevation = totalElevation,
+                avgGrade = avgGrade,
+                maxGrade = avgGrade,
+                segments = emptyList(),
+                distanceToTop = distToTop,
+                elevationToTop = elevToTop,
+                progress = progress,
+                isActive = true,
+                isFromRoute = false,
+                startTimestamp = startTs
+            )
         }
     }
 
@@ -492,6 +787,9 @@ class ClimbDataService(private val climbExtension: ClimbIntelligenceExtension) {
         removeConsumer(distanceConsumerId)
         removeConsumer(locationConsumerId)
         removeConsumer(navigationConsumerId)
+        removeConsumer(climbStreamConsumerId)
+        removeConsumer(climbNumberConsumerId)
+        _climbStreamActive.value = false
     }
 
     private fun removeConsumer(ref: AtomicReference<String?>) {

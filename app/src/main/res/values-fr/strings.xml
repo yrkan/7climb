@@ -90,7 +90,7 @@
     <string name="alert_summit_detail_save">W\' à %1$d%% — régulier jusqu\'au sommet</string>
 
     <!-- Alerts: Climb Started -->
-    <string name="alert_climb_title">MONTÉE %1$.1f%% · %2$.1fkm</string>
+    <string name="alert_climb_title">MONTÉE %1$.1f%% · %2$.2fkm</string>
     <string name="alert_climb_detail_power">+%1$dm — Cible %2$dW</string>
     <string name="alert_climb_detail_basic">+%1$dm de dénivelé</string>
 
