@@ -1,12 +1,15 @@
+@file:OptIn(androidx.glance.preview.ExperimentalGlancePreviewApi::class)
+
 package io.github.climbintelligence.datatypes.glance
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.glance.GlanceModifier
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
-import androidx.compose.ui.graphics.Color
+import androidx.glance.preview.Preview
 import io.github.climbintelligence.ClimbIntelligenceExtension
 import io.github.climbintelligence.datatypes.BaseDataType
 import io.github.climbintelligence.datatypes.ClimbDisplayState
@@ -200,3 +203,27 @@ private fun StatsNarrow(state: ClimbDisplayState) {
         }
     }
 }
+
+@Preview(widthDp = 256, heightDp = 380)
+@Composable
+private fun StatsLargePreview() = StatsLarge(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 200, heightDp = 100)
+@Composable
+private fun StatsMediumWidePreview() = StatsMediumWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 120, heightDp = 100)
+@Composable
+private fun StatsMediumPreview() = StatsMedium(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 200)
+@Composable
+private fun StatsNarrowPreview() = StatsNarrow(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 180, heightDp = 60)
+@Composable
+private fun StatsSmallWidePreview() = StatsSmallWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 60)
+@Composable
+private fun StatsSmallPreview() = StatsSmall(ClimbDisplayState.PREVIEW)

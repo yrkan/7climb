@@ -1,3 +1,5 @@
+@file:OptIn(androidx.glance.preview.ExperimentalGlancePreviewApi::class)
+
 package io.github.climbintelligence.datatypes.glance
 
 import androidx.compose.runtime.Composable
@@ -8,11 +10,12 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
+import androidx.glance.preview.Preview
 import io.github.climbintelligence.ClimbIntelligenceExtension
+import io.github.climbintelligence.data.model.WPrimeStatus
 import io.github.climbintelligence.datatypes.BaseDataType
 import io.github.climbintelligence.datatypes.ClimbDisplayState
 import io.github.climbintelligence.datatypes.GlanceDataType
-import io.github.climbintelligence.data.model.WPrimeStatus
 import io.github.climbintelligence.util.PhysicsUtils
 import io.hammerhead.karooext.models.ViewConfig
 
@@ -183,3 +186,31 @@ private fun WPrimeBar(pct: Double, color: androidx.compose.ui.graphics.Color, he
         modifier = GlanceModifier.padding(vertical = 2.dp)
     )
 }
+
+@Preview(widthDp = 256, heightDp = 380)
+@Composable
+private fun WPrimeLargePreview() = WPrimeLarge(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 256, heightDp = 380)
+@Composable
+private fun WPrimeLargeCriticalPreview() = WPrimeLarge(ClimbDisplayState.PREVIEW.copy(wPrime = ClimbDisplayState.PREVIEW.wPrime.copy(percentage = 15.0, status = WPrimeStatus.CRITICAL, depletionRate = 200.0, timeToEmpty = 30)))
+
+@Preview(widthDp = 200, heightDp = 100)
+@Composable
+private fun WPrimeMediumWidePreview() = WPrimeMediumWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 120, heightDp = 100)
+@Composable
+private fun WPrimeMediumPreview() = WPrimeMedium(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 200)
+@Composable
+private fun WPrimeNarrowPreview() = WPrimeNarrow(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 180, heightDp = 60)
+@Composable
+private fun WPrimeSmallWidePreview() = WPrimeSmallWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 60)
+@Composable
+private fun WPrimeSmallPreview() = WPrimeSmall(ClimbDisplayState.PREVIEW)

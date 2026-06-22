@@ -77,6 +77,9 @@ dependencies {
 
     // Glance for Karoo DataType views
     implementation("androidx.glance:glance-appwidget:1.1.1")
+    debugImplementation("androidx.glance:glance-preview:1.1.1")
+    debugImplementation("androidx.glance:glance-appwidget-preview:1.1.1")
+    debugImplementation("androidx.compose.ui:ui-tooling")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.8.5")

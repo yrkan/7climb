@@ -1,3 +1,5 @@
+@file:OptIn(androidx.glance.preview.ExperimentalGlancePreviewApi::class)
+
 package io.github.climbintelligence.datatypes.glance
 
 import androidx.compose.runtime.Composable
@@ -13,6 +15,7 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
+import androidx.glance.preview.Preview
 import io.github.climbintelligence.ClimbIntelligenceExtension
 import io.github.climbintelligence.datatypes.BaseDataType
 import io.github.climbintelligence.datatypes.ClimbDisplayState
@@ -234,3 +237,27 @@ private fun ZoneBar(zones: IntArray, height: Int) {
         }
     }
 }
+
+@Preview(widthDp = 256, heightDp = 380)
+@Composable
+private fun ZonesLargePreview() = ZonesLarge(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 200, heightDp = 100)
+@Composable
+private fun ZonesMediumWidePreview() = ZonesMediumWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 120, heightDp = 100)
+@Composable
+private fun ZonesMediumPreview() = ZonesMedium(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 200)
+@Composable
+private fun ZonesNarrowPreview() = ZonesNarrow(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 180, heightDp = 60)
+@Composable
+private fun ZonesSmallWidePreview() = ZonesSmallWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 60)
+@Composable
+private fun ZonesSmallPreview() = ZonesSmall(ClimbDisplayState.PREVIEW)

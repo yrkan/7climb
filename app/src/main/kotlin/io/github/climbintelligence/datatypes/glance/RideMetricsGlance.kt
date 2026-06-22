@@ -1,14 +1,14 @@
+@file:OptIn(androidx.glance.preview.ExperimentalGlancePreviewApi::class)
+
 package io.github.climbintelligence.datatypes.glance
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
-import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
-import androidx.glance.layout.padding
+import androidx.glance.preview.Preview
 import io.github.climbintelligence.ClimbIntelligenceExtension
 import io.github.climbintelligence.datatypes.BaseDataType
 import io.github.climbintelligence.datatypes.ClimbDisplayState
@@ -158,3 +158,27 @@ private fun RideMetricsNarrow(state: ClimbDisplayState) {
         }
     }
 }
+
+@Preview(widthDp = 256, heightDp = 380)
+@Composable
+private fun RideMetricsLargePreview() = RideMetricsLarge(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 200, heightDp = 100)
+@Composable
+private fun RideMetricsMediumWidePreview() = RideMetricsMediumWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 120, heightDp = 100)
+@Composable
+private fun RideMetricsMediumPreview() = RideMetricsMedium(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 200)
+@Composable
+private fun RideMetricsNarrowPreview() = RideMetricsNarrow(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 180, heightDp = 60)
+@Composable
+private fun RideMetricsSmallWidePreview() = RideMetricsSmallWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 60)
+@Composable
+private fun RideMetricsSmallPreview() = RideMetricsSmall(ClimbDisplayState.PREVIEW)
