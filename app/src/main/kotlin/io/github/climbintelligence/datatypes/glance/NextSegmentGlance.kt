@@ -1,3 +1,5 @@
+@file:OptIn(androidx.glance.preview.ExperimentalGlancePreviewApi::class)
+
 package io.github.climbintelligence.datatypes.glance
 
 import androidx.compose.runtime.Composable
@@ -6,6 +8,7 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.preview.Preview
 import io.github.climbintelligence.ClimbIntelligenceExtension
 import io.github.climbintelligence.data.model.ClimbSegment
 import io.github.climbintelligence.datatypes.BaseDataType
@@ -245,3 +248,31 @@ private fun NextSegNarrow(state: ClimbDisplayState) {
         }
     }
 }
+
+@Preview(widthDp = 256, heightDp = 380)
+@Composable
+private fun NextSegLargePreview() = NextSegLarge(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 256, heightDp = 380)
+@Composable
+private fun NextSegLargeLastPreview() = NextSegLarge(ClimbDisplayState.PREVIEW.copy(climb = ClimbDisplayState.PREVIEW.climb?.copy(progress = 0.99)))
+
+@Preview(widthDp = 200, heightDp = 100)
+@Composable
+private fun NextSegMediumWidePreview() = NextSegMediumWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 120, heightDp = 100)
+@Composable
+private fun NextSegMediumPreview() = NextSegMedium(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 200)
+@Composable
+private fun NextSegNarrowPreview() = NextSegNarrow(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 180, heightDp = 60)
+@Composable
+private fun NextSegSmallWidePreview() = NextSegSmallWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 60)
+@Composable
+private fun NextSegSmallPreview() = NextSegSmall(ClimbDisplayState.PREVIEW)

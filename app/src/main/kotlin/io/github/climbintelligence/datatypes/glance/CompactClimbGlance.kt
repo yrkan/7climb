@@ -1,3 +1,5 @@
+@file:OptIn(androidx.glance.preview.ExperimentalGlancePreviewApi::class)
+
 package io.github.climbintelligence.datatypes.glance
 
 import androidx.compose.runtime.Composable
@@ -8,8 +10,8 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
-import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
+import androidx.glance.preview.Preview
 import io.github.climbintelligence.ClimbIntelligenceExtension
 import io.github.climbintelligence.datatypes.BaseDataType
 import io.github.climbintelligence.datatypes.ClimbDisplayState
@@ -265,3 +267,27 @@ private fun CompactNarrow(state: ClimbDisplayState) {
         }
     }
 }
+
+@Preview(widthDp = 256, heightDp = 380)
+@Composable
+private fun CompactLargePreview() = CompactLarge(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 200, heightDp = 100)
+@Composable
+private fun CompactMediumWidePreview() = CompactMediumWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 120, heightDp = 100)
+@Composable
+private fun CompactMediumPreview() = CompactMedium(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 200)
+@Composable
+private fun CompactNarrowPreview() = CompactNarrow(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 180, heightDp = 60)
+@Composable
+private fun CompactSmallWidePreview() = CompactSmallWide(ClimbDisplayState.PREVIEW)
+
+@Preview(widthDp = 100, heightDp = 60)
+@Composable
+private fun CompactSmallPreview() = CompactSmall(ClimbDisplayState.PREVIEW)

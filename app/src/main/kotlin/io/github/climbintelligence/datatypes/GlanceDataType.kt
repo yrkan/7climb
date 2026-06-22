@@ -7,6 +7,7 @@ import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceRemoteViews
 import io.github.climbintelligence.ClimbIntelligenceExtension
 import io.github.climbintelligence.data.model.ClimbInfo
+import io.github.climbintelligence.data.model.ClimbSegment
 import io.github.climbintelligence.data.model.ClimbStats
 import io.github.climbintelligence.data.model.LiveClimbState
 import io.github.climbintelligence.data.model.MatchBurnState
@@ -65,7 +66,18 @@ data class ClimbDisplayState(
                 name = "Col du Galibier", category = 1, length = 8500.0,
                 elevation = 585.0, avgGrade = 6.9, distanceToTop = 3200.0,
                 elevationToTop = 220.0, progress = 0.62, isActive = true,
-                isFromRoute = true
+                isFromRoute = true,
+                segments = listOf(
+                    ClimbSegment(startDistance = 0.0, endDistance = 1000.0, grade = 5.8, length = 1000.0, elevation = 58.0),
+                    ClimbSegment(startDistance = 1000.0, endDistance = 2000.0, grade = 5.2, length = 1000.0, elevation = 52.0),
+                    ClimbSegment(startDistance = 2000.0, endDistance = 3000.0, grade = 5.7, length = 1000.0, elevation = 57.0),
+                    ClimbSegment(startDistance = 3000.0, endDistance = 4000.0, grade = 5.4, length = 1000.0, elevation = 54.0),
+                    ClimbSegment(startDistance = 4000.0, endDistance = 5000.0, grade = 6.8, length = 1000.0, elevation = 68.0),
+                    ClimbSegment(startDistance = 5000.0, endDistance = 6000.0, grade = 7.8, length = 1000.0, elevation = 78.0),
+                    ClimbSegment(startDistance = 6000.0, endDistance = 7000.0, grade = 7.2, length = 1000.0, elevation = 72.0),
+                    ClimbSegment(startDistance = 7000.0, endDistance = 8000.0, grade = 9.0, length = 1000.0, elevation = 90.0),
+                    ClimbSegment(startDistance = 8000.0, endDistance = 8500.0, grade = 11.2, length = 500.0, elevation = 56.0)
+                )
             ),
             climbStats = ClimbStats(
                 vamRolling = 1550, vamOverall = 1080, energyKj = 420.0,
@@ -88,6 +100,16 @@ data class ClimbDisplayState(
             nextClimb = NextClimbInfo(
                 distanceToStart = 2300.0, etaSeconds = 500, hasNext = true
             )
+        )
+        val PREVIEW_NO_ROUTE = PREVIEW.copy(
+            climb = ClimbInfo(
+                length = 1500.0,
+                elevation = 150.0,
+                avgGrade = 10.0,
+                isActive = true,
+                isFromRoute = false,
+                startTimestamp = System.currentTimeMillis() - 600000,
+          )
         )
     }
 }
