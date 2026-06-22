@@ -21,6 +21,8 @@ import io.github.climbintelligence.ui.theme.Theme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import androidx.compose.ui.tooling.preview.Preview
+import io.github.climbintelligence.ui.theme.ClimbIntelligenceTheme
 
 @Composable
 fun PacingScreen(onNavigateBack: () -> Unit) {
@@ -301,5 +303,13 @@ internal fun PacingToleranceSelector(
                 )
             }
         }
+    }
+}
+
+@Preview(widthDp = 256, heightDp = 900)
+@Composable
+private fun PacingScreenPreview() {
+    ClimbIntelligenceTheme {
+        PacingScreen(onNavigateBack = {})
     }
 }

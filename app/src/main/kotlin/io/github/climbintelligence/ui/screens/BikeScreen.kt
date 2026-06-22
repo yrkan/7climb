@@ -19,6 +19,8 @@ import io.github.climbintelligence.data.model.AthleteProfile
 import io.github.climbintelligence.ui.theme.Theme
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import androidx.compose.ui.tooling.preview.Preview
+import io.github.climbintelligence.ui.theme.ClimbIntelligenceTheme
 
 // Position -> CdA mapping
 internal enum class RidingPosition(val cda: Double) {
@@ -300,5 +302,13 @@ internal fun SurfaceSelector(
                 }
             }
         }
+    }
+}
+
+@Preview(widthDp = 256, heightDp = 600)
+@Composable
+private fun BikeScreenPreview() {
+    ClimbIntelligenceTheme {
+        BikeScreen(onNavigateBack = {})
     }
 }

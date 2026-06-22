@@ -24,9 +24,13 @@ import io.github.climbintelligence.ui.theme.Theme
 import io.github.climbintelligence.util.PhysicsUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import androidx.compose.ui.tooling.preview.Preview
+import io.github.climbintelligence.ui.theme.ClimbIntelligenceTheme
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun HistoryScreen(
@@ -46,6 +50,19 @@ fun HistoryScreen(
         }
     }
 
+    HistoryScreenContent(
+        climbs = climbs,
+        recentAttempts = recentAttempts,
+        onNavigateBack = onNavigateBack
+    )
+}
+
+@Composable
+internal fun HistoryScreenContent(
+    climbs: List<ClimbEntity>,
+    recentAttempts: List<AttemptEntity>,
+    onNavigateBack: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -212,7 +229,7 @@ private fun AttemptRow(attempt: AttemptEntity) {
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = PhysicsUtils.formatTime(attempt.timeMs),
+                text = PhysicsUtils.formatTime(attempt.timeMs.milliseconds.inWholeSeconds),
                 color = Theme.colors.text,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium
@@ -250,5 +267,63 @@ private fun AttemptRow(attempt: AttemptEntity) {
                 )
             }
         }
+    }
+}
+
+private val CLIMBS
+    get() = listOf(
+        ClimbEntity(
+            id = "1",
+            name = "Alpe d'Huez",
+            latitude = 45.11,
+            longitude = 6.08,
+            length = 13800.0,
+            elevation = 1085.0,
+            avgGrade = 7.9,
+            maxGrade = 12.0,
+            category = 1
+        ),
+        ClimbEntity(
+            id = "2",
+            name = "Mont Ventoux",
+            latitude = 44.17,
+            longitude = 5.27,
+            length = 21400.0,
+            elevation = 1589.0,
+            avgGrade = 7.4,
+            maxGrade = 11.0,
+            category = 1
+        )
+    )
+private val ATTEMPTS get() = listOf(
+    AttemptEntity(
+        id = 1L,
+        climbId = "1",
+        date = 1719000000000L,
+        timeMs = 50.minutes.inWholeMilliseconds,
+        avgPower = 280,
+        normalizedPower = 290,
+        avgHR = 165,
+        maxHR = 180,
+        isPR = true
+    ),
+    AttemptEntity(
+        id = 2L,
+        climbId = "2",
+        date = 1719010000000L,
+        timeMs = 45.minutes.inWholeMilliseconds,
+        avgPower = 265,
+        normalizedPower = 270,
+        avgHR = 160,
+        maxHR = 175,
+        isPR = false
+    )
+)
+
+@Preview(widthDp = 256, heightDp = 600)
+@Composable
+private fun HistoryScreenPreview() {
+    ClimbIntelligenceTheme {
+        HistoryScreenContent(climbs = CLIMBS, recentAttempts = ATTEMPTS, onNavigateBack = {})
     }
 }

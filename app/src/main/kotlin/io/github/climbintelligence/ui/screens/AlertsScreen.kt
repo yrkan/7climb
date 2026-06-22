@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.sp
 import io.github.climbintelligence.ClimbIntelligenceExtension
 import io.github.climbintelligence.R
 import io.github.climbintelligence.ui.theme.Theme
+import androidx.compose.ui.tooling.preview.Preview
+import io.github.climbintelligence.ui.theme.ClimbIntelligenceTheme
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
@@ -140,5 +142,13 @@ internal fun CooldownSelector(
                 }
             }
         }
+    }
+}
+
+@Preview(widthDp = 256, heightDp = 700)
+@Composable
+private fun AlertsScreenPreview() {
+    ClimbIntelligenceTheme {
+        AlertsScreen(onNavigateBack = {})
     }
 }
