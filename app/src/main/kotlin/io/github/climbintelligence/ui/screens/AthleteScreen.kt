@@ -10,6 +10,8 @@ import io.github.climbintelligence.R
 import io.github.climbintelligence.data.model.AthleteProfile
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import androidx.compose.ui.tooling.preview.Preview
+import io.github.climbintelligence.ui.theme.ClimbIntelligenceTheme
 
 @Composable
 fun AthleteScreen(onNavigateBack: () -> Unit) {
@@ -69,5 +71,13 @@ fun AthleteScreen(onNavigateBack: () -> Unit) {
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+    }
+}
+
+@Preview(widthDp = 256, heightDp = 427)
+@Composable
+private fun AthleteScreenPreview() {
+    ClimbIntelligenceTheme {
+        AthleteScreen(onNavigateBack = {})
     }
 }

@@ -17,6 +17,9 @@ import io.github.climbintelligence.BuildConfig
 import io.github.climbintelligence.R
 import io.github.climbintelligence.ui.theme.Theme
 
+import androidx.compose.ui.tooling.preview.Preview
+import io.github.climbintelligence.ui.theme.ClimbIntelligenceTheme
+
 @Composable
 fun AboutScreen(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
@@ -90,5 +93,13 @@ private fun AboutLinkRow(
             color = Theme.colors.dim,
             fontSize = 14.sp
         )
+    }
+}
+
+@Preview(widthDp = 256, heightDp = 427)
+@Composable
+private fun AboutScreenPreview() {
+    ClimbIntelligenceTheme {
+        AboutScreen(onNavigateBack = {})
     }
 }

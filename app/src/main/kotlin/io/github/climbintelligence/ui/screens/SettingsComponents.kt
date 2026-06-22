@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.climbintelligence.R
 import io.github.climbintelligence.ui.theme.Theme
+import androidx.compose.ui.tooling.preview.Preview
+import io.github.climbintelligence.ui.theme.ClimbIntelligenceTheme
 
 @Composable
 internal fun SubScreenScaffold(
@@ -457,6 +459,147 @@ internal fun CpRow(
                 onValueChange(value)
                 showDialog = false
             }
+        )
+    }
+}
+
+@Preview(widthDp = 256, heightDp = 427)
+@Composable
+private fun SubScreenScaffoldPreview() {
+    ClimbIntelligenceTheme {
+        SubScreenScaffold(
+            title = "Preview Scaffold",
+            onNavigateBack = {}
+        ) {
+            MenuRow(label = "Item 1", subtitle = "Description 1", onClick = {})
+            SettingsDivider()
+            MenuRow(label = "Item 2", subtitle = "Description 2", onClick = {})
+        }
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun MenuRowPreview() {
+    ClimbIntelligenceTheme {
+        Column {
+            MenuRow(label = "Menu Item", subtitle = "Sub-label or detail text", onClick = {})
+        }
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun SettingsDividerPreview() {
+    ClimbIntelligenceTheme {
+        SettingsDivider()
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun SectionHeaderPreview() {
+    ClimbIntelligenceTheme {
+        SectionHeader(text = "Advanced Settings")
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun HintTextPreview() {
+    ClimbIntelligenceTheme {
+        HintText(text = "This is a helper or hint text for the user.")
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun PresetLabelPreview() {
+    ClimbIntelligenceTheme {
+        PresetLabel(text = "Preset Configuration")
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun NumericRowPreview() {
+    ClimbIntelligenceTheme {
+        NumericRow(
+            label = "FTP (Functional Threshold Power)",
+            value = 250,
+            unit = "W",
+            onValueChange = {}
+        )
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun DecimalRowPreview() {
+    ClimbIntelligenceTheme {
+        DecimalRow(
+            label = "Weight",
+            value = 72.5,
+            unit = "kg",
+            onValueChange = {}
+        )
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun ToggleRowPreview() {
+    ClimbIntelligenceTheme {
+        ToggleRow(
+            label = "Enable Audio Alerts",
+            enabled = true,
+            onToggle = {}
+        )
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun ExpandableRowPreview() {
+    ClimbIntelligenceTheme {
+        ExpandableRow(
+            label = "Show Advanced Options",
+            expanded = false,
+            onToggle = {}
+        )
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun NavigationRowPreview() {
+    ClimbIntelligenceTheme {
+        NavigationRow(
+            label = "Navigate to History",
+            onClick = {}
+        )
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun InfoRowPreview() {
+    ClimbIntelligenceTheme {
+        InfoRow(
+            label = "Version",
+            value = "3.0.2"
+        )
+    }
+}
+
+@Preview(widthDp = 256)
+@Composable
+private fun CpRowPreview() {
+    ClimbIntelligenceTheme {
+        CpRow(
+            cp = 0,
+            effectiveCp = 240,
+            onValueChange = {}
         )
     }
 }

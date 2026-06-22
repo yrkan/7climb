@@ -20,6 +20,8 @@ import io.github.climbintelligence.data.model.DetectionSettings
 import io.github.climbintelligence.ui.theme.Theme
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import androidx.compose.ui.tooling.preview.Preview
+import io.github.climbintelligence.ui.theme.ClimbIntelligenceTheme
 
 @Composable
 fun DetectionScreen(onNavigateBack: () -> Unit) {
@@ -134,5 +136,13 @@ internal fun DetectionSensitivitySelector(
                 )
             }
         }
+    }
+}
+
+@Preview(widthDp = 256, heightDp = 427)
+@Composable
+private fun DetectionScreenPreview() {
+    ClimbIntelligenceTheme {
+        DetectionScreen(onNavigateBack = {})
     }
 }

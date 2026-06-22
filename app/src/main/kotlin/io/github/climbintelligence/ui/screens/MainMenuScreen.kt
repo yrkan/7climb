@@ -22,6 +22,8 @@ import io.github.climbintelligence.data.model.PacingMode
 import io.github.climbintelligence.data.model.PacingTolerance
 import io.github.climbintelligence.ui.theme.Theme
 import kotlinx.coroutines.flow.flowOf
+import androidx.compose.ui.tooling.preview.Preview
+import io.github.climbintelligence.ui.theme.ClimbIntelligenceTheme
 
 @Composable
 fun MainMenuScreen(
@@ -165,5 +167,13 @@ fun MainMenuScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+    }
+}
+
+@Preview(widthDp = 256, heightDp = 600)
+@Composable
+private fun MainMenuScreenPreview() {
+    ClimbIntelligenceTheme {
+        MainMenuScreen(onNavigate = {})
     }
 }
